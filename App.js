@@ -1,18 +1,27 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-
-import HomeScreen from './HomeScreen';
-import AppNavigator from './AppNavigator';
+import LoginScreen from './LoginScreen';
+import RegisterScreen from './RegisterScreen';
+import AccountScreen from "./AccountScreen";
+import HistoryScreen from "./HistoryScreen";
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
     return (
         <NavigationContainer>
-        
-            <AppNavigator/>
-            {/* <Stack.Navigator initialRouteName="Login">
+            <Stack.Navigator initialRouteName="Login">
+                <Stack.Screen
+                    name="History"
+                    component={HistoryScreen}
+                    options={{ title: 'Lịch sử' }}
+                />
+                <Stack.Screen
+                    name="Account"
+                    component={AccountScreen}
+                    options={{ title: 'Tài khoản của tôi' }}
+                />
                 <Stack.Screen
                     name="Login"
                     component={LoginScreen}
@@ -23,7 +32,7 @@ export default function App() {
                     component={RegisterScreen}
                     options={{ title: 'Đăng ký' }}
                 />
-            </Stack.Navigator> */}
+            </Stack.Navigator>
         </NavigationContainer>
     );
 }
