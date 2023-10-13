@@ -10,11 +10,14 @@ import {
     TouchableWithoutFeedback,
     ToastAndroid
 } from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 export default function LoginScreen({ navigation }) {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [isLoginPressed, setIsLoginPressed] = useState(false);
+    const [isPasswordVisible, setIsPasswordVisible] = useState(false); //hiển thị mật khẩu
+
+
     const handleLogin = () => {
 
         if (username === '' || password === '') {
@@ -52,6 +55,7 @@ export default function LoginScreen({ navigation }) {
 
     return (
 
+
             <View style={styles.container}>
                 <View>
                     <Image style={{ width: 173, height: 52, marginBottom:-20,marginTop:20 }} source={require('./Image/logo1.png')} />
@@ -74,12 +78,22 @@ export default function LoginScreen({ navigation }) {
                         <TextInput
                             style={styles.textInput}
                             placeholder="Nhập mật khẩu của bạn"
-                            secureTextEntry={true}
+                            secureTextEntry={!isPasswordVisible}
                             underlineColorAndroid="transparent"
                             onChangeText={(text) => setPassword(text)}// Ẩn đường gạch dưới trên Android
                         />
+                        <TouchableOpacity
+                            onPress={() => setIsPasswordVisible(!isPasswordVisible)}
+                            style={styles.passwordVisibilityButton}
+                        >
+                            <Icon
+                                name={isPasswordVisible ? 'eye' : 'eye-slash'} // Chọn biểu tượng dựa trên trạng thái isPasswordVisible
+                                size={20}
+                                color="gray"
+                            />
+                        </TouchableOpacity>
                     </View>
-                    <Text style={{marginLeft:400,marginTop:7,color:'gray'}}>Quên mật khẩu!</Text>
+                    <Text style={{marginLeft:270,marginTop:7,color:'gray'}}>Quên mật khẩu!</Text>
                 </View>
                 <TouchableOpacity style={styles.btn_login} onPress={handleLogin}>
                     <Text style={styles.btn_txt}>ĐĂNG NHẬP</Text>
@@ -103,7 +117,7 @@ export default function LoginScreen({ navigation }) {
 
 const styles = StyleSheet.create({
     container: {
-        marginBottom:200,
+        marginBottom:180,
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
@@ -112,8 +126,9 @@ const styles = StyleSheet.create({
         fontSize: 18,
     },
     ctn: {
-        marginLeft:-10,
-        marginTop:60
+        marginLeft:20,
+        marginTop:60,
+        marginRight:20
     },
     convert:{
       flexDirection:'row'
@@ -145,9 +160,16 @@ const styles = StyleSheet.create({
         marginVertical: 3, // Khoảng cách giữa TextInput và đường gạch dưới
     },
     textInput: {
-        width:500,
+
+        width:240,
         height: 40,
         paddingBottom:10// Chiều cao của TextInput
+    },
+    passwordVisibilityButton: {
+        position: 'absolute',
+        right: 0,
+        top: 20,
+        padding: 5,
     },
     registerText:{
         marginTop:20,

@@ -1,12 +1,13 @@
 import React, { useState,useEffect  } from 'react';
 import {View, Text, TextInput, Button, StyleSheet, Image, TouchableOpacity, ToastAndroid} from 'react-native';
 import {useNavigation} from "@react-navigation/native";
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 export default function RegisterScreen() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [rePassword, setRePassword] = useState('');
-
+    const [isPasswordVisible, setIsPasswordVisible] = useState(false); //hiển thị mật khẩu
     const [validateUser, setValidateUser] = useState('');
     const [validatePass, setValidatePass] = useState('');
     const [validaRepass, setValidateRepass] = useState('');
@@ -98,6 +99,16 @@ export default function RegisterScreen() {
             underlineColorAndroid="transparent"
             onChangeText={(text) => setPassword(text)}
         />
+        <TouchableOpacity
+            onPress={() => setIsPasswordVisible(!isPasswordVisible)}
+            style={styles.passwordVisibilityButton}
+        >
+            <Icon
+                name={isPasswordVisible ? 'eye' : 'eye-slash'} // Chọn biểu tượng dựa trên trạng thái isPasswordVisible
+                size={20}
+                color="gray"
+            />
+        </TouchableOpacity>
         <Text style={{ color: 'red' }}>{validatePass}</Text>
     </View>
     <View style={styles.input}>
@@ -109,10 +120,19 @@ export default function RegisterScreen() {
             underlineColorAndroid="transparent"
             onChangeText={(text) => setPassword(text)}// Ẩn đường gạch dưới trên Android
         />
+        <TouchableOpacity
+            onPress={() => setIsPasswordVisible(!isPasswordVisible)}
+            style={styles.passwordVisibilityButton}
+        >
+            <Icon
+                name={isPasswordVisible ? 'eye' : 'eye-slash'} // Chọn biểu tượng dựa trên trạng thái isPasswordVisible
+                size={20}
+                color="gray"
+            />
+        </TouchableOpacity>
         <Text style={{ color: 'red' }}>{rePassword}</Text>
 
     </View>
-
 </View>
             <TouchableOpacity style={styles.btn_register} onPress={handleRegister}>
                     <Text style={styles.btn_txt}>ĐĂNG KÝ</Text>
@@ -125,14 +145,14 @@ export default function RegisterScreen() {
 
 const styles = StyleSheet.create({
     container: {
-        marginBottom:200,
+        marginBottom:180,
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
     },
     ctn: {
-        marginLeft:-10,
-        marginTop:60
+        width:370,
+        marginTop:60,
     },
 
     btn_register: {
@@ -152,7 +172,7 @@ const styles = StyleSheet.create({
 
 
     input: {
-        marginBottom:10,
+        marginBottom:5,
         borderBottomWidth: 1, // Độ dày của đường gạch dưới
         borderBottomColor: 'gray', // Màu của đường gạch dưới
         marginVertical: 3, // Khoảng cách giữa TextInput và đường gạch dưới
@@ -163,9 +183,15 @@ const styles = StyleSheet.create({
         marginVertical: 3, // Khoảng cách giữa TextInput và đường gạch dưới
     },
     textInput: {
-        width:500,
+        width:240,
         height: 40,
         paddingBottom:10// Chiều cao của TextInput
+    },
+    passwordVisibilityButton: {
+        position: 'absolute',
+        right: 0,
+        top: 20,
+        padding: 5,
     },
 
 
