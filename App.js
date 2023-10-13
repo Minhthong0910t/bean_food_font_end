@@ -5,13 +5,24 @@ import LoginScreen from './LoginScreen';
 import RegisterScreen from './RegisterScreen';
 import AccountScreen from "./AccountScreen";
 import HistoryScreen from "./HistoryScreen";
+import AppNavigator from './AppNavigator';
+
+import SearchComponent from './Component/SearchComponent';
+import GanbanComponent from './Component/GanbanComponent';
+import ComxuatComponent from './Component/ComxuatComponent';
+import BunPhoComponent from './Component/BunPhoComponent';
+import ChickenComponent from './Component/ChickenComponent';
+import AnVatComponent from './Component/AnVatComponent';
+import DoUongComponent from './Component/DoUongComponent';
+import BanhMiComponent from './Component/BanhMiComponent';
+import HealthyComponent from './Component/HealthyComponent';
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
     return (
         <NavigationContainer>
-            <Stack.Navigator initialRouteName="Login">
+            <Stack.Navigator initialRouteName="Appnavigator" screenOptions={{headerShown:false}}>
                 <Stack.Screen
                     name="History"
                     component={HistoryScreen}
@@ -32,6 +43,17 @@ export default function App() {
                     component={RegisterScreen}
                     options={{ title: 'Đăng ký' }}
                 />
+                
+                     <Stack.Screen  name='Appnavigator' component={AppNavigator}/>
+                    <Stack.Screen component={SearchComponent} name='Search'/>
+                    <Stack.Screen component={GanbanComponent} name='Ganban'/>
+                    <Stack.Screen component={ComxuatComponent} name='Comxuat'/>
+                    <Stack.Screen component={BunPhoComponent} name='BunPho'/>
+                    <Stack.Screen component={ChickenComponent} name='Chicken'/>
+                    <Stack.Screen component={AnVatComponent} name='AnVat'/>
+                    <Stack.Screen component={DoUongComponent} name='DoUong'/>
+                    <Stack.Screen component={BanhMiComponent} name='BanhMi'/>
+                    <Stack.Screen component={HealthyComponent} name='Healthy'/>
             </Stack.Navigator>
         </NavigationContainer>
     );
