@@ -5,6 +5,7 @@ import ProfileScreen from './ProfileScreen';
 import OrderScreen from './OrderScreen';
 import NotificationScreen from './NotificationScreen';
 import Icon from 'react-native-vector-icons/FontAwesome'; // Import biểu tượng
+import Home from './Component/Home';
 
 const Tab = createBottomTabNavigator();
 
@@ -13,7 +14,7 @@ const AppNavigator = () => {
     <Tab.Navigator>
       <Tab.Screen
         name="Home"
-        component={HomeScreen}
+        component={Home}
         options={{
           tabBarIcon: ({ color, size }) => (
             <Icon name="home" size={20} color="brown" /> // Đặt màu nâu và kích thước 20
