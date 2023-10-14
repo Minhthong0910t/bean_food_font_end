@@ -16,12 +16,16 @@ import AnVatComponent from './Component/AnVatComponent';
 import DoUongComponent from './Component/DoUongComponent';
 import BanhMiComponent from './Component/BanhMiComponent';
 import HealthyComponent from './Component/HealthyComponent';
+import ProductDetailScreen from './Component/ProductDetailScreen';
+import { CartProvider } from './Component/CartContext';
+import PayScreen from './Component/PayScreen';
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
     return (
         <NavigationContainer>
+        <CartProvider>
             <Stack.Navigator initialRouteName="Appnavigator" screenOptions={{headerShown:false}}>
                 <Stack.Screen
                     name="History"
@@ -43,6 +47,7 @@ export default function App() {
                     component={RegisterScreen}
                     options={{ title: 'Đăng ký' }}
                 />
+                <Stack.Screen name="PayScreen" component={PayScreen} options={{ title: 'Thanh toán' }} />
                 
                      <Stack.Screen  name='Appnavigator' component={AppNavigator}/>
                     <Stack.Screen component={SearchComponent} name='Search'/>
@@ -54,7 +59,12 @@ export default function App() {
                     <Stack.Screen component={DoUongComponent} name='DoUong'/>
                     <Stack.Screen component={BanhMiComponent} name='BanhMi'/>
                     <Stack.Screen component={HealthyComponent} name='Healthy'/>
+                    <Stack.Screen component={ProductDetailScreen} name='ProductDetail' options={{ title: 'Chi tiết sản phẩm' }} />
+                    
+
+
             </Stack.Navigator>
+        </CartProvider>
         </NavigationContainer>
     );
 }

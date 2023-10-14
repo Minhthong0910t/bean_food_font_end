@@ -389,7 +389,7 @@ return(
 )
 }
 
-const Goiymonan = ()=>{
+const Goiymonan = ({ navigation })=>{
 
   const[datamonangoiy , setdatamonan] = useState([])
 
@@ -397,9 +397,10 @@ const Goiymonan = ()=>{
     const data = [{
       id:'1' , 
       race:4.9,
-      name:'Cơm Niêu Singapore' , 
+      name:'Cơm Niêu Singapore' ,
+      price:'88888', 
       adress:'D29, Phạm Văn Bạch' , 
-      desscription:'ngon' , 
+      desscription:'ngon sieu qua tuyệt vời hãy đến với chúng tôi! ngon sieu qua tuyệt vời hãy đến với chúng tôi! ngon sieu qua tuyệt vời hãy đến với chúng tôi!' , 
       image: <Image source={require('./../Image/imagedoan.png')}/>,
 
     },
@@ -407,6 +408,7 @@ const Goiymonan = ()=>{
       id:'2' , 
       race:4.9,
       name:'Cơm Niêu Singapore' , 
+      price:'88888', 
       adress:'D29, Phạm Văn Bạch' , 
       desscription:'ngon' , 
       image: <Image source={require('./../Image/imagedoan.png')}/>,
@@ -416,6 +418,7 @@ const Goiymonan = ()=>{
       id:'3' , 
       race:4.9,
       name:'Cơm Niêu Singapore' , 
+      price:'88888', 
       adress:'D29, Phạm Văn Bạch' , 
       desscription:'ngon' , 
       image: <Image source={require('./../Image/imagedoan.png')}/>,
@@ -428,23 +431,32 @@ const Goiymonan = ()=>{
     <View>
         <ScrollView>
           {datamonangoiy.map((data , index)=>
-          <View style = {{margin:15   , flexDirection:'row' , height:90 ,alignItems:'center'}} >
             
-              <View >
-              {data.image}
-              </View>
-              <View style = {{flexDirection:'column' , paddingLeft:10  , marginLeft:10}}>
-                <Text style = {{ fontWeight:'bold' , fontSize:15 ,color:'#616161'}}>{data.name}</Text>
-              <View style={{flexDirection:'row'}}>
-                 <Image source={require('./../Image/star.png')} style = {{width:20 , height:20 , marginTop:5}}/>
-                 <Text style={{padding:5  , fontWeight:'bold',color:'#616161'}}>{data.race}</Text>
+            <TouchableOpacity
+                style={{margin: 15, flexDirection: 'row', height: 90, alignItems: 'center'}}
+                onPress={() => navigation.navigate('ProductDetail', { product: data })}
+              >
+                <View>
+                {data.image}
                 </View>
-                <Text style = {{color:'#616161'}}>{data.adress}</Text>
-              </View>
-              <TouchableOpacity style = {{marginLeft:'auto'}}>
-              <Image source={require('./../Image/right_arrow.png')} style = {{width:15 , height:15}}/>
-              </TouchableOpacity>
-          </View>)}
+                  <View style={{flexDirection: 'column', paddingLeft: 10, marginLeft: 10}}>
+                    <Text style={{fontWeight: 'bold', fontSize: 15, color: '#616161'}}>
+                      {data.name}
+                    </Text>
+                    <View style={{flexDirection: 'row'}}>
+                      <Image source={require('./../Image/star.png')} style={{width: 20, height: 20, marginTop: 5}} />
+                      <Text style={{padding: 5, fontWeight: 'bold', color: '#616161'}}>{data.race}</Text>
+                    </View>
+                    <Text style={{color: '#616161'}}>{data.adress}</Text>
+                  </View>
+                <TouchableOpacity style={{marginLeft: 'auto'}}>
+                  <Image source={require('./../Image/right_arrow.png')} style={{width: 15, height: 15}} />
+                </TouchableOpacity>
+              </TouchableOpacity> 
+
+              
+              
+          )}
         </ScrollView>
     </View>
   )
@@ -460,7 +472,7 @@ const Home = ({navigation}) => {
         <Discount/>
         <Discountforeveryday/>
         <Foodngonquanhday/>
-        <Goiymonan/>
+        <Goiymonan navigation={navigation}/>
       </ScrollView>
     </View>
   );
