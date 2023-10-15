@@ -66,7 +66,7 @@ const GanbanComponent = ({navigation}) => {
   };
 
   return (
-    <SafeAreaView style ={{marginTop:25}}> 
+    <SafeAreaView style ={{marginTop:0}}> 
     <View style = {{flexDirection:'row'  , alignItems:'center' , justifyContent:'center' , height:100}}>
       <TouchableOpacity style={{marginRight:'auto'}} onPress={()=>navigation.goBack()}>
         <Image source={require('./../Image/left_arrow.png')} style = {{width:25  , height:25}}/>
