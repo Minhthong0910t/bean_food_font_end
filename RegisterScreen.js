@@ -14,17 +14,20 @@ export default function RegisterScreen() {
 
     const navigation = useNavigation();
 
-    const handleRegister = async (username,password,rePassword) => {
+    const handleRegister = async () => {
 
-        if (username === '' || username.length < 3) {
+        const trimmedUsername = username.trim();
+        const trimmedPassword = password.trim();
+
+        if (trimmedUsername =="" || trimmedUsername.length < 3) {
             setValidateUser('Tên đăng nhập không hợp lệ');
-            return; // Ngừng xử lý
+            return;
         } else {
-            setValidateUser(''); // Xóa thông báo
+            setValidateUser('');
         }
 
         //mật khẩu
-        if (password === '' || password.length < 6) {
+        if (trimmedPassword.length < 2) {
             setValidatePass('Mật khẩu không hợp lệ');
             return;
         } else {
@@ -32,7 +35,7 @@ export default function RegisterScreen() {
         }
 
         //xác nhận mật khẩu
-        if (password !== rePassword) {
+        if (rePassword !== trimmedPassword) {
             setValidateRepass('Mật khẩu nhập lại không khớp');
             return;
         } else {
@@ -42,13 +45,12 @@ export default function RegisterScreen() {
 
         // Tạo dữ liệu
         const registrationData = {
-            "username":username,
-            "password":password,
-            "rePassword":rePassword
+            "username":trimmedUsername,
+            "password":trimmedPassword,
         };
 
         // Gửi yêu cầu POST
-        await fetch('https://example.com/api/register', {
+        await fetch('http://192.168.1.8:3000/api/users/register', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -57,18 +59,17 @@ export default function RegisterScreen() {
         })
 
             .then(res => {
-                if (res.status == 200) {
+                if (res.status === 200) {
                     ToastAndroid.show('Đăng ký thành công',ToastAndroid.SHORT)
                     setUsername("");
                     setPassword("");
-                    setRePassword("");
-                } else if (res.status == 500) {
-                    ToastAndroid.show('Tên tài khoản đã được sử dụng!! ',ToastAndroid.SHORT)
+                } else if (res.status === 500) {
+                    ToastAndroid.show('Tên tài khoản/email đã được sử dụng!! ',ToastAndroid.SHORT)
                 }
             })
             .catch(e => {
                 console.error(e);
-                ToastAndroid.show('Lỗi kết nối',ToastAndroid.SHORT)
+                ToastAndroid.show('Đăng kí thất bại',ToastAndroid.SHORT)
             });
     }
 
@@ -107,9 +108,9 @@ export default function RegisterScreen() {
             placeholder="Nhập lại mật khẩu của bạn"
             secureTextEntry={true}
             underlineColorAndroid="transparent"
-            onChangeText={(text) => setPassword(text)}// Ẩn đường gạch dưới trên Android
+            onChangeText={(text) => setRePassword(text)}// Ẩn đường gạch dưới trên Android
         />
-        <Text style={{ color: 'red' }}>{rePassword}</Text>
+        <Text style={{ color: 'red' }}>{validaRepass}</Text>
 
     </View>
 
@@ -131,7 +132,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     ctn: {
-        marginLeft:-10,
+        marginLeft:100,
         marginTop:60
     },
 
