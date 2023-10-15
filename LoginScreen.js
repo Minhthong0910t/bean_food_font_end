@@ -84,7 +84,7 @@ export default function LoginScreen({ navigation }) {
                         onChangeText={(text) => setPassword(text)}// Ẩn đường gạch dưới trên Android
                     />
                 </View>
-                <Text style={{marginLeft:280,marginTop:7,color:'gray'}}>Quên mật khẩu!</Text>
+                {/*<Text style={{marginLeft:300,marginTop:7,color:'gray'}}>Quên mật khẩu!</Text>*/}
             </View>
             <TouchableOpacity style={styles.btn_login} onPress={handleLogin}>
                 <Text style={styles.btn_txt}>ĐĂNG NHẬP</Text>
@@ -117,7 +117,8 @@ const styles = StyleSheet.create({
     },
     ctn: {
         marginLeft:100,
-        marginTop:60
+        marginTop:60,
+        marginRight:100
     },
     convert:{
         flexDirection:'row'

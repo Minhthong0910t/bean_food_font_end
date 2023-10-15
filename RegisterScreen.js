@@ -18,6 +18,7 @@ export default function RegisterScreen() {
 
         const trimmedUsername = username.trim();
         const trimmedPassword = password.trim();
+        const trimmedRepassword = rePassword.trim();
 
         if (trimmedUsername =="" || trimmedUsername.length < 3) {
             setValidateUser('Tên đăng nhập không hợp lệ');
@@ -47,6 +48,7 @@ export default function RegisterScreen() {
         const registrationData = {
             "username":trimmedUsername,
             "password":trimmedPassword,
+            "rePassword":trimmedRepassword
         };
 
         // Gửi yêu cầu POST
@@ -133,7 +135,8 @@ const styles = StyleSheet.create({
     },
     ctn: {
         marginLeft:100,
-        marginTop:60
+        marginTop:60,
+        marginRight:100
     },
 
     btn_register: {

@@ -31,7 +31,7 @@ export default function App() {
     return (
         <NavigationContainer>
             <CartProvider>
-                <Stack.Navigator initialRouteName="Appnavigator" screenOptions={{ headerShown: false }}>
+                <Stack.Navigator initialRouteName="Login" screenOptions={{ headerShown: false }}>
                     <Stack.Screen
                         name="History"
                         component={HistoryScreen}
