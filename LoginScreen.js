@@ -1,20 +1,14 @@
-import React, { useState,useEffect } from 'react';
-import {
-    View,
-    Text,
-    TextInput,
-    Button,
-    StyleSheet,
-    Image,
-    TouchableOpacity,
-    TouchableWithoutFeedback,
-    ToastAndroid
-} from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, Image } from 'react-native';
+import { TextInput, Button } from 'react-native-paper';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import { ToastAndroid } from 'react-native';
 
 export default function LoginScreen({ navigation }) {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [isLoginPressed, setIsLoginPressed] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
     const handleLogin = () => {
         const trimmedUsername = username.trim();
         const trimmedPassword = password.trim();
@@ -31,7 +25,7 @@ export default function LoginScreen({ navigation }) {
             "password":trimmedPassword,
         };
         // Gửi yêu cầu POST
-        fetch('http://192.168.1.8:3000/api/users/login', {
+        fetch('http://192.168.1.7:3000/api/users/login', {
             method: 'POST',
             headers: {
                 Accept: 'application/json',
@@ -56,106 +50,87 @@ export default function LoginScreen({ navigation }) {
     };
 
     return (
-
         <View style={styles.container}>
-            <View>
-                <Image style={{ width: 173, height: 52, marginBottom:-20,marginTop:20 }} source={require('./Image/logo1.png')} />
+            <Image style={styles.logo} source={require('./Image/logo1.png')} />
+            <TextInput
+                label="Số điện thoại/gmail"
+                value={username}
+                onChangeText={(text) => setUsername(text)}
+                style={styles.input}
+            />
+            
+            <View style={styles.passwordContainer}>
+                <TextInput
+                    label="Mật khẩu"
+                    value={password}
+                    secureTextEntry={!showPassword}
+                    onChangeText={(text) => setPassword(text)}
+                    style={styles.passwordInputField}
+                />
+                <Icon
+                    name={showPassword ? 'eye-slash' : 'eye'}
+                    size={20}
+                    color="gray"
+                    onPress={() => setShowPassword(!showPassword)}
+                    style={styles.passwordIcon}
+                />
             </View>
-
-
-
-            <View style={styles.ctn}>
-                <View style={styles.input}>
-                    <Text style={{fontSize:15,paddingBottom:2,fontWeight:'bold',color:'gray'}}>Số điện thoại/gmail</Text>
-                    <TextInput
-                        style={styles.textInput}
-                        placeholder="Nhập số điện thoại/gmail của bạn"
-                        underlineColorAndroid="transparent"
-                        onChangeText={(text) => setUsername(text)}// Ẩn đường gạch dưới trên Android
-                    />
-                </View>
-                <View style={styles.input}>
-                    <Text style={{fontSize:15,paddingBottom:2,fontWeight:'bold',color:'gray'}}>Mật khẩu</Text>
-                    <TextInput
-                        style={styles.textInput}
-                        placeholder="Nhập mật khẩu của bạn"
-                        secureTextEntry={true}
-                        underlineColorAndroid="transparent"
-                        onChangeText={(text) => setPassword(text)}// Ẩn đường gạch dưới trên Android
-                    />
-                </View>
-                {/*<Text style={{marginLeft:300,marginTop:7,color:'gray'}}>Quên mật khẩu!</Text>*/}
-            </View>
-            <TouchableOpacity style={styles.btn_login} onPress={handleLogin}>
-                <Text style={styles.btn_txt}>ĐĂNG NHẬP</Text>
-            </TouchableOpacity>
-
+            <Button mode="contained" onPress={handleLogin} style={styles.btn_login}>
+                ĐĂNG NHẬP
+            </Button>
             <Text style={styles.registerText}>
                 Chưa có tài khoản?{' '}
-                <Text
-                    style={{color:'blue'}}
-                    onPress={() => navigation.navigate('Register')}
-                >
+                <Text style={styles.registerLink} onPress={() => navigation.navigate('Register')}>
                     Đăng ký ngay
                 </Text>
             </Text>
-
-
         </View>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
-        marginBottom:200,
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
     },
-    loginText: {
-        fontSize: 18,
-    },
-    ctn: {
-        marginLeft:100,
-        marginTop:60,
-        marginRight:100
-    },
-    convert:{
-        flexDirection:'row'
-    },
-
-    btn_login: {
-        width:300,
-        marginTop:50,
-        backgroundColor: '#319AB4',
-        paddingVertical: 10,
-        paddingHorizontal: 10,
-        borderRadius: 10,
-    },
-
-    btn_txt: {
-        color: 'white',
-        fontSize: 18,
-        textAlign: 'center',
+    logo: {
+        width: 173,
+        height: 52,
+        marginBottom: 80,
     },
     input: {
-        marginBottom:10,
-        borderBottomWidth: 1, // Độ dày của đường gạch dưới
-        borderBottomColor: 'gray', // Màu của đường gạch dưới
-        marginVertical: 3, // Khoảng cách giữa TextInput và đường gạch dưới
+        width: '80%',
+        marginBottom: 20,
+        backgroundColor: 'lightblue',
     },
-    input2: {
-        borderBottomWidth: 1, // Độ dày của đường gạch dưới
-        borderBottomColor: 'gray', // Màu của đường gạch dưới
-        marginVertical: 3, // Khoảng cách giữa TextInput và đường gạch dưới
+    passwordContainer: {
+        width: '80%',
+        marginBottom: 20,
+        position: 'relative', 
+        flexDirection: 'row', // Đặt trong một dòng
+        alignItems: 'center', // Căn giữa theo chiều dọc
     },
-    textInput: {
-        width:500,
-        height: 40,
-        paddingBottom:10// Chiều cao của TextInput
+    passwordInputField: {
+        
+        flex: 1, // Để TextInput mở rộng để điền dữ liệu
+        backgroundColor: 'lightblue',
     },
-    registerText:{
-        marginTop:20,
-        fontSize:15
-    }
+    passwordIcon: {
+        position: 'absolute',
+        right: 10,
+    },
+    btn_login: {
+        width: '80%',
+        marginTop: 30,
+        backgroundColor: '#319AB4',
+        borderRadius: 10,
+    },
+    registerText: {
+        marginTop: 20,
+        fontSize: 15,
+    },
+    registerLink: {
+        color: 'blue',
+    },
 });

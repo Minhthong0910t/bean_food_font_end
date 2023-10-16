@@ -17,7 +17,7 @@ const AppNavigator = () => {
         component={Home}
         options={{
           tabBarIcon: ({ color, size }) => (
-            <Icon name="home" size={20} color="brown" /> // Đặt màu nâu và kích thước 20
+            <Icon name="home" size={25} color="#319AB4" /> // Đặt màu nâu và kích thước 20
           ),
           headerShown: false, // Đặt giá trị này ở đây để ẩn tiêu đề của màn hình Home
         }}
@@ -27,7 +27,7 @@ const AppNavigator = () => {
         component={OrderScreen}
         options={{
           tabBarIcon: ({ color, size }) => (
-            <Icon name="shopping-cart" size={20} color="brown" /> // Đặt màu nâu và kích thước 20
+            <Icon name="shopping-cart" size={25} color="#319AB4" /> // Đặt màu nâu và kích thước 20
           ),
           headerShown: false, // Đặt giá trị này ở đây để ẩn tiêu đề của màn hình Home
         }}
@@ -37,7 +37,7 @@ const AppNavigator = () => {
         component={NotificationScreen}
         options={{
           tabBarIcon: ({ color, size }) => (
-            <Icon name="bell" size={20} color="brown" /> // Đặt màu nâu và kích thước 20
+            <Icon name="bell" size={25} color="#319AB4" /> // Đặt màu nâu và kích thước 20
           ),
           headerShown: false, // Đặt giá trị này ở đây để ẩn tiêu đề của màn hình Home
         }}
@@ -47,7 +47,7 @@ const AppNavigator = () => {
         component={ProfileScreen}
         options={{
           tabBarIcon: ({ color, size }) => (
-            <Icon name="user" size={20} color="brown" /> // Đặt màu nâu và kích thước 20
+            <Icon name="user" size={25} color="#319AB4" /> // Đặt màu nâu và kích thước 20
           ),
           headerShown: false, // Đặt giá trị này ở đây để ẩn tiêu đề của màn hình Profile
         }}

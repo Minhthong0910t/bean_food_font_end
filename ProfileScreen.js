@@ -38,7 +38,7 @@ const ProfileScreen = ({navigation}) => {
           <Icon name="info" size={20} color="black" style={styles.icon} />
           <Text style={styles.menuText}>Ví liên kết</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.logoutButton}>
+        <TouchableOpacity style={styles.logoutButton} >
           <Text style={styles.logoutButtonText}>Đăng xuất</Text>
         </TouchableOpacity>
       </View>
