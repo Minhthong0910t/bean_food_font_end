@@ -57,7 +57,7 @@ export default function RegisterScreen() {
         };
 
         // Gửi yêu cầu POST
-        await fetch('http://192.168.1.7:3000/api/users/register', {
+        await fetch('http://192.168.1.8:3000/api/users/register', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -70,6 +70,7 @@ export default function RegisterScreen() {
                     ToastAndroid.show('Đăng ký thành công',ToastAndroid.SHORT)
                     setUsername("");
                     setPassword("");
+                    navigation.navigate('Login');
                 } else if (res.status === 500) {
                     ToastAndroid.show('Tên tài khoản/email đã được sử dụng!! ',ToastAndroid.SHORT)
                 }
