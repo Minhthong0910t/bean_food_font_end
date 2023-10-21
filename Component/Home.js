@@ -351,38 +351,19 @@ const Goiymonan = ({ navigation })=>{
   const[datamonangoiy , setdatamonan] = useState([])
 
   useEffect(()=>{
-    const data = [{
-      id:'1' , 
-      race:4.9,
-      name:'Cơm Niêu Singapore' ,
-      price:'88888', 
-      adress:'D29, Phạm Văn Bạch' , 
-      desscription:'ngon sieu qua tuyệt vời hãy đến với chúng tôi! ngon sieu qua tuyệt vời hãy đến với chúng tôi! ngon sieu qua tuyệt vời hãy đến với chúng tôi!' , 
-      image: <Image source={require('./../Image/imagedoan.png')}/>,
+    const fetchData = async () => {
+      try {
+        const response = await fetch('http://192.168.1.6:3000/api/product/suggest');
+        const jsonData = await response.json();
+   
+        setdatamonan(jsonData.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
 
-    },
-    {
-      id:'2' , 
-      race:4.9,
-      name:'Cơm Niêu Singapore' , 
-      price:'88888', 
-      adress:'D29, Phạm Văn Bạch' , 
-      desscription:'ngon' , 
-      image: <Image source={require('./../Image/imagedoan.png')}/>,
-
-    },
-    {
-      id:'3' , 
-      race:4.9,
-      name:'Cơm Niêu Singapore' , 
-      price:'88888', 
-      adress:'D29, Phạm Văn Bạch' , 
-      desscription:'ngon' , 
-      image: <Image source={require('./../Image/imagedoan.png')}/>,
-
-    }
-  ]
-    setdatamonan(data)
+    fetchData();
+   
   },[])
   return(
     <View>
@@ -393,8 +374,8 @@ const Goiymonan = ({ navigation })=>{
                 style={{margin: 15, flexDirection: 'row', height: 90, alignItems: 'center'}}
                 onPress={() => navigation.navigate('ProductDetail', { product: data })}
               >
-                <View>
-                {data.image}
+                <View >
+                  <Image source={{uri:data.images[0]}} style={{borderWidth:1 , width:width*0.25 , height:width*0.25}}/>
                 </View>
                   <View style={{flexDirection: 'column', paddingLeft: 10, marginLeft: 10}}>
                     <Text style={{fontWeight: 'bold', fontSize: 15, color: '#616161'}}>
@@ -404,7 +385,7 @@ const Goiymonan = ({ navigation })=>{
                       <Image source={require('./../Image/star.png')} style={{width: 20, height: 20, marginTop: 5}} />
                       <Text style={{padding: 5, fontWeight: 'bold', color: '#616161'}}>{data.race}</Text>
                     </View>
-                    <Text style={{color: '#616161'}}>{data.adress}</Text>
+                    <Text style={{color: '#616161'}}>{data.description}</Text>
                   </View>
                 <TouchableOpacity style={{marginLeft: 'auto'}}>
                   <Image source={require('./../Image/right_arrow.png')} style={{width: 15, height: 15}} />
