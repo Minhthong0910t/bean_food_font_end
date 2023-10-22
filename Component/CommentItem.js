@@ -1,17 +1,20 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
 
-const CommentItem = ({ username, content }) => {
+const CommentItem = ({ username, title, avatar }) => {
+  // Log the avatar value
   return (
     <View style={styles.commentContainer}>
-      <Image source={require('../Image/BeanFoodLogo.png')} style={styles.userImage} />
+      <Image source={{ uri: avatar }} style={styles.userImage} /> 
       <View style={styles.commentContentContainer}>
         <Text style={styles.username}>{username}</Text>
-        <Text style={styles.commentContent}>{content}</Text>
+        <Text style={styles.commentContent}>{title}</Text>
       </View>
     </View>
   );
 };
+
+
 
 const styles = StyleSheet.create({
   commentContainer: {

@@ -24,12 +24,14 @@ import Oder from './profile/Oder';
 import Voucher from './profile/Voucher';
 import History from './profile/History';
 import Payment from './profile/Payment';
+import { AuthProvider } from './AuthContext';
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
     return (
         <NavigationContainer>
+        <AuthProvider>
             <CartProvider>
                 <Stack.Navigator initialRouteName="Appnavigator" screenOptions={{ headerShown: false }}>
                     <Stack.Screen
@@ -54,25 +56,26 @@ export default function App() {
                     />
                     <Stack.Screen name="PayScreen" component={PayScreen} options={{ title: 'Thanh toán' }} />
 
-                    <Stack.Screen name='Appnavigator' component={AppNavigator} />
-                    <Stack.Screen component={SearchComponent} name='Search' />
-                    <Stack.Screen component={GanbanComponent} name='Ganban' />
-                    <Stack.Screen component={ComxuatComponent} name='Comxuat' />
-                    <Stack.Screen component={BunPhoComponent} name='BunPho' />
-                    <Stack.Screen component={ChickenComponent} name='Chicken' />
-                    <Stack.Screen component={AnVatComponent} name='AnVat' />
-                    <Stack.Screen component={DoUongComponent} name='DoUong' />
-                    <Stack.Screen component={BanhMiComponent} name='BanhMi' />
-                    <Stack.Screen component={HealthyComponent} name='Healthy' />
-                    <Stack.Screen component={ProductDetailScreen} name='ProductDetail' options={{ title: 'Chi tiết sản phẩm' }} />
-                    <Stack.Screen component={ProfileInfor} name='ProfileInfor' />
-                    <Stack.Screen component={Oder} name='Oder' />
-                    <Stack.Screen component={Voucher} name='Voucher' />
-                    <Stack.Screen component={History} name='lichsu' />
-                    <Stack.Screen component={Payment} name='Payment' />
+                        <Stack.Screen name='Appnavigator' component={AppNavigator} />
+                        <Stack.Screen component={SearchComponent} name='Search' />
+                        <Stack.Screen component={GanbanComponent} name='Ganban' />
+                        <Stack.Screen component={ComxuatComponent} name='Comxuat' />
+                        <Stack.Screen component={BunPhoComponent} name='BunPho' />
+                        <Stack.Screen component={ChickenComponent} name='Chicken' />
+                        <Stack.Screen component={AnVatComponent} name='AnVat' />
+                        <Stack.Screen component={DoUongComponent} name='DoUong' />
+                        <Stack.Screen component={BanhMiComponent} name='BanhMi' />
+                        <Stack.Screen component={HealthyComponent} name='Healthy' />
+                        <Stack.Screen component={ProductDetailScreen} name='ProductDetail' options={{ title: 'Chi tiết sản phẩm' }} />
+                        <Stack.Screen component={ProfileInfor} name='ProfileInfor' />
+                        <Stack.Screen component={Oder} name='Oder' />
+                        <Stack.Screen component={Voucher} name='Voucher' />
+                        <Stack.Screen component={History} name='lichsu' />
+                        <Stack.Screen component={Payment} name='Payment' />
 
-                </Stack.Navigator>
-            </CartProvider>
+                    </Stack.Navigator>
+                </CartProvider>
+            </AuthProvider>
         </NavigationContainer>
     );
 }

@@ -1,9 +1,14 @@
-import React, { useState } from 'react';
-import { View, Text, Image, Button, TouchableOpacity, TextInput, StyleSheet, SafeAreaView, ScrollView } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { 
+  View, Text, Image, Button, TouchableOpacity, TextInput, StyleSheet, 
+  SafeAreaView, ScrollView ,Alert 
+} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Toast from 'react-native-toast-message';
+
 import { useCart } from './CartContext';
-import CommentItem from './CommentItem'; 
+import CommentItem from './CommentItem';
+import { useAuth } from '../AuthContext';
 
 
 
@@ -14,6 +19,51 @@ const ProductDetailScreen = ({ navigation, route }) => {
   const [totalPrice, setTotalPrice] = useState(product.price);
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
+
+
+  const [comment, setComment] = useState('');
+  const { isAuthenticated } = useAuth();
+
+
+  useEffect(() => {
+    fetchComments();
+  }, []);
+  const fetchComments = async () => {
+    try {
+        let response = await fetch('http://192.168.1.4:3000/api/comment/getAll');
+        let jsonResponse = await response.json();
+
+        // Kiểm tra mã trạng thái của phản hồi
+        if (response.status === 200) {
+            if (jsonResponse.data && jsonResponse.data.length > 0) {
+                setComments(jsonResponse.data);
+            } else {
+                Toast.show({
+                    type: 'info',
+                    text1: 'Thông báo',
+                    text2: 'Không có dữ liệu bình luận',
+                });
+            }
+        } else {
+            Toast.show({
+                type: 'error',
+                text1: 'Lỗi!',
+                text2: jsonResponse.msg || 'Không thể lấy dữ liệu từ server',
+            });
+        }
+    } catch (error) {
+        Toast.show({
+            type: 'error',
+            text1: 'Lỗi!',
+            text2: error.message || 'Không thể kết nối đến server',
+        });
+    } finally {
+        setIsLoading(false);
+    }
+};
+
+
 
 
   const goBack = () => {
@@ -66,14 +116,63 @@ const ProductDetailScreen = ({ navigation, route }) => {
   };
   
 
-    const submitComment = () => {
-      if (newComment) {
-        // Add the new comment to the list
-        addComment({ username: 'User', content: newComment });
-        // Clear the input field
-        setNewComment('');
+  const submitComment = () => {
+    if (!newComment) return;
+  
+    // Giả sử rằng bạn có một trạng thái/prop/biến tên là currentUser để biểu diễn người dùng hiện tại
+    if (!isAuthenticated) {
+            // Hiển thị thông báo yêu cầu đăng nhập
+            setNewComment('');
+            // Hiển thị thông báo yêu cầu đăng nhập
+        Alert.alert(
+          "Thông báo", // Tiêu đề
+          "Vui lòng đăng nhập để bình luận!", // Nội dung
+          [
+            {
+              text: "Hủy bỏ",
+              style: "cancel",
+            },
+            {
+              text: "Đăng nhập",
+              onPress: () => navigation.navigate("Login"), // Chuyển đến màn hình đăng nhập
+            },
+          ],
+          { cancelable: false } // Người dùng không thể hủy thông báo bằng cách nhấn ra ngoài
+        );
+        return;
+    }
+  
+    const apiUrl = 'http://192.168.1.4:3000/api/comment/create';
+  
+    fetch(apiUrl, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        idProduct: product._id,
+        idUser: currentUser._id, // Giả sử rằng người dùng hiện tại có trường _id
+        title: newComment
+      })
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error("Lỗi mạng hoặc máy chủ");
       }
-    };
+      return response.json();
+    })
+    .then(data => {
+      // Cập nhật trạng thái bình luận cục bộ với bình luận mới
+      setComments(prevComments => [...prevComments, data.comment]);
+      // Xóa trường nhập liệu
+      setNewComment('');
+    })
+    .catch(error => console.error("Có lỗi khi thêm bình luận", error));
+  };
+  
+  
+  
 
   
 
@@ -87,89 +186,100 @@ const ProductDetailScreen = ({ navigation, route }) => {
     };
     
 
-  return (
-    <SafeAreaView style={{ flex: 1, marginTop: 25 }}>
-      <View style={styles.container}>
-      <View style={styles.header}>
-          <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Image source={require('./../Image/left_arrow.png')} style={{ width: 25, height: 25 }} />
-          </TouchableOpacity>
-          <Text style={{ fontWeight: 'bold', flex: 1, fontSize: 24 }}>Chi tiết sản phẩm</Text>
-          <View style={styles.topRow}>
-          <TouchableOpacity style={[ styles.menuButton]} onPress={addToCart}>
-            <Image source={require('./../Image/menu-icon.png')} style={styles.icon} />
-
-          </TouchableOpacity>
-
+    const renderLoading = () => (
+      <SafeAreaView style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Text>Loading...</Text>
+      </SafeAreaView>
+    );
+  
+    const renderProductDetails = () => (
+      <SafeAreaView style={{ flex: 1, marginTop: 25 }}>
+        <View style={styles.container}>
+          {/* Header */}
+          <View style={styles.header}>
+            {/* Back button */}
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              <Image source={require('./../Image/left_arrow.png')} style={{ width: 25, height: 25 }} />
+            </TouchableOpacity>
+  
+            {/* Title */}
+            <Text style={{ fontWeight: 'bold', flex: 1, fontSize: 24 }}> Chi tiết sản phẩm </Text>
+  
+            {/* Cart button */}
+            <TouchableOpacity style={styles.menuButton} onPress={addToCart}>
+              <Image source={require('./../Image/menu-icon.png')} style={styles.icon} />
+            </TouchableOpacity>
           </View>
-        </View>
-      <ScrollView>
-        
-        <Image source={require('./../Image/imagedoan.png')} style={styles.image} />
-        <View style={styles.contentRow}>
-          <Text style={styles.productName}>{product.name}</Text>
-          <Text style={styles.productPrice}>{product.price} VND</Text>
-        </View>
-        <View style={styles.descriptionContainer}>
-                  <Text style={styles.description}>{product.desscription}</Text>
-
-              </View>
-              <View style={styles.danhGiaRow}>
-                  <Text style={styles.DanhgiaTitle}>Đánh giá {product.race}</Text>
-                  <Image source={require('./../Image/star.png')} style={styles.iconstar} />
-                </View>
-                <View style={styles.commentSection}>
-                        {/* Display the list of comments */}
-                        
-                        {/* Your existing comment input */}
-                        <View style={styles.commentInputContainer}>
-                        
-                          <TextInput
-                            placeholder="Nhập bình luận..."
-                            style={styles.commentInput}
-                            multiline
-                            // Add onChangeText to update the comment as the user types
-                            onChangeText={(text) => setNewComment(text)}
-                            value={newComment}
-                          />
-                          <TouchableOpacity onPress={submitComment}>
-                            <Icon name="send" size={24} color="#319AB4" style={styles.sendIcon} />
-                          </TouchableOpacity>
-                        </View>
-
-                        
-                      </View>
-                <ScrollView style={styles.scrollView}>
-                {comments.map((comment, index) => (
-                          <CommentItem key={index} username={comment.username} content={comment.content} />
-                        ))}
-                </ScrollView>
-         </ScrollView>
-        </View>
-              
-
-              
-
-          
-
-        <View style={styles.bottomRow}>
-        <View style={styles.quantityContainer}>
-            <Text style={styles.totalPrice}>Total: {totalPrice} VND</Text>
-            <Button title="-" onPress={decreaseQuantity} />
-            <Text style={styles.quantityText}>{quantity}</Text>
-            <Button title="+" onPress={increaseQuantity} />
+  
+          <ScrollView>
+            {/* Product image */}
+            <Image source={require('./../Image/imagedoan.png')} style={styles.image} />
+  
+            {/* Product name and price */}
+            <View style={styles.contentRow}>
+              <Text style={styles.productName}>{product.name}</Text>
+              <Text style={styles.productPrice}>{product.price} VND</Text>
+            </View>
+  
+            {/* Product description */}
+            <View style={styles.descriptionContainer}>
+              <Text style={styles.description}>{product.description}</Text>
+            </View>
+  
+            {/* Product rating */}
+            <View style={styles.danhGiaRow}>
+              <Text style={styles.DanhgiaTitle}>Đánh giá {product.race}</Text>
+              <Image source={require('./../Image/star.png')} style={styles.iconstar} />
+            </View>
+  
+            {/* Comments section */}
+            <View style={styles.commentSection}>
+              <TextInput
+                placeholder="Nhập bình luận..."
+                style={styles.commentInput}
+                multiline
+                onChangeText={(text) => setNewComment(text)}
+                value={newComment}
+              />
+              <TouchableOpacity onPress={submitComment}>
+                <Icon name="send" size={24} color="#319AB4" style={styles.sendIcon} />
+              </TouchableOpacity>
+            </View>
+            <ScrollView style={styles.scrollView}>
+                    {comments.map((comment, index) => (
+                      <CommentItem 
+                        key={index}
+                        username={comment.idUser.username} 
+                        title={comment.title} 
+                        avatar={comment.idUser.avatar}
+                      />
+                    ))}
+                  </ScrollView>
+            
+          </ScrollView>
+  
+          {/* Bottom bar with quantity and payment button */}
+          <View style={styles.bottomRow}>
+            <View style={styles.quantityContainer}>
+              <Text style={styles.totalPrice}>Total: {totalPrice} VND</Text>
+              <Button title="-" onPress={decreaseQuantity} />
+              <Text style={styles.quantityText}>{quantity}</Text>
+              <Button title="+" onPress={increaseQuantity} />
+            </View>
+            <TouchableOpacity style={[styles.button, styles.bottomButton]} onPress={checkout}>
+              <Image source={require('./../Image/money-icon.png')} style={styles.icon} />
+              <Text style={styles.buttonText}>Pay</Text>
+            </TouchableOpacity>
           </View>
-          <TouchableOpacity style={[styles.button, styles.bottomButton]} onPress={checkout}>
-            <Image source={require('./../Image/money-icon.png')} style={styles.icon} />
-            <Text style={styles.buttonText}>Pay</Text>
-          </TouchableOpacity>
+  
+          {/* Initialize Toast container */}
+          <Toast ref={(ref) => Toast.setRef(ref)} />
         </View>
-      
-      {/* Initialize Toast container */}
-      <Toast ref={(ref) => Toast.setRef(ref)} />
-    </SafeAreaView>
-  );
-};
+      </SafeAreaView>
+    );
+  
+    return isLoading ? renderLoading() : renderProductDetails();
+  };
 
 const styles = StyleSheet.create({
   container: {
@@ -216,6 +326,7 @@ const styles = StyleSheet.create({
   },
 
   commentSection: {
+    flexDirection: 'row',
     margin: 10,
   },
   commentTitle: {

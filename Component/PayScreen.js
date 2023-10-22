@@ -1,83 +1,251 @@
+import React, { useState, useEffect } from 'react';
+import { View, Text, Image, Button, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView, Dimensions,TextInput } from 'react-native';
 
-import React from 'react';
-import { View, Text, Image, Button, StyleSheet,TouchableOpacity,SafeAreaView } from 'react-native';
+const screenWidth = Dimensions.get('window').width;
+
+const ProductItem = ({ product, quantity, onUpdateQuantity }) => {
+  return (
+    <View style={styles.itemContainer}>
+      <Image source={product.image} style={styles.productImage} />
+      <View style={styles.doc}>
+      <Text style={styles.productName}>{product.name}</Text>
+      <View style={styles.quantityContainer}>
+        <TouchableOpacity onPress={() => onUpdateQuantity(quantity - 1)}>
+          <Text style={styles.quantityButton}>-</Text>
+        </TouchableOpacity>
+        <Text style={styles.quantityText}>{quantity}</Text>
+        <TouchableOpacity onPress={() => onUpdateQuantity(quantity + 1)}>
+          <Text style={styles.quantityButton}>+</Text>
+        </TouchableOpacity>
+      </View>
+      </View>
+      
+      <Text style={styles.productPrice}>{product.price}đ</Text>
+      <TouchableOpacity style={styles.removeButton}>
+        <Text>x</Text>
+      </TouchableOpacity>
+    </View>
+  );
+};
 
 const PayScreen = ({ route, navigation }) => {
-  const { product, quantity, totalPrice } = route.params;
+  const { product } = route.params;
+  
+  // Sử dụng trạng thái cho quantity và totalPrice
+  const [quantity, setQuantity] = useState(route.params.quantity);
+  const [totalPrice, setTotalPrice] = useState(route.params.totalPrice);
+  const [text, setText] = useState('');
+  const deliveryFee = 15000;
+  const discount = 0;
+
+  const ordertotalPrice = totalPrice + deliveryFee - discount;
+
   const goBack = () => {
     navigation.goBack();
   };
 
+  const handleUpdateQuantity = (newQuantity) => {
+    // Đảm bảo số lượng không âm
+    if (newQuantity >= 0) {
+      setQuantity(newQuantity);
+    }
+  };
+
+  // Sử dụng hook useEffect để cập nhật totalPrice mỗi khi quantity thay đổi
+  useEffect(() => {
+    setTotalPrice(product.price * quantity);
+  }, [quantity]);
+
   return (
     <SafeAreaView style={{ flex: 1, marginTop: 25 }}>
-    <View style={styles.header}>
-          <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Image source={require('./../Image/left_arrow.png')} style={{ width: 25, height: 25 }} />
-          </TouchableOpacity>
-          <Text style={{ fontWeight: 'bold', flex: 1, fontSize: 24 }}>Thanh Toán Đơn Hàng</Text>
-          <View style={styles.topRow}>
-          <TouchableOpacity style={[ styles.menuButton]}>
-            <Image source={require('./../Image/menu-icon.png')} style={styles.icon} />
-
-          </TouchableOpacity>
-
+      <View style={styles.header}>
+        <TouchableOpacity onPress={goBack}>
+          <Image source={require('./../Image/left_arrow.png')} style={styles.arrowIcon} />
+        </TouchableOpacity>
+        <Text style={styles.headerText}>Thanh Toán</Text>
+      </View>
+      <ScrollView style={styles.container}>
+        <Text style={styles.deliveryText}>Giao hàng đến:</Text>
+        <Text style={styles.addressText}>D29, Phạm Văn Bạch, Cầu Giấy, Hà Nội</Text>
+        <ProductItem product={product} quantity={quantity} onUpdateQuantity={handleUpdateQuantity} />
+        <View style={styles.containerHD}>
+          <View style={styles.row}>
+            <Text style={styles.label}>Đơn mua</Text>
+            <Text style={styles.value}>{totalPrice}đ</Text>
+          </View>
+          <View style={styles.row}>
+            <Text style={styles.label}>Phí giao hàng (2.3km)</Text>
+            <Text style={styles.value}>{deliveryFee}đ</Text>
+          </View>
+          <View style={styles.row}>
+            <Text style={styles.label}>Khuyến mãi</Text>
+            <Text style={styles.value}>{discount}đ</Text>
+          </View>
+          <View style={styles.row}>
+            <Text style={styles.totalLabel}>Tổng thanh toán</Text>
+            <Text style={styles.totalValue}>{ordertotalPrice}đ</Text>
           </View>
         </View>
-    <View style={styles.container}>
-    
-      {/* <Image source={product.image} style={styles.image} /> */}
-      <Text style={styles.productName}>{product.name}</Text>
-      <Text style={styles.productQuantity}>Số lượng: {quantity}</Text>
-      <Text style={styles.productTotalPrice}>Tổng giá: {totalPrice} VND</Text>
-      <Button title="Xác nhận thanh toán" />
+        <View style={styles.inputText}>
+        <TextInput
+          value={text}
+          onChangeText={setText}
+          placeholder="Lời nhắn cho cửa hàng"
+          style={styles.textInput}
+          multiline={true}
+          numberOfLines={4} // Bạn có thể điều chỉnh số dòng tối đa theo mong muốn
+        />
     </View>
+        <Button title="Đặt hàng" onPress={() => {}} />
+      </ScrollView>
     </SafeAreaView>
-    );
+  );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    padding: 0.05 * screenWidth,
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    height: 100,
+    padding: 0.05 * screenWidth,
+    borderBottomWidth: 1,
+    borderColor: 'lightgray',
   },
-  image: {
-    width: 200,
-    height: 200,
-    marginBottom: 10,
+  arrowIcon: {
+    width: 0.06 * screenWidth,
+    height: 0.06 * screenWidth,
+  },
+  headerText: {
+    fontWeight: 'bold',
+    fontSize: 0.06 * screenWidth,
+    flex: 1,
+    textAlign: 'center',
+  },
+  deliveryText: {
+    fontSize: 0.04 * screenWidth,
+    marginVertical: 0.02 * screenWidth,
+  },
+  addressText: {
+    fontSize: 0.045 * screenWidth,
+    fontWeight: 'bold',
+    marginBottom: 0.025 * screenWidth,
+  },
+  productContainer: {
+    flexDirection: 'row',
+    marginBottom: 0.025 * screenWidth,
+    padding: 0.025 * screenWidth,
+    alignItems: 'center',
+  },
+  productImage: {
+    width: 0.2 * screenWidth,
+    height: 0.2 * screenWidth,
+    marginRight: 0.04 * screenWidth,
   },
   productName: {
-    fontSize: 20,
-    fontWeight: 'bold',
+    fontSize: 0.04 * screenWidth,
+    flex: 1,
   },
   productQuantity: {
+    fontSize: 0.035 * screenWidth,
+  },
+  productPrice: {
+    marginLeft: 5,
+    fontSize: 0.04 * screenWidth,
+    fontWeight: 'bold',
+  },
+  totalPriceText: {
+    fontSize: 0.045 * screenWidth,
+    fontWeight: 'bold',
+    marginBottom: 0.025 * screenWidth,
+  },
+  doc: {
+    flexDirection: 'column',
+    margin: 10
+  },
+  itemContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 10,
+    borderBottomWidth: 1,
+    borderColor: 'lightgray',
+  },
+  productImage: {
+    width: 60,
+    height: 60,
+    marginRight: 10,
+  },
+  productName: {
+    flex: 2,
     fontSize: 16,
   },
-  productTotalPrice: {
+  quantityContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
+  quantityButton: {
+    fontSize: 20,
+    width: 24,
+    height: 24,
+    textAlign: 'center',
+    borderColor: 'gray',
+    borderWidth: 1,
+    borderRadius: 4,
+  },
+  quantityText: {
+    fontSize: 16,
+    width: 24,
+    textAlign: 'center',
+    marginHorizontal: 10,
+  },
+  productPrice: {
+    flex: 1,
     fontSize: 16,
     fontWeight: 'bold',
   },
-  topRow: {
+  removeButton: {
+    padding: 10,
+  },
+  textInput: {
+    borderWidth: 2,
+    borderColor: 'blue',
+    borderRadius: 5,
+    padding: 10,
+    textAlignVertical: 'top',
+    marginBottom:25 // Để đảm bảo văn bản bắt đầu từ phía trên trong Android
+  },
+  containerHD: {
+    padding: 20,
+    backgroundColor: 'white',
+    borderRadius: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+    elevation: 3,
+    margin:10
+  },
+  row: {
     flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 10,
-    marginBottom: 10,
+    justifyContent: 'space-between',
+    marginBottom: 5,
   },
-  menuButton: {
-    padding: 10,
-    borderRadius: 100,
-    
+  label: {
+    fontSize: 16,
   },
-  icon: {
-    width: 30,
-    height: 30,
-    marginRight: 8
+  value: {
+    fontSize: 16,
+  },
+  totalLabel: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  totalValue: {
+    fontSize: 18,
+    fontWeight: 'bold',
   },
 });
 
