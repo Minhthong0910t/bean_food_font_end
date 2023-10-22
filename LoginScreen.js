@@ -1,19 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect  } from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
 import { TextInput, Button } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { ToastAndroid } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useNavigation} from "@react-navigation/native";
 
-export default function LoginScreen({ navigation }) {
+
+
+export default function LoginScreen() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [isLoginPressed, setIsLoginPressed] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
+
+    const [userInfo, setUserInfo] = useState(null);
+    const navigation = useNavigation();
+
+
     const handleLogin = () => {
         const trimmedUsername = username.trim();
         const trimmedPassword = password.trim();
 
         console.log(trimmedUsername);
+
 
         if (username === '' || password === '') {
             ToastAndroid.show('Tên đăng nhập và mật khẩu không được để trống!!', ToastAndroid.SHORT);
@@ -33,10 +43,12 @@ export default function LoginScreen({ navigation }) {
             },
             body: JSON.stringify(loginData),
         })
-            .then((res) => {
+            .then(async (res) => {
                 if (res.status === 200) {
                     // Đăng nhập thành công
-                    navigation.navigate('Appnavigator'); // Chuyển đến
+                    await AsyncStorage.setItem('username', trimmedUsername);
+
+                    navigation.navigate('Appnavigator');
                 } else if (res.status === 401) {
                     // Đăng nhập thất bại
                     ToastAndroid.show('Tên đăng nhập hoặc mật khẩu không đúng', ToastAndroid.SHORT);
@@ -46,6 +58,7 @@ export default function LoginScreen({ navigation }) {
                 console.error(e);
                 ToastAndroid.show('Lỗi kết nối', ToastAndroid.SHORT);
             });
+
 
     };
 
@@ -58,7 +71,7 @@ export default function LoginScreen({ navigation }) {
                 onChangeText={(text) => setUsername(text)}
                 style={styles.input}
             />
-            
+
             <View style={styles.passwordContainer}>
                 <TextInput
                     label="Mật khẩu"
@@ -107,12 +120,12 @@ const styles = StyleSheet.create({
     passwordContainer: {
         width: '80%',
         marginBottom: 20,
-        position: 'relative', 
+        position: 'relative',
         flexDirection: 'row', // Đặt trong một dòng
         alignItems: 'center', // Căn giữa theo chiều dọc
     },
     passwordInputField: {
-        
+
         flex: 1, // Để TextInput mở rộng để điền dữ liệu
         backgroundColor: 'lightblue',
     },

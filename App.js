@@ -1,4 +1,5 @@
 import React from 'react';
+import 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LoginScreen from './LoginScreen';
@@ -6,7 +7,7 @@ import RegisterScreen from './RegisterScreen';
 import AccountScreen from "./AccountScreen";
 import HistoryScreen from "./HistoryScreen";
 import AppNavigator from './AppNavigator';
-
+import { createStackNavigator } from '@react-navigation/stack';
 import SearchComponent from './Component/SearchComponent';
 import GanbanComponent from './Component/GanbanComponent';
 import ComxuatComponent from './Component/ComxuatComponent';

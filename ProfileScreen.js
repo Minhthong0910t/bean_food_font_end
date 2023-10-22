@@ -1,20 +1,61 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {View, Text, StyleSheet, TouchableOpacity, Image, Button} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useNavigation} from "@react-navigation/native";
 
-const ProfileScreen = ({navigation}) => {
+
+const ProfileScreen = () => {
+
+  const [username, setUsername] = useState('');
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  const navigation = useNavigation();
+
+
+  useEffect(() => {
+    const getStoredUsername = async () => {
+      try {
+        const storedUsername = await AsyncStorage.getItem('username');
+        if (storedUsername) {
+          setUsername(storedUsername);
+          setIsLoggedIn(true); // Đã đăng nhập
+        }
+      } catch (error) {
+        console.error('Lỗi khi truy xuất tên người dùng đã lưu:', error);
+      }
+    };
+    getStoredUsername();
+  }, []);
+
+  const handleLogin = () => {
+    navigation.navigate('Login');
+  }
+  const handleLogout = () =>{
+    AsyncStorage.clear();
+    navigation.replace('Login');
+  }
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <View style={styles.userInfo}>
           <Image
-            source={require('./Image/logo_bean.png')}
+            source={require('./Image/user.png')}
             style={styles.userImage}
           />
           <View>
-            <Text style={styles.username}>JohnDoe</Text>
-            <Text style={styles.edit}>Chỉnh sửa</Text>
+            <Text style={styles.username}>Xin chào: {username}</Text>
           </View>
+          {isLoggedIn ? null : (
+          <View style={styles.btnlogin}>
+            <Button
+                title="Đăng nhập"
+                onPress={handleLogin}
+                color="#319AB4"
+            />
+          </View>
+          )}
+
         </View>
       </View>
       <View style={styles.containers}>
@@ -38,9 +79,10 @@ const ProfileScreen = ({navigation}) => {
           <Icon name="info" size={20} color="black" style={styles.icon} />
           <Text style={styles.menuText}>Ví liên kết</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.logoutButton} >
+        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout} >
           <Text style={styles.logoutButtonText}>Đăng xuất</Text>
         </TouchableOpacity>
+
       </View>
 
     </View>
@@ -63,9 +105,21 @@ const styles = StyleSheet.create({
     width: '100%'
 
   },
+  btnlogin:{
+    marginLeft:170
+  },
+
   edit: {
     fontSize: 12,
     color: '#ABABAB'
+  },
+  loginButton:{
+      backgroundColor: '#FFAA00',
+      padding: 16,
+      marginBottom: 8,
+      borderRadius: 8,
+      elevation: 2,
+
   },
   topRow: {
     flexDirection: 'column',
@@ -82,12 +136,13 @@ const styles = StyleSheet.create({
   userInfo: {
     flexDirection: 'row',
     alignItems: 'center',
+    marginLeft:20
   },
   userImage: {
     width: 80,
     height: 80,
     borderRadius: 10,
-    marginRight: 10,
+    marginRight: 20,
     alignSelf: 'center'
   },
   username: {
