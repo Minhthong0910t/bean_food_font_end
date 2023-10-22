@@ -4,7 +4,7 @@ import HomeScreen from './HomeScreen';
 import ProfileScreen from './ProfileScreen';
 import OrderScreen from './OrderScreen';
 import NotificationScreen from './NotificationScreen';
-import Icon from 'react-native-vector-icons/FontAwesome'; // Import biểu tượng
+import Icon from 'react-native-vector-icons/FontAwesome';
 import Home from './Component/Home';
 
 const Tab = createBottomTabNavigator();
