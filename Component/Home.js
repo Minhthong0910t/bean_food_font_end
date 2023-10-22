@@ -9,6 +9,7 @@ import {
   ScrollView,
 } from 'react-native';
 import React, {useState, useEffect, useRef} from 'react';
+import axios from 'axios';
 
 const {width, height} = Dimensions.get('window');
 
@@ -93,66 +94,18 @@ const SliderHome = () => {
   const stepimage = useRef(null);
 
   useEffect(() => {
-    const data = [
-      {
-        id: '1',
-        image: (
-          <Image
-            source={require('./../Image/slider2.png')}
-            resizeMode="stretch"
-            style={{
-              width: 0.925 * width,
-              height: 0.25 * height,
-              borderRadius: 15,
-            }}
-          />
-        ),
-      },
-      {
-        id: '2',
-        image: (
-          <Image
-            source={require('./../Image/slider1.png')}
-            resizeMode="stretch"
-            style={{
-              width: 0.925 * width,
-              height: 0.25 * height,
-              borderRadius: 15,
-            }}
-          />
-        ),
-      },
-      {
-        id: '3',
-        image: (
-          <Image
-            source={require('./../Image/slider2.png')}
-            resizeMode="stretch"
-            style={{
-              width: 0.925 * width,
-              height: 0.25 * height,
-              borderRadius: 15,
-            }}
-          />
-        ),
-      },
-      {
-        id: '4',
-        image: (
-          <Image
-            source={require('./../Image/slider2.png')}
-            resizeMode="stretch"
-            style={{
-              width: 0.925 * width,
-              height: 0.25 * height,
-              borderRadius: 15,
-            }}
-          />
-        ),
-      },
-    ];
+    const fetchData = async () => {
+      try {
+        const response = await fetch('http://192.168.1.6:3000/api//slider/getAll');
+        const jsonData = await response.json();
+        setimageslider(jsonData.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
 
-    setimageslider(data);
+    fetchData();
+
   }, []);
 
   // useEffect(()=>{
@@ -196,7 +149,11 @@ if(nativeEvent &&nativeEvent.contentOffset){
         scrollEventThrottle={16}
         // ref={stepimage}
       >
-        {imageslider.map((data , index) => <View key={index}>{data.image}</View>)}
+        {imageslider.map((data , index) => <View key={index}><Image source={{uri:data.image}}  style={{
+              width: 0.925 * width,
+              height: 0.25 * height,
+              borderRadius: 15,
+            }}/></View>)}
       </ScrollView>
     </View>
   );
@@ -278,11 +235,18 @@ const Discount = ()=>{
 
 
   useEffect(()=>{
-    const datadiscount = [
-      {id:'1' , expirationdate:'10/11/2023' , discount:25000 , pricefrom:50000},
-      {id:'2' , expirationdate:'11/11/2023' , discount:25000 , pricefrom:40000}
-    ]
-      setdiscount(datadiscount)
+    const fetchData = async () => {
+      try {
+        const response = await fetch('http://192.168.1.6:3000/api/discount/getAll');
+        const jsonData = await response.json();
+        console.log(jsonData.data);
+        setdiscount(jsonData.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchData();
   },[])
 return(
   <View>
@@ -292,8 +256,8 @@ return(
      <View key={index} style={{width:0.65*width , height:64 , backgroundColor:'#F0F0F0' , marginLeft:15 , borderRadius:15}}>
      <View style = {{flexDirection:'row', margin:10}}>
        <View style={{flexDirection:'column' }}>
-         <Text style={{fontWeight:'bold',color:'#616161'}}>Giảm {Math.floor(data.discount)/1000}k cho đơn từ { Math.floor(data.pricefrom / 1000)}k</Text>
-         <Text style={{  fontWeight:'bold' ,color:'#616161'}}>HSD: {data.expirationdate}</Text>
+         <Text style={{fontWeight:'bold',color:'#616161'}}>Giảm {Math.floor(data.priceDiscount)/1000}k cho đơn từ { Math.floor(data.money_limit / 1000)}k</Text>
+         <Text style={{  fontWeight:'bold' ,color:'#616161'}}>HSD: {data.idVoucher.date}</Text>
        </View>
 
        <TouchableOpacity style={{width:60 , height:40 , marginLeft:10 , borderRadius:10 , backgroundColor:'#319AB4' , alignItems:'center' , justifyContent:'center'}}>
@@ -335,26 +299,19 @@ const Foodngonquanhday = ()=>{
     const [datarestauran , setdatarestauran] = useState([])
 
     useEffect(()=>{
-        const data = [
-          {
-            id:'1' , 
-            image: <Image source={require('./../Image/namerestauran.png')}/> , 
-            name:'The Coffee House',
-            timeon:'8:00 AM' , 
-            timeoff:'10:00 PM' ,
-            adress:'Lê Trọng Tấn, Thanh Xuân'
-          },
-          {
-            id:'2' , 
-            image: <Image source={require('./../Image/namerestauran.png')}/> , 
-            name:'The Coffee House',
-            timeon:'8:00 AM' , 
-            timeoff:'10:00 PM',
-            adress:'Lê Trọng Tấn, Thanh Xuân'
-          }
-        ]
+      const fetchData = async () => {
+        try {
+          const response = await fetch('http://192.168.1.6:3000/api/restaurant/getAll');
+          const jsonData = await response.json();
+          setdatarestauran(jsonData.data);
+        } catch (error) {
+          console.error(error);
+        }
+      };
+  
+      fetchData();
 
-        setdatarestauran(data)
+       
     },[])
   
 return(
@@ -369,14 +326,14 @@ return(
       {datarestauran.map((data , index)=>
         <View  style={{width:250}} key={index}>
        <View style={{marginLeft:15}}>
-        {data.image}
+          <Image source={{uri:data.image}}/>
        </View>
     
         <View style = {{flexDirection:'row' , alignItems:'center' }}>
           <View style = {{flexDirection:'column' , marginLeft:15}}>
             <Text style={{fontWeight:'bold' , fontSize:20 ,color:'#616161'}}>{data.name}</Text>
     
-            <Text style={{fontWeight:'bold' ,color:'#616161'}}>{data.timeon}-{data.timeoff}</Text>
+            <Text style={{fontWeight:'bold' ,color:'#616161'}}>{data.timeon} AM-{data.timeoff} PM</Text>
             <Text style={{fontWeight:'bold' ,color:'#616161'}}>{data.adress}</Text>
           </View>
           <TouchableOpacity style={{marginLeft:'auto' , }} >
@@ -394,38 +351,19 @@ const Goiymonan = ({ navigation })=>{
   const[datamonangoiy , setdatamonan] = useState([])
 
   useEffect(()=>{
-    const data = [{
-      id:'1' , 
-      race:4.9,
-      name:'Cơm Niêu Singapore' ,
-      price:'88888', 
-      adress:'D29, Phạm Văn Bạch' , 
-      desscription:'ngon sieu qua tuyệt vời hãy đến với chúng tôi! ngon sieu qua tuyệt vời hãy đến với chúng tôi! ngon sieu qua tuyệt vời hãy đến với chúng tôi!' , 
-      image: <Image source={require('./../Image/imagedoan.png')}/>,
+    const fetchData = async () => {
+      try {
+        const response = await fetch('http://192.168.1.6:3000/api/product/suggest');
+        const jsonData = await response.json();
+   
+        setdatamonan(jsonData.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
 
-    },
-    {
-      id:'2' , 
-      race:4.9,
-      name:'Cơm Niêu Singapore' , 
-      price:'88888', 
-      adress:'D29, Phạm Văn Bạch' , 
-      desscription:'ngon' , 
-      image: <Image source={require('./../Image/imagedoan.png')}/>,
-
-    },
-    {
-      id:'3' , 
-      race:4.9,
-      name:'Cơm Niêu Singapore' , 
-      price:'88888', 
-      adress:'D29, Phạm Văn Bạch' , 
-      desscription:'ngon' , 
-      image: <Image source={require('./../Image/imagedoan.png')}/>,
-
-    }
-  ]
-    setdatamonan(data)
+    fetchData();
+   
   },[])
   return(
     <View>
@@ -436,8 +374,8 @@ const Goiymonan = ({ navigation })=>{
                 style={{margin: 15, flexDirection: 'row', height: 90, alignItems: 'center'}}
                 onPress={() => navigation.navigate('ProductDetail', { product: data })}
               >
-                <View>
-                {data.image}
+                <View >
+                  <Image source={{uri:data.images[0]}} style={{borderWidth:1 , width:width*0.25 , height:width*0.25}}/>
                 </View>
                   <View style={{flexDirection: 'column', paddingLeft: 10, marginLeft: 10}}>
                     <Text style={{fontWeight: 'bold', fontSize: 15, color: '#616161'}}>
@@ -447,7 +385,7 @@ const Goiymonan = ({ navigation })=>{
                       <Image source={require('./../Image/star.png')} style={{width: 20, height: 20, marginTop: 5}} />
                       <Text style={{padding: 5, fontWeight: 'bold', color: '#616161'}}>{data.race}</Text>
                     </View>
-                    <Text style={{color: '#616161'}}>{data.adress}</Text>
+                    <Text style={{color: '#616161'}}>{data.description}</Text>
                   </View>
                 <TouchableOpacity style={{marginLeft: 'auto'}}>
                   <Image source={require('./../Image/right_arrow.png')} style={{width: 15, height: 15}} />
