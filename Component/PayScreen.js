@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, Image, Button, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView, Dimensions,TextInput } from 'react-native';
+import { RadioButton } from 'react-native-paper';
+import Icon from 'react-native-vector-icons/FontAwesome';
+
+
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -37,6 +41,8 @@ const PayScreen = ({ route, navigation }) => {
   const [text, setText] = useState('');
   const deliveryFee = 15000;
   const discount = 0;
+  const [paymentMethod, setPaymentMethod] = useState('cash'); // 'cash' hoặc 'bank'
+
 
   const ordertotalPrice = totalPrice + deliveryFee - discount;
 
@@ -86,6 +92,30 @@ const PayScreen = ({ route, navigation }) => {
             <Text style={styles.totalValue}>{ordertotalPrice}đ</Text>
           </View>
         </View>
+        <View style={{ flexDirection: 'row', alignItems: 'center',justifyContent:'', marginVertical: 10 }}>
+          <RadioButton
+              value="cash"
+              status={paymentMethod === 'cash' ? 'checked' : 'unchecked'}
+              onPress={() => setPaymentMethod('cash')}
+            />
+            <Icon name="money" size={24} color="#319AB4" style={{ marginRight: 10 }} /> 
+            
+            <Text style={{ marginHorizontal: 5 }}>Thanh toán bằng tiền mặt</Text>
+            
+          </View>
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 10 }}>
+          <RadioButton
+              value="bank"
+              status={paymentMethod === 'bank' ? 'checked' : 'unchecked'}
+              onPress={() => setPaymentMethod('bank')}
+            />
+            <Icon name="bank" size={24} color="#319AB4" style={{ marginRight: 10 }} />
+            
+            <Text style={{ marginHorizontal: 5 }}>Thanh toán bằng ngân hàng</Text>
+            
+          </View>
+
+
         <View style={styles.inputText}>
         <TextInput
           value={text}

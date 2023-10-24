@@ -32,7 +32,7 @@ const Stack = createNativeStackNavigator();
 export default function App() {
     return (
         <NavigationContainer>
-        <AuthProvider>
+
             <CartProvider>
                 <Stack.Navigator initialRouteName="Appnavigator" screenOptions={{ headerShown: false }}>
                     <Stack.Screen
@@ -76,7 +76,6 @@ export default function App() {
 
                     </Stack.Navigator>
                 </CartProvider>
-            </AuthProvider>
         </NavigationContainer>
     );
 }

@@ -11,9 +11,9 @@ import {useNavigation} from "@react-navigation/native";
 export default function LoginScreen() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [isLoginPressed, setIsLoginPressed] = useState(false);
+    const [isLogin, setIsLoginPressed] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
-
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [userInfo, setUserInfo] = useState(null);
     const navigation = useNavigation();
 
@@ -23,7 +23,6 @@ export default function LoginScreen() {
         const trimmedPassword = password.trim();
 
         console.log(trimmedUsername);
-
 
         if (username === '' || password === '') {
             ToastAndroid.show('Tên đăng nhập và mật khẩu không được để trống!!', ToastAndroid.SHORT);
@@ -35,7 +34,7 @@ export default function LoginScreen() {
             "password":trimmedPassword,
         };
         // Gửi yêu cầu POST
-        fetch('http://192.168.1.6:3000/api/users/login', {
+        fetch('http://192.168.1.8:3000/api/users/login', {
             method: 'POST',
             headers: {
                 Accept: 'application/json',
@@ -43,23 +42,32 @@ export default function LoginScreen() {
             },
             body: JSON.stringify(loginData),
         })
-            .then(async (res) => {
-                if (res.status === 200) {
-                    // Đăng nhập thành công
-                    await AsyncStorage.setItem('username', trimmedUsername);
-
-                    navigation.navigate('Appnavigator');
-                } else if (res.status === 401) {
-                    // Đăng nhập thất bại
-                    ToastAndroid.show('Tên đăng nhập hoặc mật khẩu không đúng', ToastAndroid.SHORT);
+        .then(async (res) => {
+            const data = await res.json();  // Parse dữ liệu trả về từ máy chủ
+    
+            if (res.status === 200) {
+                // Đăng nhập thành công
+                
+                 // Lưu trạng thái isLoggedIn vào AsyncStorage
+                await AsyncStorage.setItem('username', data.userName);
+                console.log("data user ",data);
+                // Lưu _id của người dùng vào AsyncStorage nếu _id tồn tại trong dữ liệu trả về
+                if (data.userId) {
+                    await AsyncStorage.setItem('userId', data.userId);
+                    setIsLoggedIn(true); // <-- Cập nhật trạng thái isLoggedIn
+                    await AsyncStorage.setItem('isLoggedIn', 'true');
                 }
-            })
-            .catch((e) => {
-                console.error(e);
-                ToastAndroid.show('Lỗi kết nối', ToastAndroid.SHORT);
-            });
-
-
+    
+                navigation.navigate('Appnavigator');
+            } else if (res.status === 401) {
+                // Đăng nhập thất bại
+                ToastAndroid.show('Tên đăng nhập hoặc mật khẩu không đúng', ToastAndroid.SHORT);
+            }
+        })
+        .catch((e) => {
+            console.error(e);
+            ToastAndroid.show('Lỗi kết nối', ToastAndroid.SHORT);
+        });
     };
 
     return (

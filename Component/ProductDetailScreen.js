@@ -8,7 +8,8 @@ import Toast from 'react-native-toast-message';
 
 import { useCart } from './CartContext';
 import CommentItem from './CommentItem';
-import { useAuth } from '../AuthContext';
+import { ToastAndroid } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 
@@ -21,17 +22,45 @@ const ProductDetailScreen = ({ navigation, route }) => {
   const [newComment, setNewComment] = useState('');
   const [isLoading, setIsLoading] = useState(true);
 
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
+  
 
-  const [comment, setComment] = useState('');
-  const { isAuthenticated } = useAuth();
 
+  
 
   useEffect(() => {
+    const checkLoginStatus = async () => {
+      try {
+        const storedUsername = await AsyncStorage.getItem('username');
+        const storedUserId = await AsyncStorage.getItem('userId');
+        
+        if (storedUsername && storedUserId) {
+          
+          setIsLoggedIn(true);
+          setCurrentUser({ username: storedUsername, userId: storedUserId });
+          console.log("User ID:", storedUserId); // Log giá trị của userId
+          console.log("Is Logged In:", true);    // Log trạng thái đăng nhập là true
+        } else {
+          console.log("User ID:", storedUserId);
+          console.log("Is Logged In:", false);   // Log trạng thái đăng nhập là false
+        }
+        
+      } catch (error) {
+        console.error('Error retrieving stored data:', error);
+      }
+    };
+    
+    checkLoginStatus();
     fetchComments();
   }, []);
+
+  
+  
+
   const fetchComments = async () => {
     try {
-        let response = await fetch('http://192.168.1.4:3000/api/comment/getAll');
+        let response = await fetch('http://192.168.1.8:3000/api/comment/getAll');
         let jsonResponse = await response.json();
 
         // Kiểm tra mã trạng thái của phản hồi
@@ -62,9 +91,6 @@ const ProductDetailScreen = ({ navigation, route }) => {
         setIsLoading(false);
     }
 };
-
-
-
 
   const goBack = () => {
     navigation.goBack();
@@ -111,22 +137,17 @@ const ProductDetailScreen = ({ navigation, route }) => {
     });
     setTotalPrice(total);
   };
-  const addComment = (newComment) => {
-    setComments([...comments, newComment]);
-  };
-  
 
   const submitComment = () => {
-    if (!newComment) return;
-  
-    // Giả sử rằng bạn có một trạng thái/prop/biến tên là currentUser để biểu diễn người dùng hiện tại
-    if (!isAuthenticated) {
-            // Hiển thị thông báo yêu cầu đăng nhập
-            setNewComment('');
-            // Hiển thị thông báo yêu cầu đăng nhập
+    if (!newComment || newComment.trim() === "") {
+      ToastAndroid.show('Người dùng phải nhập bình luận, không được để trống!', ToastAndroid.SHORT);
+      return;
+  } 
+    if (!isLoggedIn) {
+        setNewComment('');
         Alert.alert(
-          "Thông báo", // Tiêu đề
-          "Vui lòng đăng nhập để bình luận!", // Nội dung
+          "Thông báo",
+          "Vui lòng đăng nhập để bình luận!",
           [
             {
               text: "Hủy bỏ",
@@ -134,15 +155,15 @@ const ProductDetailScreen = ({ navigation, route }) => {
             },
             {
               text: "Đăng nhập",
-              onPress: () => navigation.navigate("Login"), // Chuyển đến màn hình đăng nhập
+              onPress: () => navigation.navigate("Login"),
             },
           ],
-          { cancelable: false } // Người dùng không thể hủy thông báo bằng cách nhấn ra ngoài
+          { cancelable: false }
         );
         return;
     }
-  
-    const apiUrl = 'http://192.168.1.4:3000/api/comment/create';
+
+    const apiUrl = 'http://192.168.1.8:3000/api/comment/create';
   
     fetch(apiUrl, {
       method: 'POST',
@@ -152,7 +173,7 @@ const ProductDetailScreen = ({ navigation, route }) => {
       },
       body: JSON.stringify({
         idProduct: product._id,
-        idUser: currentUser._id, // Giả sử rằng người dùng hiện tại có trường _id
+        idUser: currentUser.userId, // id user
         title: newComment
       })
     })
@@ -163,13 +184,13 @@ const ProductDetailScreen = ({ navigation, route }) => {
       return response.json();
     })
     .then(data => {
-      // Cập nhật trạng thái bình luận cục bộ với bình luận mới
       setComments(prevComments => [...prevComments, data.comment]);
-      // Xóa trường nhập liệu
       setNewComment('');
+      fetchComments();
     })
     .catch(error => console.error("Có lỗi khi thêm bình luận", error));
-  };
+};
+
   
   
   

@@ -21,9 +21,12 @@ const ProfileInfor = () => {
         const checkLoginStatus = async () => {
             try {
                 const token = await AsyncStorage.getItem('username');
+                const token2 = await AsyncStorage.getItem('userId');
                 if (token) {
                     setUsername(token);
                     fetchUserInfo(token);
+                    console.log("username   "+ token);
+                    console.log("username   "+ token2);
                 } else {
                     navigation.replace('Login');
                 }

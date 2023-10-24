@@ -57,7 +57,7 @@ export default function RegisterScreen() {
         };
 
         // Gửi yêu cầu POST
-        await fetch('http://192.168.1.6:3000/api/users/register', {
+        await fetch('http://192.168.1.8:3000/api/users/register', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

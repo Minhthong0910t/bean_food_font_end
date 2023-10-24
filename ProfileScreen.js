@@ -20,9 +20,12 @@ const ProfileScreen = () => {
         if (storedUsername) {
           setUsername(storedUsername);
           setIsLoggedIn(true); // Đã đăng nhập
+          console.log("Is Logged In:", true);    // Log trạng thái đăng nhập là true
         }
       } catch (error) {
         console.error('Lỗi khi truy xuất tên người dùng đã lưu:', error);
+        console.log("User ID:", storedUsername); // Log giá trị của userId
+          console.log("Is Logged In:", false);  
       }
     };
     getStoredUsername();
@@ -37,27 +40,26 @@ const ProfileScreen = () => {
   }
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <View style={styles.userInfo}>
-          <Image
-            source={require('./Image/user.png')}
-            style={styles.userImage}
-          />
-          <View>
-            <Text style={styles.username}>Xin chào: {username}</Text>
-          </View>
-          {isLoggedIn ? null : (
-          <View style={styles.btnlogin}>
-            <Button
-                title="Đăng nhập"
-                onPress={handleLogin}
-                color="#319AB4"
-            />
-          </View>
-          )}
-
+       <View style={styles.header}>
+            <View style={styles.userInfo}>
+                <View style={styles.userDetail}>
+                    <Image
+                        source={require('./Image/user.png')}
+                        style={styles.userImage}
+                    />
+                    <Text style={styles.username}>Xin chào: {username}</Text>
+                </View>
+                {!isLoggedIn && (
+                    <View style={styles.btnlogin}>
+                        <Button
+                            title="Đăng nhập"
+                            onPress={handleLogin}
+                            color="#319AB4"
+                        />
+                    </View>
+                )}
+            </View>
         </View>
-      </View>
       <View style={styles.containers}>
         <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('ProfileInfor')}>
           <Icon name="user" size={20} color="black" style={styles.icon} />
@@ -79,9 +81,11 @@ const ProfileScreen = () => {
           <Icon name="info" size={20} color="black" style={styles.icon} />
           <Text style={styles.menuText}>Ví liên kết</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout} >
-          <Text style={styles.logoutButtonText}>Đăng xuất</Text>
-        </TouchableOpacity>
+        {isLoggedIn && (
+          <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+            <Text style={styles.logoutButtonText}>Đăng xuất</Text>
+          </TouchableOpacity>
+        )}
 
       </View>
 
@@ -102,11 +106,28 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     alignSelf: 'flex-start',
     justifyContent: 'center',
+    marginTop:25,
     width: '100%'
 
   },
-  btnlogin:{
-    marginLeft:170
+  userInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    
+    
+  },
+  userDetail: {
+    
+      flexDirection: 'row',
+      alignItems: 'center',
+      
+      flex: 1  // Đảm bảo phần này chiếm tất cả không gian còn lại
+  },
+  btnlogin: {
+    // Các styles cho nút login
+    marginRight:10
   },
 
   edit: {
@@ -117,6 +138,7 @@ const styles = StyleSheet.create({
       backgroundColor: '#FFAA00',
       padding: 16,
       marginBottom: 8,
+      marginRight:10,
       borderRadius: 8,
       elevation: 2,
 
