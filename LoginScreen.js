@@ -44,16 +44,18 @@ export default function LoginScreen() {
         })
         .then(async (res) => {
             const data = await res.json();  // Parse dữ liệu trả về từ máy chủ
+            // console.log("data user ",data);
+            // console.log("data chuan ",data.data._ia);
     
             if (res.status === 200) {
                 // Đăng nhập thành công
                 
                  // Lưu trạng thái isLoggedIn vào AsyncStorage
-                await AsyncStorage.setItem('username', data.userName);
+                await AsyncStorage.setItem('username', data.data.username);
                 console.log("data user ",data);
                 // Lưu _id của người dùng vào AsyncStorage nếu _id tồn tại trong dữ liệu trả về
-                if (data.userId) {
-                    await AsyncStorage.setItem('userId', data.userId);
+                if (data.data._id) {
+                    await AsyncStorage.setItem('_id', data.data._id);
                     setIsLoggedIn(true); // <-- Cập nhật trạng thái isLoggedIn
                     await AsyncStorage.setItem('isLoggedIn', 'true');
                 }

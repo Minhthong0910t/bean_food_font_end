@@ -33,12 +33,13 @@ const ProductDetailScreen = ({ navigation, route }) => {
     const checkLoginStatus = async () => {
       try {
         const storedUsername = await AsyncStorage.getItem('username');
-        const storedUserId = await AsyncStorage.getItem('userId');
+        const storedUserId = await AsyncStorage.getItem('_id');
         
         if (storedUsername && storedUserId) {
           
           setIsLoggedIn(true);
-          setCurrentUser({ username: storedUsername, userId: storedUserId });
+          setCurrentUser({ username: storedUsername, _id: storedUserId });
+          console.log("User name:", storedUsername);
           console.log("User ID:", storedUserId); // Log giá trị của userId
           console.log("Is Logged In:", true);    // Log trạng thái đăng nhập là true
         } else {
@@ -173,7 +174,7 @@ const ProductDetailScreen = ({ navigation, route }) => {
       },
       body: JSON.stringify({
         idProduct: product._id,
-        idUser: currentUser.userId, // id user
+        idUser: currentUser._id, // id user
         title: newComment
       })
     })
