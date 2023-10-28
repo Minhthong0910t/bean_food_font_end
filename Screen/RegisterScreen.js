@@ -83,7 +83,7 @@ export default function RegisterScreen() {
 
     return (
         <View style={styles.container}>
-            <Image style={styles.logo} source={require('./Image/logo1.png')} />
+            <Image style={styles.logo} source={require('./../Image/logo1.png')} />
             <TextInput
                 label="Số điện thoại/gmail"
                 value={username}

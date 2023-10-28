@@ -35,7 +35,6 @@ const ProfileScreen = () => {
     navigation.navigate('Login');
   }
   const handleLogout = () =>{
-    AsyncStorage.clear();
     navigation.replace('Login');
   }
   return (
@@ -44,7 +43,7 @@ const ProfileScreen = () => {
             <View style={styles.userInfo}>
                 <View style={styles.userDetail}>
                     <Image
-                        source={require('./Image/user.png')}
+                        source={require('./../Image/user.png')}
                         style={styles.userImage}
                     />
                     <Text style={styles.username}>Xin chào: {username}</Text>

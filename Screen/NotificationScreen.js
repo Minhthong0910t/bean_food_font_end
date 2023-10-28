@@ -6,7 +6,7 @@ const NotificationScreen = () => {
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <Image
-          source={require('./Image/logo_bean.png')} // Thay đổi đường dẫn ảnh
+          source={require('./../Image/logo_bean.png')} // Thay đổi đường dẫn ảnh
           style={styles.logo}
         />
         <Text style={styles.title}>Notification Food</Text>

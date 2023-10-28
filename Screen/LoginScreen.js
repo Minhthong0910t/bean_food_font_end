@@ -34,7 +34,7 @@ export default function LoginScreen() {
             "password":trimmedPassword,
         };
         // Gửi yêu cầu POST
-        fetch('http://192.168.1.8:3000/api/users/login', {
+        fetch('http://192.168.1.6:3000/api/users/login', {
             method: 'POST',
             headers: {
                 Accept: 'application/json',
@@ -74,7 +74,7 @@ export default function LoginScreen() {
 
     return (
         <View style={styles.container}>
-            <Image style={styles.logo} source={require('./Image/logo1.png')} />
+            <Image style={styles.logo} source={require('./../Image/logo1.png')} />
             <TextInput
                 label="Số điện thoại/gmail"
                 value={username}
