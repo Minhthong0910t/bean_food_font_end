@@ -1,10 +1,14 @@
 import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View  ,Image , TextInput , Dimensions , FlatList} from 'react-native'
 import React , {useEffect , useState} from 'react'
+import axios from 'axios'
 const {width   , height} = Dimensions.get('window')
 const SearchComponent = ({navigation}) => {
   const [inputText, setInputText] = useState('');
   const [data, setData] = useState([]);
   const handleButtonPress = () => {
+    axios.post('http://192.168.1.8:3000/api/users/search',{
+      name: inputText
+    }).then(response => setData(response.data))
     if (inputText !== '') {
       setData([...data, inputText]);
       setInputText('');
@@ -20,9 +24,20 @@ const SearchComponent = ({navigation}) => {
 
   const renderItem = ({ item }) => {
     return (
-      <TouchableOpacity style={{flexDirection:'row'  , justifyContent:'center' ,alignItems:'center' , marginLeft:15 , marginTop:15, borderWidth:1 , width:item.length*10 , height:40 , borderRadius:15}}>
-      <Text style = {{fontWeight:'bold' , alignItems:'center' , justifyContent:'center' }}>{item}</Text>
-      </TouchableOpacity>
+      <View style={{ margin: 15, flexDirection: 'row', height: 90, alignItems: 'center' }} >
+
+        <View >
+          <Image source={require('./../Image/imagedoan.png')} />
+        </View>
+        <View style={{ flexDirection: 'column', paddingLeft: 10, marginLeft: 10 }}>
+          <Text style={{ fontWeight: 'bold', fontSize: 15, color: '#616161' }}>{item}</Text>
+          <View style={{ flexDirection: 'row' }}>
+            <Image source={require('./../Image/star.png')} style={{ width: 20, height: 20, marginTop: 5 }} />
+            <Text style={{ padding: 5, fontWeight: 'bold', color: '#616161' }}>{item}</Text>
+          </View>
+          <Text style={{ color: '#616161' }}>{item}</Text>
+        </View>
+      </View>
     );
   };
 

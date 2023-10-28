@@ -1,8 +1,9 @@
+
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TextInput, Button, Image, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function UpdateProfile() {
+export default function ProfileInfor() {
     const [phone, setPhone] = useState('');
     const [avatar, setAvatar] = useState('');
     const [gender, setGender] = useState('');
