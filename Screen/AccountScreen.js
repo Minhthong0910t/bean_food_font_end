@@ -8,7 +8,7 @@ export default function AccountScreen() {
 
             <View style={styles.header}>
                 <View>
-                    <Image style={{width:84,height:83}} source={require('./Image/user.png')}/>
+                    <Image style={{width:84,height:83}} source={require('./../Image/user.png')}/>
                 </View>
                 <View style={styles.profile}>
                     <Text style={styles.name}>Đinh Thành Huân</Text>

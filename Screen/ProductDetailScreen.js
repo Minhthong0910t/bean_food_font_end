@@ -6,10 +6,12 @@ import {
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Toast from 'react-native-toast-message';
 
-import { useCart } from './CartContext';
-import CommentItem from './CommentItem';
+import { useCart } from '../Component/CartContext';
+import CommentItem from '../Component/CommentItem';
 import { ToastAndroid } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useSelector, useDispatch } from 'react-redux';
+import { addproducttocart } from '../Redux/ActionAddtoCart';
 
 
 
@@ -24,6 +26,24 @@ const ProductDetailScreen = ({ navigation, route }) => {
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
+  const dispatchproduct = useDispatch();
+  const products = useSelector(state => state.products);
+  const [data, setData] = useState('');
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const storedData = await AsyncStorage.getItem('_id'); // Thay 'key' bằng khóa lưu trữ của bạn
+        if (storedData !== null) {
+          setData(storedData);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchData();
+  
+  }, []);
   
 
 
@@ -61,7 +81,7 @@ const ProductDetailScreen = ({ navigation, route }) => {
 
   const fetchComments = async () => {
     try {
-        let response = await fetch('http://192.168.1.8:3000/api/comment/getAll');
+        let response = await fetch('http://192.168.1.6:3000/api/comment/getAll');
         let jsonResponse = await response.json();
 
         // Kiểm tra mã trạng thái của phản hồi
@@ -108,28 +128,45 @@ const ProductDetailScreen = ({ navigation, route }) => {
       setTotalPrice(product.price * (quantity - 1));
     }
   };
-
-  const addToCart = () => {
-    const existingProduct = state.cart.find((p) => p.id === product.id);
-
-    if (existingProduct) {
-      existingProduct.quantity += 1;
-      dispatch({ type: 'UPDATE_CART', payload: existingProduct });
-    } else {
-      const productWithQuantity = { ...product, quantity: 1 };
-      dispatch({ type: 'ADD_TO_CART', payload: productWithQuantity });
+  const saveDataToAsyncStorage = async (key, data) => {
+    try {
+      const jsonData = JSON.stringify(data);
+      await AsyncStorage.setItem(key, jsonData);
+      console.log('Data saved successfully.');
+    } catch (error) {
+      console.log('Error saving data: ', error);
     }
-
-    // Calculate the total price
+  };
+  const addToCart = () => {
     calculateTotalPrice();
+    const newCartProduct = {
+      idproductcart:new Date().getTime().toString(),
+      nameproduct:product.name , 
+      quantityproduct :quantity ,
+      total :totalPrice,
+      price:product.price,
+      idusser:data
+    }
+    dispatchproduct(addproducttocart(newCartProduct))
 
     // Show a toast message
+
+    console.log(data)
     Toast.show({
       type: 'success',
       text1: 'Món ngon đã được thêm vào giỏ hàng của bạn!',
       text2: 'Mời đến giỏ hàng',
     });
+    setQuantity(1)
+    setTotalPrice(product.price)
+    
+    
   };
+  useEffect(()=>{
+    console.log(products)
+    saveDataToAsyncStorage('products' , products)
+  } , [products])
+ 
 
   const calculateTotalPrice = () => {
     let total = 0;
@@ -164,7 +201,7 @@ const ProductDetailScreen = ({ navigation, route }) => {
         return;
     }
 
-    const apiUrl = 'http://192.168.1.8:3000/api/comment/create';
+    const apiUrl = 'http://192.168.1.6:3000/api/comment/create';
   
     fetch(apiUrl, {
       method: 'POST',
@@ -223,7 +260,6 @@ const ProductDetailScreen = ({ navigation, route }) => {
             <TouchableOpacity onPress={() => navigation.goBack()}>
               <Image source={require('./../Image/left_arrow.png')} style={{ width: 25, height: 25 }} />
             </TouchableOpacity>
-  
             {/* Title */}
             <Text style={{ fontWeight: 'bold', flex: 1, fontSize: 24 }}> Chi tiết sản phẩm </Text>
   
