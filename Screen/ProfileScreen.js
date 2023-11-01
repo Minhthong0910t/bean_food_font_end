@@ -60,7 +60,7 @@ const ProfileScreen = () => {
             </View>
         </View>
       <View style={styles.containers}>
-        <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('ProfileInfor')}>
+        <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('UserInfor')}>
           <Icon name="user" size={20} color="black" style={styles.icon} />
           <Text style={styles.menuText}>Thông tin cá nhân</Text>
         </TouchableOpacity>

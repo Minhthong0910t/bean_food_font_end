@@ -21,6 +21,7 @@ import ProductDetailScreen from './Screen/ProductDetailScreen';
 import { CartProvider } from './Component/CartContext';
 import PayScreen from './Screen/PayScreen';
 import ProfileInfor from './profile/ProfileInfor';
+import UserInfor from "./UserInfor";
 import Oder from './profile/Oder';
 import Voucher from './profile/Voucher';
 import History from './profile/History';
@@ -28,6 +29,7 @@ import Payment from './profile/Payment';
 import { AuthProvider } from './AuthContext';
 import { Provider } from 'react-redux';
 import store from './Redux/StoreAddToCart';
+
 
 const Stack = createNativeStackNavigator();
 
@@ -76,6 +78,7 @@ export default function App() {
             <Stack.Screen component={Voucher} name='Voucher' />
             <Stack.Screen component={History} name='lichsu' />
             <Stack.Screen component={Payment} name='Payment' />
+            <Stack.Screen component={UserInfor} name='UserInfor' />
 
         </Stack.Navigator>
     </CartProvider>
