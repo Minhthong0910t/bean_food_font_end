@@ -50,7 +50,7 @@ const HeaderHome = ({navigation}) => {
       </Text>
 
       <View style={{flexDirection: 'row'}}>
- <TouchableOpacity onPress={()=>{ navigation.navigate('Search')}}>
+      <TouchableOpacity onPress={()=>{ navigation.navigate('Search')}}>
  <TextInput
           style={{
             width: 0.8 * width,
@@ -63,7 +63,9 @@ const HeaderHome = ({navigation}) => {
           }}
           placeholder="Nhập từ khóa tìm kiếm"
         />
- </TouchableOpacity >
+ </TouchableOpacity>
+
+
         <View
           style={{
             width: 40,

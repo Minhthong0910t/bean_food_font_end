@@ -16,7 +16,7 @@ export default function UserInfor() {
 
     const getStoredUserId = async () => {
         try {
-            const userId = await AsyncStorage.getItem('userId');
+            const userId = await AsyncStorage.getItem('_id');
             console.log(userId);
             if (userId) {
                 // Gọi hàm để lấy thông tin người dùng dựa trên userId
@@ -30,7 +30,7 @@ export default function UserInfor() {
     const fetchUserInfo = async (userId) => {
         try {
             // Gọi API máy chủ để lấy thông tin người dùng
-            const response = await fetch(`http://192.168.1.15:3000/api/users/info/${userId}`, {
+            const response = await fetch(`http://192.168.1.11:3000/api/users/info/${userId}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -62,7 +62,7 @@ export default function UserInfor() {
             };
 
             // Cập nhật thông tin người dùng
-            const response = await fetch(`http://192.168.1.15:3000/api/users/update/${userId}`, {
+            const response = await fetch(`http://192.168.1.11:3000/api/users/update/${userId}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
