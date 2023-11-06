@@ -30,7 +30,7 @@ export default function UserInfor() {
     const fetchUserInfo = async (userId) => {
         try {
             // Gọi API máy chủ để lấy thông tin người dùng
-            const response = await fetch(`http://192.168.1.17:3000/api/users/info/${userId}`, {
+            const response = await fetch(`http://192.168.1.15:3000/api/users/info/${userId}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -62,7 +62,7 @@ export default function UserInfor() {
             };
 
             // Cập nhật thông tin người dùng
-            const response = await fetch(`http://192.168.1.17:3000/api/users/update/${userId}`, {
+            const response = await fetch(`http://192.168.1.15:3000/api/users/update/${userId}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -87,31 +87,34 @@ export default function UserInfor() {
         <View style={styles.container}>
             {userInfo ? (
                 <>
-                    <Text>Tên: {userInfo.username}</Text>
+                    <Text style={styles.text}>Tên: {userInfo.username}</Text>
                     {userInfo.avatar && <Image source={{ uri: userInfo.avatar }} style={styles.avatarImage} />}
                     {isEditing ? (
                         <TextInput
+                            style={styles.text}
                             value={editedUserInfo.gender}
                             onChangeText={(text) => setEditedUserInfo({ ...editedUserInfo, gender: text })}
                         />
                     ) : (
-                        <Text>Giới tính: {userInfo.gender}</Text>
+                        <Text style={styles.text} >Giới tính: {userInfo.gender}</Text>
                     )}
                     {isEditing ? (
                         <TextInput
+                            style={styles.text}
                             value={editedUserInfo.birthday}
                             onChangeText={(text) => setEditedUserInfo({ ...editedUserInfo, birthday: text })}
                         />
                     ) : (
-                        <Text>Ngày sinh: {userInfo.birthday}</Text>
+                        <Text style={styles.text}>Ngày sinh: {userInfo.birthday}</Text>
                     )}
                     {isEditing ? (
                         <TextInput
+                            style={styles.text}
                             value={editedUserInfo.phone}
                             onChangeText={(text) => setEditedUserInfo({ ...editedUserInfo, phone: text })}
                         />
                     ) : (
-                        <Text>Số điện thoại: {userInfo.phone}</Text>
+                        <Text style={styles.text}>Số điện thoại: {userInfo.phone}</Text>
                     )}
                     {isEditing ? (
                         <Button title="Lưu" onPress={handleSaveChanges} style={styles.btn} />
@@ -129,8 +132,9 @@ export default function UserInfor() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
+        // alignItems: 'center',
+        // justifyContent: 'center',
+        margin:40
     },
     avatarImage: {
         width: 100,
@@ -141,4 +145,9 @@ const styles = StyleSheet.create({
     btn: {
         backgroundColor: '#319AB4',
     },
+    text:{
+        fontSize:20,
+
+
+    }
 });
