@@ -8,6 +8,8 @@ import Toast from 'react-native-toast-message';
 
 const OrderScreen = ({ navigation, route }) => {
   const { state, dispatch } = useCart(); // Get the cart state and dispatch
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
   const [dataUid, setDataUid] = useState('');
   const [totalPrice, setTotalPrice] = useState(0);
   const [, forceUpdate] = useReducer((x) => x + 1, 0);
@@ -16,11 +18,37 @@ const OrderScreen = ({ navigation, route }) => {
   const dispathDeleteProductFromCart = useDispatch();
   
   useEffect(() => {
+    const checkLoginStatus = async () => {
+      try {
+        const storedUsername = await AsyncStorage.getItem('username');
+        const storedUserId = await AsyncStorage.getItem('_id');
+        
+        if (storedUsername && storedUserId) {
+          
+          setIsLoggedIn(true);
+          setCurrentUser({ username: storedUsername, _id: storedUserId });
+          console.log("User name:", storedUsername);
+          console.log("User ID:", storedUserId); // Log giá trị của userId
+          console.log("Is Logged In:", true);    // Log trạng thái đăng nhập là true
+        } else {
+          console.log("User ID:", storedUserId);
+          console.log("Is Logged In:", false);   // Log trạng thái đăng nhập là false
+        }
+        
+      } catch (error) {
+        console.error('Error retrieving stored data:', error);
+      }
+    };
+    
+    checkLoginStatus();
+  }, []);
+  useEffect(() => {
     const fetchData = async () => {
       try {
         const storedData = await AsyncStorage.getItem('_id'); // Thay 'key' bằng khóa lưu trữ của bạn
         if (storedData !== null) {
           setDataUid(storedData);
+
         }
       } catch (error) {
         console.log(error);
@@ -78,7 +106,7 @@ const updateItemByIdInAsyncStorage = async (key, idToUpdate, updatedData) => {
 
   },[products])
   useEffect(()=>{
-  },[])
+  },[isLoggedIn])
 
   // Function to calculate the total price
   const calculateTotalPrice = () => {
@@ -94,10 +122,25 @@ if(products && products.length>0){
   const checkout = () => {
     // Create an array of product details
     // console.log('Checkout', products);
+    
 
     navigation.navigate('PayScreen', {
       products
     });
+  };
+  const handleCheckoutPress = () => {
+    if (products.length === 0) {
+      Alert.alert(
+        'Yêu Cầu',
+        'Vui lòng thêm món vào giỏ hàng! Hãy đến của hàng để gọi món ngay thôi nào!',
+        [
+          { text: 'Home', onPress: () => navigation.navigate('Home') }, // Replace 'HomeScreen' with the actual home screen route name
+          { text: 'Cancel', style: 'cancel' },
+        ],
+      );
+    } else {
+      checkout();
+    }
   };
   const removeItemByIdFromAsyncStorage = async (key, idToRemove) => {
     try {
@@ -171,9 +214,10 @@ if(products && products.length>0){
         <Image source={require('./../Image/logo_bean.png')} style={styles.logo} />
         <Text style={styles.title}>Order Food</Text>
       </View>
-
-      <Text style={styles.sectionTitle}>Selected Products:</Text>
-      <ScrollView>
+      {isLoggedIn ? (
+        <>
+          <Text style={styles.sectionTitle}>Selected Products:</Text>
+          <ScrollView>
         {products&& products.length>0?(products.map((product, index) => (
           <View key={index} style={styles.productContainer}>
             <View style={{ flex: 1 }}>
@@ -198,12 +242,25 @@ if(products && products.length>0){
         ))):  Toast.show('This is a toast.')}
       </ScrollView>
 
-      <View style={styles.bottomRow}>
-        <Text style={styles.totalPrice}>Total: {totalPrice} VND</Text>
-        <TouchableOpacity style={[styles.button, styles.bottomButton]} onPress={checkout}>
-          <Text style={styles.buttonText}>Thanh toán</Text>
-        </TouchableOpacity>
-      </View>
+          <View style={styles.bottomRow}>
+            <Text style={styles.totalPrice}>Total: {totalPrice} VND</Text>
+            <TouchableOpacity style={[styles.button, styles.bottomButton]} onPress={handleCheckoutPress}>
+              <Text style={styles.buttonText}>Thanh toán</Text>
+            </TouchableOpacity>
+          </View>
+        </>
+      ) : (
+        // If the user is not logged in, show this message instead
+        <View style={styles.loginPrompt}>
+          <Text style={styles.promptText}>
+            Bạn vui lòng đăng nhập để gọi món!{' '}
+            <Text style={styles.loginLink} onPress={() => navigation.navigate('LoginScreen')}>
+              Đăng nhập ngay!
+            </Text>
+          </Text>
+        </View>
+      )}
+
     </SafeAreaView>
   );
 };
