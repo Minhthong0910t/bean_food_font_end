@@ -96,7 +96,7 @@ const SliderHome = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('http://192.168.1.6:3000/api/slider/getAll');
+        const response = await fetch('http://192.168.1.11:3000/api/slider/getAll');
         const jsonData = await response.json();
         setimageslider(jsonData.data);
       } catch (error) {
@@ -237,7 +237,7 @@ const Discount = ()=>{
   useEffect(()=>{
     const fetchData = async () => {
       try {
-        const response = await fetch('http://192.168.1.6:3000/api/discount/getAll');
+        const response = await fetch('http://192.168.1.11:3000/api/discount/getAll');
         const jsonData = await response.json();
         console.log(jsonData.data);
         setdiscount(jsonData.data);
@@ -301,7 +301,7 @@ const Foodngonquanhday = ()=>{
     useEffect(()=>{
       const fetchData = async () => {
         try {
-          const response = await fetch('http://192.168.1.6:3000/api/restaurant/getAll');
+          const response = await fetch('http://192.168.1.11:3000/api/restaurant/getAll');
           const jsonData = await response.json();
           setdatarestauran(jsonData.data);
         } catch (error) {
@@ -353,7 +353,7 @@ const Goiymonan = ({ navigation })=>{
   useEffect(()=>{
     const fetchData = async () => {
       try {
-        const response = await fetch('http://192.168.1.6:3000/api/product/suggest');
+        const response = await fetch('http://192.168.1.11:3000/api/product/suggest');
         const jsonData = await response.json();
    
         setdatamonan(jsonData.data);

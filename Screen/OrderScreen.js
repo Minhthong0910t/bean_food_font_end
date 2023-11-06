@@ -6,7 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { deleteproduct, updatecartproduct } from '../Redux/ActionAddtoCart';
 import Toast from 'react-native-toast-message';
 
-const OrderScreen = () => {
+const OrderScreen = ({ navigation, route }) => {
   const { state, dispatch } = useCart(); // Get the cart state and dispatch
   const [dataUid, setDataUid] = useState('');
   const [totalPrice, setTotalPrice] = useState(0);
@@ -73,11 +73,6 @@ const updateItemByIdInAsyncStorage = async (key, idToUpdate, updatedData) => {
   }, [products]);
 
 
-
-
-
- 
-
   useEffect(()=>{ 
       calculateTotalPrice();
 
@@ -97,7 +92,12 @@ if(products && products.length>0){
   };
 
   const checkout = () => {
-    // Navigate to the payment screen
+    // Create an array of product details
+    // console.log('Checkout', products);
+
+    navigation.navigate('PayScreen', {
+      products
+    });
   };
   const removeItemByIdFromAsyncStorage = async (key, idToRemove) => {
     try {

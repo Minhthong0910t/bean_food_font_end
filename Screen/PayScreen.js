@@ -2,65 +2,57 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, Image, Button, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView, Dimensions,TextInput } from 'react-native';
 import { RadioButton } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import CheckOrderModal from '../Modal/CheckOderModal';
+import SuccessModal from '../Modal/SuccessModal';
+import ProductItem from '../Item/ProductItem';
+import ProductItemOder from '../Item/ProductItemOder';
 
 
 
 const screenWidth = Dimensions.get('window').width;
 
-const ProductItem = ({ product, quantity, onUpdateQuantity }) => {
-  return (
-    <View style={styles.itemContainer}>
-      <Image source={product.image} style={styles.productImage} />
-      <View style={styles.doc}>
-      <Text style={styles.productName}>{product.name}</Text>
-      <View style={styles.quantityContainer}>
-        <TouchableOpacity onPress={() => onUpdateQuantity(quantity - 1)}>
-          <Text style={styles.quantityButton}>-</Text>
-        </TouchableOpacity>
-        <Text style={styles.quantityText}>{quantity}</Text>
-        <TouchableOpacity onPress={() => onUpdateQuantity(quantity + 1)}>
-          <Text style={styles.quantityButton}>+</Text>
-        </TouchableOpacity>
-      </View>
-      </View>
-      
-      <Text style={styles.productPrice}>{product.price}đ</Text>
-      <TouchableOpacity style={styles.removeButton}>
-        <Text>x</Text>
-      </TouchableOpacity>
-    </View>
-  );
-};
-
 const PayScreen = ({ route, navigation }) => {
-  const { product } = route.params;
-  
+  const { products } = route.params;
+  const [totalproduct,settotalproduct] = useState(0)
   // Sử dụng trạng thái cho quantity và totalPrice
-  const [quantity, setQuantity] = useState(route.params.quantity);
-  const [totalPrice, setTotalPrice] = useState(route.params.totalPrice);
   const [text, setText] = useState('');
   const deliveryFee = 15000;
   const discount = 0;
   const [paymentMethod, setPaymentMethod] = useState('cash'); // 'cash' hoặc 'bank'
 
+  const [isCheckOrderModalVisible, setCheckOrderModalVisible] = useState(false);
+  const [isSuccessModalVisible, setSuccessModalVisible] = useState(false);
 
-  const ordertotalPrice = totalPrice + deliveryFee - discount;
+  const handleOrderPress = () => {
+    setCheckOrderModalVisible(true);
+  };
+
+  const handleOrderSuccess = () => {
+    setCheckOrderModalVisible(false);
+    setSuccessModalVisible(true);
+  };
+  const toltalproducts = () => {
+     var total=0
+      for (var i =0;i<products.length;i++) {
+        price=parseFloat(products[i].total)
+        total+=price
+        console.log('giá: ',products[i].total);
+      }
+      console.log('====>tổng tiền: ',total);
+      settotalproduct(total);
+  };
+
+  const ordertotalPrice = totalproduct + deliveryFee - discount;
 
   const goBack = () => {
     navigation.goBack();
   };
 
-  const handleUpdateQuantity = (newQuantity) => {
-    // Đảm bảo số lượng không âm
-    if (newQuantity >= 0) {
-      setQuantity(newQuantity);
-    }
-  };
 
   // Sử dụng hook useEffect để cập nhật totalPrice mỗi khi quantity thay đổi
   useEffect(() => {
-    setTotalPrice(product.price * quantity);
-  }, [quantity]);
+    toltalproducts()
+  }, [products]);
 
   return (
     <SafeAreaView style={{ flex: 1, marginTop: 25 }}>
@@ -73,11 +65,15 @@ const PayScreen = ({ route, navigation }) => {
       <ScrollView style={styles.container}>
         <Text style={styles.deliveryText}>Giao hàng đến:</Text>
         <Text style={styles.addressText}>D29, Phạm Văn Bạch, Cầu Giấy, Hà Nội</Text>
-        <ProductItem product={product} quantity={quantity} onUpdateQuantity={handleUpdateQuantity} />
+        {products.map(products =><ProductItemOder products={products} />)}
+        
+        
+
+        
         <View style={styles.containerHD}>
           <View style={styles.row}>
             <Text style={styles.label}>Đơn mua</Text>
-            <Text style={styles.value}>{totalPrice}đ</Text>
+            <Text style={styles.value}>{totalproduct}đ</Text>
           </View>
           <View style={styles.row}>
             <Text style={styles.label}>Phí giao hàng (2.3km)</Text>
@@ -126,7 +122,16 @@ const PayScreen = ({ route, navigation }) => {
           numberOfLines={4} // Bạn có thể điều chỉnh số dòng tối đa theo mong muốn
         />
     </View>
-        <Button title="Đặt hàng" onPress={() => {}} />
+    <Button title="Đặt hàng" onPress={handleOrderPress} />
+      <CheckOrderModal 
+        modalVisible={isCheckOrderModalVisible} 
+        setModalVisible={setCheckOrderModalVisible} 
+        onOrderSuccess={handleOrderSuccess}
+      />
+      <SuccessModal 
+        isVisible={isSuccessModalVisible} 
+        navigation={navigation}
+      />
       </ScrollView>
     </SafeAreaView>
   );
@@ -163,25 +168,25 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 0.025 * screenWidth,
   },
-  productContainer: {
+  productsContainer: {
     flexDirection: 'row',
     marginBottom: 0.025 * screenWidth,
     padding: 0.025 * screenWidth,
     alignItems: 'center',
   },
-  productImage: {
+  productsImage: {
     width: 0.2 * screenWidth,
     height: 0.2 * screenWidth,
     marginRight: 0.04 * screenWidth,
   },
-  productName: {
+  productsName: {
     fontSize: 0.04 * screenWidth,
     flex: 1,
   },
-  productQuantity: {
+  productsQuantity: {
     fontSize: 0.035 * screenWidth,
   },
-  productPrice: {
+  productsPrice: {
     marginLeft: 5,
     fontSize: 0.04 * screenWidth,
     fontWeight: 'bold',
@@ -190,54 +195,6 @@ const styles = StyleSheet.create({
     fontSize: 0.045 * screenWidth,
     fontWeight: 'bold',
     marginBottom: 0.025 * screenWidth,
-  },
-  doc: {
-    flexDirection: 'column',
-    margin: 10
-  },
-  itemContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 10,
-    borderBottomWidth: 1,
-    borderColor: 'lightgray',
-  },
-  productImage: {
-    width: 60,
-    height: 60,
-    marginRight: 10,
-  },
-  productName: {
-    flex: 2,
-    fontSize: 16,
-  },
-  quantityContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flex: 1,
-  },
-  quantityButton: {
-    fontSize: 20,
-    width: 24,
-    height: 24,
-    textAlign: 'center',
-    borderColor: 'gray',
-    borderWidth: 1,
-    borderRadius: 4,
-  },
-  quantityText: {
-    fontSize: 16,
-    width: 24,
-    textAlign: 'center',
-    marginHorizontal: 10,
-  },
-  productPrice: {
-    flex: 1,
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  removeButton: {
-    padding: 10,
   },
   textInput: {
     borderWidth: 2,
