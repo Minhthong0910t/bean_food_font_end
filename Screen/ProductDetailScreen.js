@@ -69,51 +69,51 @@ const ProductDetailScreen = ({ navigation, route }) => {
         console.error('Error retrieving stored data:', error);
       }
     };
-    
+    // console.log("đây là id pr ==>>",product);
     checkLoginStatus();
     fetchComments()
+   
   }, []);
 
   
 
-  const fetchComments = async () => {
+  const fetchComments = async () => { 
     try {
-        let response = await fetch('http://192.168.1.11:3000/api/comment/getAll');
-        let jsonResponse = await response.json();
-
-        // Kiểm tra mã trạng thái của phản hồi
-        if (response.status === 200) {
-          let arrayComments = jsonResponse.data.filter(comment => comment.idProduct._id == product._id);
-              if (arrayComments.length > 0) {
-                // Cập nhật trạng thái với các bình luận đã lọc
-                  setComments(arrayComments);
-                  // console.log('comments', arrayComments);
-                  // console.log('id pr ==>', product._id);
-              
-            } else {
-                Toast.show({
-                    type: 'info',
-                    text1: 'Thông báo',
-                    text2: 'Không có dữ liệu bình luận',
-                });
-            }
+      let response = await fetch('http://192.168.1.11:3000/api/comment/getAll');
+      let jsonResponse = await response.json();     
+      if (response.status === 200) {
+        // Lọc các bình luận dựa trên idProduct._id
+        let filteredComments = jsonResponse.data.filter(comment => comment.idProduct._id === product._id);
+        // console.log("vippp ",filteredComments);
+  
+        if (filteredComments.length > 0) {
+          setComments(filteredComments);
         } else {
-            Toast.show({
-                type: 'error',
-                text1: 'Lỗi!',
-                text2: jsonResponse.msg || 'Không thể lấy dữ liệu từ server',
-            });
+          Toast.show({
+            type: 'info',
+            text1: 'Thông báo',
+            text2: 'Không có dữ liệu bình luận cho sản phẩm này.',
+          });
         }
-    } catch (error) {
+      } else {
         Toast.show({
-            type: 'error',
-            text1: 'Lỗi!',
-            text2: error.message || 'Không thể kết nối đến server',
+          type: 'error',
+          text1: 'Lỗi!',
+          text2: jsonResponse.msg || 'Không thể lấy dữ liệu từ server',
         });
+      }
+    } catch (error) {
+      Toast.show({
+        type: 'error',
+        text1: 'Lỗi!',
+        text2: error.message || 'Không thể kết nối đến server',
+      });
     } finally {
-        setIsLoading(false);
+      setIsLoading(false);
     }
-};
+  };
+  
+  
 
   const goBack = () => {
     navigation.goBack();
