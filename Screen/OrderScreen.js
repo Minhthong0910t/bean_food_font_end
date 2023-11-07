@@ -83,12 +83,13 @@ const updateItemByIdInAsyncStorage = async (key, idToUpdate, updatedData) => {
 
   },[products])
   useEffect(()=>{
-  },[])
+    calculateTotalPrice();
+  },[products])
 
   // Function to calculate the total price
   const calculateTotalPrice = () => {
     let total = 0;
-if(products && products.length>0){
+if(products && products.length>=0){
   products.forEach((product) => {
     total += product.total * product.quantityproduct;
   });
