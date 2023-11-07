@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
 
-const ProductItem = ({ product, quantity, onUpdateQuantity }) => {
+const ProductItem = ({ product}) => {
   return (
     <View style={styles.container}>
       {/* <Image source={product.image} style={styles.productImage} /> */}

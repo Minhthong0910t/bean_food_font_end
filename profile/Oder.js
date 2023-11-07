@@ -2,87 +2,7 @@ import { StyleSheet, Text, View, SafeAreaView, TouchableOpacity, Image, TextInpu
 import React from 'react'
 const {width, height} = Dimensions.get('window')
 const Oder = ({ navigation }) => {
-    const data = [
-        {
-            img: 'https://th.bing.com/th/id/OIP.I1vAZfcHYgYZt9ukTkOIQAHaHZ?pid=ImgDet&rs=1',
-            name: 'Kitkat',
-            price: '25000',
-            number: '1',
-
-        },
-        {
-            img: 'https://th.bing.com/th/id/OIP.I1vAZfcHYgYZt9ukTkOIQAHaHZ?pid=ImgDet&rs=1',
-            name: 'Kitkat',
-            price: '25000',
-            number: '1',
-
-        },
-        {
-            img: 'https://th.bing.com/th/id/OIP.I1vAZfcHYgYZt9ukTkOIQAHaHZ?pid=ImgDet&rs=1',
-            name: 'Kitkat',
-            price: '25000',
-            number: '1',
-
-        },
-        {
-            img: 'https://th.bing.com/th/id/OIP.I1vAZfcHYgYZt9ukTkOIQAHaHZ?pid=ImgDet&rs=1',
-            name: 'Kitkat',
-            price: '25000',
-            number: '1',
-
-        },
-        {
-            img: 'https://th.bing.com/th/id/OIP.I1vAZfcHYgYZt9ukTkOIQAHaHZ?pid=ImgDet&rs=1',
-            name: 'Kitkat',
-            price: '25000',
-            number: '1',
-
-        },
-        {
-            img: 'https://th.bing.com/th/id/OIP.I1vAZfcHYgYZt9ukTkOIQAHaHZ?pid=ImgDet&rs=1',
-            name: 'Kitkat',
-            price: '25000',
-            number: '1',
-
-        },
-        {
-            img: 'https://th.bing.com/th/id/OIP.I1vAZfcHYgYZt9ukTkOIQAHaHZ?pid=ImgDet&rs=1',
-            name: 'Kitkat',
-            price: '25000',
-            number: '1',
-
-        },
-        {
-            img: 'https://th.bing.com/th/id/OIP.I1vAZfcHYgYZt9ukTkOIQAHaHZ?pid=ImgDet&rs=1',
-            name: 'Kitkat',
-            price: '25000',
-            number: '1',
-
-        },
-        {
-            img: 'https://th.bing.com/th/id/OIP.I1vAZfcHYgYZt9ukTkOIQAHaHZ?pid=ImgDet&rs=1',
-            name: 'Kitkat',
-            price: '25000',
-            number: '1',
-
-        },
-        {
-            img: 'https://th.bing.com/th/id/OIP.I1vAZfcHYgYZt9ukTkOIQAHaHZ?pid=ImgDet&rs=1',
-            name: 'Kitkat',
-            price: '25000',
-            number: '1',
-
-        },
-        {
-            img: 'https://th.bing.com/th/id/OIP.I1vAZfcHYgYZt9ukTkOIQAHaHZ?pid=ImgDet&rs=1',
-            name: 'Kitkat',
-            price: '25000',
-            number: '1',
-
-        },
-
-
-    ]
+    
     return (
         <SafeAreaView style={{ marginTop: 0, flex: 1 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', height: 100, backgroundColor: "white" }}>
@@ -94,29 +14,8 @@ const Oder = ({ navigation }) => {
             <View style={styles.container}>
                 <Text style={styles.text}>Đơn hàng của bạn</Text>
                 <FlatList
-                    data={data}
-                    renderItem={({ item, index }) => {
-                        return (
-                            <View style={styles.item}>
-                                <View style={{ flexDirection: 'row' }}>
-                                    <Image
-                                        style={{ width: 68, height: 68 }}
-                                        source={{ uri: item.img }}
-                                    />
-                                    <View>
-                                        <View style={{ flexDirection: 'row', justifyContent:'space-between',  width: width -88, marginTop:5 }}>
-                                            <Text style={{ alignSelf: 'flex-start', marginLeft: 5 }}>{item.name}</Text>
-                                            <Text style={{ alignSelf: 'flex-end',  marginRight:25}}>x{item.number}</Text>
-                                        </View>
-                                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: width - 88, marginTop: 15 }}>
-                                            <Text style={{ alignSelf: 'flex-start', marginLeft: 5 }}>Gia</Text>
-                                            <Text style={{ alignSelf: 'flex-end', marginRight: 25 }}>{item.price} VND</Text>
-                                        </View>
-                                    </View>
-                                </View>
-                            </View>
-                        )
-                    }}
+             
+                    
                 />
                 <View style={styles.total}>
                     <View style={{flexDirection:'row', justifyContent:'space-between', marginBottom: 5}}>

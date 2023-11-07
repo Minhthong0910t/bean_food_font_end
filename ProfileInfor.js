@@ -54,7 +54,7 @@ export default function ProfileInfor() {
             };
 
             // cập nhật thông tin người dùng
-            const response = await fetch(`http://192.168.1.8:3000/api/users/update/${userId}`, {
+            const response = await fetch(`http://192.168.1.11:3000/api/users/update/${userId}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

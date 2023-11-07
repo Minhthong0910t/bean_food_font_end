@@ -50,7 +50,7 @@ const HeaderHome = ({navigation}) => {
       </Text>
 
       <View style={{flexDirection: 'row'}}>
- <TouchableOpacity onPress={()=>{ navigation.navigate('Search')}}>
+      <TouchableOpacity onPress={()=>{ navigation.navigate('Search')}}>
  <TextInput
           style={{
             width: 0.8 * width,
@@ -63,7 +63,9 @@ const HeaderHome = ({navigation}) => {
           }}
           placeholder="Nhập từ khóa tìm kiếm"
         />
- </TouchableOpacity >
+ </TouchableOpacity>
+
+
         <View
           style={{
             width: 40,
@@ -96,7 +98,10 @@ const SliderHome = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+
         const response = await fetch('http://192.168.1.7:3000/api/slider/getAll');
+
+
         const jsonData = await response.json();
         setimageslider(jsonData.data);
       } catch (error) {
@@ -232,7 +237,11 @@ const Discount = ()=>{
   useEffect(()=>{
     const fetchData = async () => {
       try {
+
         const response = await fetch('http://192.168.1.7:3000/api/discount/getAll');
+
+    
+
         const jsonData = await response.json();
         console.log(jsonData.data);
         setdiscount(jsonData.data);
@@ -296,7 +305,10 @@ const Foodngonquanhday = ()=>{
     useEffect(()=>{
       const fetchData = async () => {
         try {
+
           const response = await fetch('http://192.168.1.7:3000/api/restaurant/getAll');
+
+
           const jsonData = await response.json();
           setdatarestauran(jsonData.data);
         } catch (error) {
@@ -348,7 +360,10 @@ const Goiymonan = ({ navigation })=>{
   useEffect(()=>{
     const fetchData = async () => {
       try {
+
         const response = await fetch('http://192.168.1.7:3000/api/product/suggest');
+
+
         const jsonData = await response.json();
    
         setdatamonan(jsonData.data);

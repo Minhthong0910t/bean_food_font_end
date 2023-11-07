@@ -7,7 +7,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import Toast from 'react-native-toast-message';
 
 import { useCart } from '../Component/CartContext';
-import CommentItem from '../Component/CommentItem';
+import CommentItem from '../Item/CommentItem';
 import { ToastAndroid } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useSelector, useDispatch } from 'react-redux';
@@ -47,8 +47,6 @@ const ProductDetailScreen = ({ navigation, route }) => {
   
 
 
-  
-
   useEffect(() => {
     const checkLoginStatus = async () => {
       try {
@@ -73,21 +71,28 @@ const ProductDetailScreen = ({ navigation, route }) => {
     };
     
     checkLoginStatus();
-    fetchComments();
+    fetchComments()
   }, []);
 
-  
   
 
   const fetchComments = async () => {
     try {
+
         let response = await fetch('http://192.168.1.7:3000/api/comment/getAll');
+
+
         let jsonResponse = await response.json();
 
         // Kiểm tra mã trạng thái của phản hồi
         if (response.status === 200) {
-            if (jsonResponse.data && jsonResponse.data.length > 0) {
-                setComments(jsonResponse.data);
+          let arrayComments = jsonResponse.data.filter(comment => comment.idProduct._id == product._id);
+              if (arrayComments.length > 0) {
+                // Cập nhật trạng thái với các bình luận đã lọc
+                  setComments(arrayComments);
+                  // console.log('comments', arrayComments);
+                  // console.log('id pr ==>', product._id);
+              
             } else {
                 Toast.show({
                     type: 'info',
@@ -115,6 +120,9 @@ const ProductDetailScreen = ({ navigation, route }) => {
 
   const goBack = () => {
     navigation.goBack();
+  };
+  const goCart = () => {
+    navigation.navigate('Order');
   };
 
   const increaseQuantity = () => {
@@ -209,7 +217,10 @@ const ProductDetailScreen = ({ navigation, route }) => {
         return;
     }
 
+
     const apiUrl = 'http://192.168.1.7:3000/api/comment/create';
+
+d228e5160c8e686ac883a535c272efbb00bcc11a
   
     fetch(apiUrl, {
       method: 'POST',
@@ -243,14 +254,7 @@ const ProductDetailScreen = ({ navigation, route }) => {
 
   
 
-    const checkout = () => {
-      // Chuyển đến màn hình thanh toán và truyền thông tin cần thiết
-      navigation.navigate('PayScreen', {
-        product,
-        quantity,
-        totalPrice,
-      });
-    };
+    
     
 
     const renderLoading = () => (
@@ -272,14 +276,14 @@ const ProductDetailScreen = ({ navigation, route }) => {
             <Text style={{ fontWeight: 'bold', flex: 1, fontSize: 24 }}> Chi tiết sản phẩm </Text>
   
             {/* Cart button */}
-            <TouchableOpacity style={styles.menuButton} onPress={addToCart}>
+            <TouchableOpacity style={styles.menuButton} onPress={goCart}>
               <Image source={require('./../Image/menu-icon.png')} style={styles.icon} />
             </TouchableOpacity>
           </View>
   
           <ScrollView>
             {/* Product image */}
-            <Image source={require('./../Image/imagedoan.png')} style={styles.image} />
+            <Image source={{uri: product.images[0]}} style={styles.image} />
   
             {/* Product name and price */}
             <View style={styles.contentRow}>
@@ -332,9 +336,9 @@ const ProductDetailScreen = ({ navigation, route }) => {
               <Text style={styles.quantityText}>{quantity}</Text>
               <Button title="+" onPress={increaseQuantity} />
             </View>
-            <TouchableOpacity style={[styles.button, styles.bottomButton]} onPress={checkout}>
+            <TouchableOpacity style={[styles.button, styles.bottomButton]} onPress={addToCart}>
               <Image source={require('./../Image/money-icon.png')} style={styles.icon} />
-              <Text style={styles.buttonText}>Pay</Text>
+              <Text style={styles.buttonText}>Thêm món</Text>
             </TouchableOpacity>
           </View>
   
