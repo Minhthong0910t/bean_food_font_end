@@ -78,7 +78,10 @@ const ProductDetailScreen = ({ navigation, route }) => {
 
   const fetchComments = async () => {
     try {
-        let response = await fetch('http://192.168.1.11:3000/api/comment/getAll');
+
+        let response = await fetch('http://192.168.1.7:3000/api/comment/getAll');
+
+
         let jsonResponse = await response.json();
 
         // Kiểm tra mã trạng thái của phản hồi
@@ -143,27 +146,35 @@ const ProductDetailScreen = ({ navigation, route }) => {
     }
   };
   const addToCart = () => {
-    calculateTotalPrice();
-    const newCartProduct = {
-      idproductcart:new Date().getTime().toString(),
-      nameproduct:product.name , 
-      quantityproduct :quantity ,
-      total :totalPrice,
-      price:product.price,
-      idusser:data
-    }
-    dispatchproduct(addproducttocart(newCartProduct))
+ if(isLoggedIn){
+  calculateTotalPrice();
+  const newCartProduct = {
+    idproductcart:new Date().getTime().toString(),
+    nameproduct:product.name , 
+    quantityproduct :quantity ,
+    total :totalPrice,
+    price:product.price,
+    idusser:data
+  }
+  dispatchproduct(addproducttocart(newCartProduct))
 
-    // Show a toast message
+  // Show a toast message
 
-    console.log(data)
-    Toast.show({
-      type: 'success',
-      text1: 'Món ngon đã được thêm vào giỏ hàng của bạn!',
-      text2: 'Mời đến giỏ hàng',
-    });
-    setQuantity(1)
-    setTotalPrice(product.price)
+  console.log(data)
+  Toast.show({
+    type: 'success',
+    text1: 'Món ngon đã được thêm vào giỏ hàng của bạn!',
+    text2: 'Mời đến giỏ hàng',
+  });
+  setQuantity(1)
+  setTotalPrice(product.price)
+ }else{
+  Toast.show({
+    type: 'error',
+    text1: 'Bạn phải đăng nhập mới được thêm đồ ăn',
+
+  });
+ }
     
     
   };
@@ -206,7 +217,10 @@ const ProductDetailScreen = ({ navigation, route }) => {
         return;
     }
 
-    const apiUrl = 'http://192.168.1.11:3000/api/comment/create';
+
+    const apiUrl = 'http://192.168.1.7:3000/api/comment/create';
+
+d228e5160c8e686ac883a535c272efbb00bcc11a
   
     fetch(apiUrl, {
       method: 'POST',
