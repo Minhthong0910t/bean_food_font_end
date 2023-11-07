@@ -34,7 +34,10 @@ export default function LoginScreen() {
             "password":trimmedPassword,
         };
         // Gửi yêu cầu POST
-        fetch('http://192.168.1.11:3000/api/users/login', {
+
+        fetch('http://192.168.1.7:3000/api/users/login', {
+
+
             method: 'POST',
             headers: {
                 Accept: 'application/json',
