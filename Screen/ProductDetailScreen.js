@@ -23,7 +23,6 @@ const ProductDetailScreen = ({ navigation, route }) => {
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
   const [isLoading, setIsLoading] = useState(true);
-
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
   const dispatchproduct = useDispatch();
@@ -172,7 +171,6 @@ const ProductDetailScreen = ({ navigation, route }) => {
   Toast.show({
     type: 'error',
     text1: 'Bạn phải đăng nhập mới được thêm đồ ăn',
-
   });
  }
     
@@ -219,9 +217,6 @@ const ProductDetailScreen = ({ navigation, route }) => {
 
 
     const apiUrl = 'http://192.168.1.7:3000/api/comment/create';
-
-d228e5160c8e686ac883a535c272efbb00bcc11a
-  
     fetch(apiUrl, {
       method: 'POST',
       headers: {
@@ -247,16 +242,6 @@ d228e5160c8e686ac883a535c272efbb00bcc11a
     })
     .catch(error => console.error("Có lỗi khi thêm bình luận", error));
 };
-
-  
-  
-  
-
-  
-
-    
-    
-
     const renderLoading = () => (
       <SafeAreaView style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         <Text>Loading...</Text>

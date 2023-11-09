@@ -299,7 +299,7 @@ const Discountforeveryday = ()=>{
   )
 }
 
-const Foodngonquanhday = ()=>{
+const Foodngonquanhday =  ({ navigation })=>{
     const [datarestauran , setdatarestauran] = useState([])
 
     useEffect(()=>{
@@ -335,7 +335,6 @@ return(
        <View style={{marginLeft:15}}>
           <Image source={{uri:data.image}} style={{width:0.58*width , height:0.2*height , borderTopLeftRadius:10 , borderTopRightRadius:10}}/>
        </View>
-    
         <View style = {{flexDirection:'row' , alignItems:'center' , backgroundColor:'#F0F0F0' , marginLeft:15 ,width:0.58*width , height:0.08*height}}>
           <View style = {{flexDirection:'column' }}>
             <Text style={{fontWeight:'bold' , fontSize:20 ,color:'#616161' , marginTop:20}}>{data.name}</Text>
@@ -343,8 +342,8 @@ return(
             <Text style={{fontWeight:'bold' ,color:'#616161'}}>{data.timeon} AM-{data.timeoff} PM</Text>
             <Text style={{fontWeight:'bold' ,color:'#616161'}}>{data.adress}</Text>
           </View>
-          <TouchableOpacity style={{marginLeft:'auto' ,  backgroundColor:'#FFFFFF' , width:0.05*width , alignItems:'center' ,justifyContent:'center'  , height:0.025*height, borderRadius:20,marginTop:20 , marginRight:10}} >
-            <Image source={require('./../Image/right_arrow.png')} style = {{width:15 , height:15}}/>
+          <TouchableOpacity onPress={()=>{navigation.navigate('Restaurant') , data}} style={{marginLeft:'auto' ,  backgroundColor:'#FFFFFF' , width:0.05*width , alignItems:'center' ,justifyContent:'center'  , height:0.025*height, borderRadius:20,marginTop:20 , marginRight:10}} >
+            <Image source={require('./../Image/right_arrow.png')} style = {{width:15 , height:15}} />
           </TouchableOpacity>
         </View>
       </View>)}
@@ -377,6 +376,8 @@ const Goiymonan = ({ navigation })=>{
   },[])
   return(
     <View>
+
+<Text style={{margin:15 , fontWeight:'bold' , fontSize:20 ,color:'#616161'}}>Gợi ý hàng đầu dành cho bạn</Text>
         <ScrollView >
           {datamonangoiy.map((data , index)=>
             
@@ -418,7 +419,7 @@ const Home = ({navigation}) => {
         <Menu navigation={navigation}/>
         <Discount/>
         <Discountforeveryday/>
-        <Foodngonquanhday/>
+        <Foodngonquanhday navigation = {navigation}/>
         <Goiymonan navigation={navigation}/>
       </ScrollView>
     </View>
