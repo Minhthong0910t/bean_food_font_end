@@ -142,6 +142,7 @@ const ProductDetailScreen = ({ navigation, route }) => {
     }
   };
   const addToCart = () => {
+    if(storedUserId){
     calculateTotalPrice();
     const newCartProduct = {
       idproductcart:new Date().getTime().toString(),
