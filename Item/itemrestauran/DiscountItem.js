@@ -14,7 +14,7 @@ const DiscountItem = () => {
       
   
           const jsonData = await response.json();
-          console.log(jsonData.data);
+    
           setdiscount(jsonData.data);
         } catch (error) {
           console.error(error);
