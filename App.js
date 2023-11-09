@@ -30,6 +30,7 @@ import { AuthProvider } from './AuthContext';
 import { Provider } from 'react-redux';
 import store from './Redux/StoreAddToCart';
 import SplashScreen from './Screen/SplashScreen';
+import RestaurantScreen from './Screen/RestaurantScreen';
 
 
 const Stack = createNativeStackNavigator();
@@ -81,6 +82,7 @@ export default function App() {
                         <Stack.Screen component={Payment} name='Payment' />
                         <Stack.Screen component={UserInfor} name='UserInfor' />
                         <Stack.Screen component={SplashScreen} name='SplashScreen' />
+                        <Stack.Screen component={RestaurantScreen} name='Restaurant'/>
 
                     </Stack.Navigator>
                 </CartProvider>
