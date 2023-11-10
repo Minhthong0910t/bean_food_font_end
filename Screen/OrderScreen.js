@@ -90,7 +90,8 @@ const updateItemByIdInAsyncStorage = async (key, idToUpdate, updatedData) => {
       if (jsonData) {
         const dataArray = JSON.parse(jsonData);
         const filteredData = dataArray.filter((obj) => obj.idusser === id);
-      setProducts(filteredData)
+        setProducts(filteredData)
+
        
       }
     } catch (error) {
@@ -113,8 +114,11 @@ const updateItemByIdInAsyncStorage = async (key, idToUpdate, updatedData) => {
     let total = 0;
 if(products && products.length>=0){
   products.forEach((product) => {
-    total += product.total * product.quantityproduct;
+    total += (product.price * product.quantityproduct);
   });
+
+
+  
   setTotalPrice(total);
 }
   };
@@ -190,10 +194,14 @@ if(products && products.length>=0){
 
   const incrementQuantity = (product , index) => {
     const quantityproducts = product.quantityproduct ; 
-    console.log(product.idproductcart)
     const dataupdate = quantityproducts+1;
-    const updatedata = {quantityproduct:dataupdate}
+    console.log("dataupdate " , dataupdate);
+    const totalupdate = product.price*dataupdate;
+ 
+    const updatedata = {quantityproduct:dataupdate ,total:totalupdate }
     updateItemByIdInAsyncStorage('products' ,product.idproductcart ,updatedata)
+
+   
     calculateTotalPrice();
   };
 
@@ -204,6 +212,7 @@ if(products && products.length>=0){
       const dataupdate = quantityproducts-1;
       const updatedata = {quantityproduct:dataupdate}
       updateItemByIdInAsyncStorage('products' ,product.idproductcart ,updatedata)
+      console.log('product affterupdate' , product)
       calculateTotalPrice();
     }
   };
@@ -222,7 +231,7 @@ if(products && products.length>=0){
           <View key={index} style={styles.productContainer}>
             <View style={{ flex: 1 }}>
               <Text style={styles.productName}>{product.nameproduct}</Text>
-              <Text style={styles.productPrice}>{products[index].total*products[index].quantityproduct} VND</Text>
+              <Text style={styles.productPrice}>{product.price *product.quantityproduct} VND</Text>
             </View>
             <View style={styles.quantityContainer}>
               <TouchableOpacity onPress={() => decrementQuantity(product)}>
