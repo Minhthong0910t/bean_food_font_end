@@ -10,12 +10,12 @@ import {
 
 const { width, height } = Dimensions.get("window");
 
-const CoffeeShopScreen = ({navigation}) => {
+const CoffeeShopScreen = ({navigation , datarestaurant}) => {
   return (
     <View style={styles.screen}>
 
       <ImageBackground
-        source={require("./../../Image/restaurant.jpg")} // Thay thế bằng URL hình ảnh của bạn
+        source={{uri: datarestaurant.image}} // Thay thế bằng URL hình ảnh của bạn
         resizeMode="cover"
         style={styles.imageBackground}
       >
@@ -33,15 +33,15 @@ const CoffeeShopScreen = ({navigation}) => {
         </View>
        
      <View style ={{top:width*0.3 }}>
-     <Text style={styles.name}>The Coffee House</Text>
-          <Text style={styles.address}>192 Lê Trọng Tấn, Thanh Xuân</Text>
+     <Text style={styles.name}>{datarestaurant.name}</Text>
+          <Text style={styles.address}>{datarestaurant.address}</Text>
           <View style={styles.timeInfo}>
             <View style={styles.timeBlock}>
               <View
                 style={styles.center}
               >
                 <Text style={styles.timeLabel}>Thời gian mở cửa</Text>
-                <Text style={styles.time}>9:00 - 23:00</Text>
+                <Text style={styles.time}>{datarestaurant.timeon} - {datarestaurant.timeoff}</Text>
               </View>
 
               <View

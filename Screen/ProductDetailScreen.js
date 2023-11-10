@@ -78,7 +78,7 @@ const ProductDetailScreen = ({ navigation, route }) => {
 
   const fetchComments = async () => { 
     try {
-      let response = await fetch('http://192.168.1.11:3000/api/comment/getAll');
+      let response = await fetch('http:/192.168.1.7:3000/api/comment/getAll');
       let jsonResponse = await response.json();     
       if (response.status === 200) {
         // Lọc các bình luận dựa trên idProduct._id
@@ -142,6 +142,7 @@ const ProductDetailScreen = ({ navigation, route }) => {
     }
   };
   const addToCart = () => {
+    if(isLoggedIn){
     calculateTotalPrice();
     const newCartProduct = {
       idproductcart:new Date().getTime().toString(),
@@ -162,12 +163,7 @@ const ProductDetailScreen = ({ navigation, route }) => {
   });
   setQuantity(1)
   setTotalPrice(product.price)
- }else{
-  Toast.show({
-    type: 'error',
-    text1: 'Bạn phải đăng nhập mới được thêm đồ ăn',
-  });
- }
+ 
 
     // Show a toast message
 
@@ -179,6 +175,12 @@ const ProductDetailScreen = ({ navigation, route }) => {
     });
     setQuantity(1)
     setTotalPrice(product.price)
+  }else{
+    Toast.show({
+      type: 'error',
+      text1: 'Bạn phải đăng nhập mới được thêm đồ ăn',
+    });
+   }
 
     
     

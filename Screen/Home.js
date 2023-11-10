@@ -342,7 +342,7 @@ return(
             <Text style={{fontWeight:'bold' ,color:'#616161'}}>{data.timeon} AM-{data.timeoff} PM</Text>
             <Text style={{fontWeight:'bold' ,color:'#616161'}}>{data.adress}</Text>
           </View>
-          <TouchableOpacity onPress={()=>{navigation.navigate('Restaurant') , data}} style={{marginLeft:'auto' ,  backgroundColor:'#FFFFFF' , width:0.05*width , alignItems:'center' ,justifyContent:'center'  , height:0.025*height, borderRadius:20,marginTop:20 , marginRight:10}} >
+          <TouchableOpacity onPress={()=>navigation.navigate('Restaurant',{restaurant:data}) } style={{marginLeft:'auto' ,  backgroundColor:'#FFFFFF' , width:0.05*width , alignItems:'center' ,justifyContent:'center'  , height:0.025*height, borderRadius:20,marginTop:20 , marginRight:10}} >
             <Image source={require('./../Image/right_arrow.png')} style = {{width:15 , height:15}} />
           </TouchableOpacity>
         </View>
