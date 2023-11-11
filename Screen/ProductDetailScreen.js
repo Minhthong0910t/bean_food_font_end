@@ -23,7 +23,6 @@ const ProductDetailScreen = ({ navigation, route }) => {
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
   const [isLoading, setIsLoading] = useState(true);
-
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
   const dispatchproduct = useDispatch();
@@ -69,51 +68,51 @@ const ProductDetailScreen = ({ navigation, route }) => {
         console.error('Error retrieving stored data:', error);
       }
     };
-    
+    // console.log("đây là id pr ==>>",product);
     checkLoginStatus();
     fetchComments()
+   
   }, []);
 
   
 
-  const fetchComments = async () => {
+  const fetchComments = async () => { 
     try {
-        let response = await fetch('http://192.168.1.11:3000/api/comment/getAll');
-        let jsonResponse = await response.json();
-
-        // Kiểm tra mã trạng thái của phản hồi
-        if (response.status === 200) {
-          let arrayComments = jsonResponse.data.filter(comment => comment.idProduct._id == product._id);
-              if (arrayComments.length > 0) {
-                // Cập nhật trạng thái với các bình luận đã lọc
-                  setComments(arrayComments);
-                  // console.log('comments', arrayComments);
-                  // console.log('id pr ==>', product._id);
-              
-            } else {
-                Toast.show({
-                    type: 'info',
-                    text1: 'Thông báo',
-                    text2: 'Không có dữ liệu bình luận',
-                });
-            }
+      let response = await fetch('http:/192.168.1.7:3000/api/comment/getAll');
+      let jsonResponse = await response.json();     
+      if (response.status === 200) {
+        // Lọc các bình luận dựa trên idProduct._id
+        let filteredComments = jsonResponse.data.filter(comment => comment.idProduct._id === product._id);
+        // console.log("vippp ",filteredComments);
+  
+        if (filteredComments.length > 0) {
+          setComments(filteredComments);
         } else {
-            Toast.show({
-                type: 'error',
-                text1: 'Lỗi!',
-                text2: jsonResponse.msg || 'Không thể lấy dữ liệu từ server',
-            });
+          Toast.show({
+            type: 'info',
+            text1: 'Thông báo',
+            text2: 'Không có dữ liệu bình luận cho sản phẩm này.',
+          });
         }
-    } catch (error) {
+      } else {
         Toast.show({
-            type: 'error',
-            text1: 'Lỗi!',
-            text2: error.message || 'Không thể kết nối đến server',
+          type: 'error',
+          text1: 'Lỗi!',
+          text2: jsonResponse.msg || 'Không thể lấy dữ liệu từ server',
         });
+      }
+    } catch (error) {
+      Toast.show({
+        type: 'error',
+        text1: 'Lỗi!',
+        text2: error.message || 'Không thể kết nối đến server',
+      });
     } finally {
-        setIsLoading(false);
+      setIsLoading(false);
     }
-};
+  };
+  
+  
 
   const goBack = () => {
     navigation.goBack();
@@ -143,6 +142,7 @@ const ProductDetailScreen = ({ navigation, route }) => {
     }
   };
   const addToCart = () => {
+    if(isLoggedIn){
     calculateTotalPrice();
     const newCartProduct = {
       idproductcart:new Date().getTime().toString(),
@@ -154,6 +154,17 @@ const ProductDetailScreen = ({ navigation, route }) => {
     }
     dispatchproduct(addproducttocart(newCartProduct))
 
+
+  console.log(data)
+  Toast.show({
+    type: 'success',
+    text1: 'Món ngon đã được thêm vào giỏ hàng của bạn!',
+    text2: 'Mời đến giỏ hàng',
+  });
+  setQuantity(1)
+  setTotalPrice(product.price)
+ 
+
     // Show a toast message
 
     console.log(data)
@@ -164,6 +175,13 @@ const ProductDetailScreen = ({ navigation, route }) => {
     });
     setQuantity(1)
     setTotalPrice(product.price)
+  }else{
+    Toast.show({
+      type: 'error',
+      text1: 'Bạn phải đăng nhập mới được thêm đồ ăn',
+    });
+   }
+
     
     
   };
@@ -206,8 +224,13 @@ const ProductDetailScreen = ({ navigation, route }) => {
         return;
     }
 
-    const apiUrl = 'http://192.168.1.11:3000/api/comment/create';
+
+
+    const apiUrl = 'http://192.168.1.7:3000/api/comment/create';
+
+
   
+
     fetch(apiUrl, {
       method: 'POST',
       headers: {
@@ -233,16 +256,6 @@ const ProductDetailScreen = ({ navigation, route }) => {
     })
     .catch(error => console.error("Có lỗi khi thêm bình luận", error));
 };
-
-  
-  
-  
-
-  
-
-    
-    
-
     const renderLoading = () => (
       <SafeAreaView style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         <Text>Loading...</Text>

@@ -98,7 +98,10 @@ const SliderHome = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('http://192.168.1.11:3000/api/slider/getAll');
+
+        const response = await fetch('http://192.168.1.7:3000/api/slider/getAll');
+
+
         const jsonData = await response.json();
         setimageslider(jsonData.data);
       } catch (error) {
@@ -167,28 +170,28 @@ const Menu =({navigation})=>{
         <View style={{flexDirection:'row', alignItems:'center' }}>
           <View style={{flexDirection:'column' , justifyContent:'center', alignItems:'center' , marginLeft:15}}>
             <TouchableOpacity  onPress={()=>{navigation.navigate('Ganban')}}>
-              <Image source={require('./../Image/ganban.png')} style={{width:30 , height:30}}/>
+              <Image source={require('./../Image/ganban.png')} style={{width:0.08*width , height:0.04*height}}/>
             </TouchableOpacity>
 
             <Text style={{color:'#616161'}}>Gần bạn</Text>
           </View>
           <View style={{flexDirection:'column' , justifyContent:'center', alignItems:'center',marginLeft:40}}>
             <TouchableOpacity  onPress={()=>{navigation.navigate('Comxuat')}}>
-              <Image source={require('./../Image/comxuat.png')} style={{width:30 , height:30}}/>
+              <Image source={require('./../Image/comxuat.png')} style={{width:0.08*width , height:0.04*height}}/>
             </TouchableOpacity>
 
             <Text style={{color:'#616161'}}>Cơm xuất</Text>
           </View>
           <View style={{flexDirection:'column' , justifyContent:'center', alignItems:'center',marginLeft:40}}>
             <TouchableOpacity  onPress={()=>{navigation.navigate('BunPho')}}>
-              <Image source={require('./../Image/noodle.png')} style={{width:30 , height:30}}/>
+              <Image source={require('./../Image/noodle.png')} style={{width:0.08*width , height:0.04*height}}/>
             </TouchableOpacity>
 
             <Text style={{color:'#616161'}}>Bún phở</Text>
           </View>
           <View style={{flexDirection:'column' , justifyContent:'center', alignItems:'center',marginLeft:40}}>
             <TouchableOpacity  onPress={()=>{navigation.navigate('Chicken')}}>
-              <Image source={require('./../Image/fried_chicken.png')} style={{width:30 , height:30}}/>
+              <Image source={require('./../Image/fried_chicken.png')} style={{width:0.08*width , height:0.04*height}}/>
             </TouchableOpacity>
 
             <Text style={{color:'#616161'}}>Gà rán</Text>
@@ -198,30 +201,28 @@ const Menu =({navigation})=>{
         <View style={{flexDirection:'row', alignItems:'center' }}>
           <View style={{flexDirection:'column' , justifyContent:'center', alignItems:'center' , margin:20}}>
             <TouchableOpacity  onPress={()=>{navigation.navigate('AnVat')}}>
-              <Image source={require('./../Image/snack.png')} style={{width:30 , height:30}}/>
+              <Image source={require('./../Image/snack.png')} style={{width:0.08*width , height:0.04*height}}/>
             </TouchableOpacity>
 
             <Text style={{color:'#616161'}}>Ăn vặt</Text>
           </View>
           <View style={{flexDirection:'column' , justifyContent:'center', alignItems:'center',marginLeft:35}}>
             <TouchableOpacity  onPress={()=>{navigation.navigate('DoUong')}}>
-              <Image source={require('./../Image/milk_tea.png')} style={{width:30 , height:30}}/>
+              <Image source={require('./../Image/milk_tea.png')} style={{width:0.08*width , height:0.04*height}}/>
             </TouchableOpacity>
 
             <Text style={{color:'#616161'}}>Đồ uống</Text>
           </View>
           <View style={{flexDirection:'column' , justifyContent:'center', alignItems:'center',marginLeft:40}}>
             <TouchableOpacity  onPress={()=>{navigation.navigate('BanhMi')}}>
-              <Image source={require('./../Image/burger.png')} style={{width:30 , height:30}}/>
+              <Image source={require('./../Image/burger.png')} style={{width:0.08*width , height:0.04*height}}/>
             </TouchableOpacity>
-
             <Text style={{color:'#616161'}}>Bánh mì</Text>
           </View>
           <View style={{flexDirection:'column' , justifyContent:'center', alignItems:'center',marginLeft:40}}>
             <TouchableOpacity  onPress={()=>{navigation.navigate('Healthy')}}>
-              <Image source={require('./../Image/diet1.png')} style={{width:30 , height:30}}/>
+              <Image source={require('./../Image/diet1.png')} style={{width:0.08*width , height:0.04*height}}/>
             </TouchableOpacity>
-
             <Text style={{color:'#616161'}}>Healthy</Text>
           </View>
 
@@ -233,13 +234,14 @@ const Menu =({navigation})=>{
 const Discount = ()=>{
 
   const [discount , setdiscount ] = useState([]);
-
-
-
   useEffect(()=>{
     const fetchData = async () => {
       try {
-        const response = await fetch('http://192.168.1.11:3000/api/discount/getAll');
+
+        const response = await fetch('http://192.168.1.7:3000/api/discount/getAll');
+
+    
+
         const jsonData = await response.json();
         console.log(jsonData.data);
         setdiscount(jsonData.data);
@@ -255,14 +257,14 @@ return(
 
     <ScrollView horizontal   showsHorizontalScrollIndicator={false}>
      {discount.map((data , index)=>
-     <View key={index} style={{width:0.65*width , height:64 , backgroundColor:'#F0F0F0' , marginLeft:15 , borderRadius:15}}>
+     <View key={index} style={{width:0.65*width , height:0.075*height , backgroundColor:'#F0F0F0' , marginLeft:15 , borderRadius:10}}>
      <View style = {{flexDirection:'row', margin:10}}>
        <View style={{flexDirection:'column' }}>
          <Text style={{fontWeight:'bold',color:'#616161'}}>Giảm {Math.floor(data.priceDiscount)/1000}k cho đơn từ { Math.floor(data.money_limit / 1000)}k</Text>
          <Text style={{  fontWeight:'bold' ,color:'#616161'}}>HSD: {data.idVoucher.date}</Text>
        </View>
 
-       <TouchableOpacity style={{width:60 , height:40 , marginLeft:10 , borderRadius:10 , backgroundColor:'#319AB4' , alignItems:'center' , justifyContent:'center'}}>
+       <TouchableOpacity style={{width:0.15*width , height:0.04*height , marginLeft:10 , borderRadius:10 , backgroundColor:'#319AB4' , alignItems:'center' , justifyContent:'center'}}>
          <Text style={{color:'white' , fontWeight:'bold'}}>Lấy mã</Text>
        </TouchableOpacity>
      </View>
@@ -279,15 +281,15 @@ const Discountforeveryday = ()=>{
       <Text style={{margin:15 , fontWeight:'bold' , fontSize:20 ,color:'#616161'}}>Cửa hàng thương hiệu</Text>
 
       <View style={{flexDirection:'row' , marginLeft:15}}>
-        <TouchableOpacity style = {{width:0.5*width}}>
+        <TouchableOpacity style = {{width:0.5*width , height:0.30*height }}>
           <Image source={require('./../Image/loteria.png')} />
         </TouchableOpacity>
 
         <View style = {{flexDirection:'column'  , position:'relative' }}>
-        <TouchableOpacity style = {{ marginBottom:10 ,  }}>
+        <TouchableOpacity style = {{ marginBottom:10 , width:0.45*width , height:0.14*height }}>
           <Image source={require('./../Image/tocotoco.png')} style = {{width:0.45*width , borderRadius:10}}/>
         </TouchableOpacity>
-        <TouchableOpacity>
+        <TouchableOpacity style = {{  width:0.45*width ,height:0.14*height }}>
           <Image source={require('./../Image/hightlandcoffe.png')}style = {{width:0.45*width , borderRadius:10}}/>
         </TouchableOpacity>
 
@@ -297,13 +299,16 @@ const Discountforeveryday = ()=>{
   )
 }
 
-const Foodngonquanhday = ()=>{
+const Foodngonquanhday =  ({ navigation })=>{
     const [datarestauran , setdatarestauran] = useState([])
 
     useEffect(()=>{
       const fetchData = async () => {
         try {
-          const response = await fetch('http://192.168.1.11:3000/api/restaurant/getAll');
+
+          const response = await fetch('http://192.168.1.7:3000/api/restaurant/getAll');
+
+
           const jsonData = await response.json();
           setdatarestauran(jsonData.data);
         } catch (error) {
@@ -328,18 +333,17 @@ return(
       {datarestauran.map((data , index)=>
         <View  style={{width:250}} key={index}>
        <View style={{marginLeft:15}}>
-          <Image source={{uri:data.image}}/>
+          <Image source={{uri:data.image}} style={{width:0.58*width , height:0.2*height , borderTopLeftRadius:10 , borderTopRightRadius:10}}/>
        </View>
-    
-        <View style = {{flexDirection:'row' , alignItems:'center' }}>
-          <View style = {{flexDirection:'column' , marginLeft:15}}>
-            <Text style={{fontWeight:'bold' , fontSize:20 ,color:'#616161'}}>{data.name}</Text>
+        <View style = {{flexDirection:'row' , alignItems:'center' , backgroundColor:'#F0F0F0' , marginLeft:15 ,width:0.58*width , height:0.08*height}}>
+          <View style = {{flexDirection:'column' }}>
+            <Text style={{fontWeight:'bold' , fontSize:20 ,color:'#616161' , marginTop:20}}>{data.name}</Text>
     
             <Text style={{fontWeight:'bold' ,color:'#616161'}}>{data.timeon} AM-{data.timeoff} PM</Text>
             <Text style={{fontWeight:'bold' ,color:'#616161'}}>{data.adress}</Text>
           </View>
-          <TouchableOpacity style={{marginLeft:'auto' , }} >
-            <Image source={require('./../Image/right_arrow.png')} style = {{width:15 , height:15}}/>
+          <TouchableOpacity onPress={()=>navigation.navigate('Restaurant',{restaurant:data}) } style={{marginLeft:'auto' ,  backgroundColor:'#FFFFFF' , width:0.05*width , alignItems:'center' ,justifyContent:'center'  , height:0.025*height, borderRadius:20,marginTop:20 , marginRight:10}} >
+            <Image source={require('./../Image/right_arrow.png')} style = {{width:15 , height:15}} />
           </TouchableOpacity>
         </View>
       </View>)}
@@ -355,7 +359,10 @@ const Goiymonan = ({ navigation })=>{
   useEffect(()=>{
     const fetchData = async () => {
       try {
-        const response = await fetch('http://192.168.1.11:3000/api/product/suggest');
+
+        const response = await fetch('http://192.168.1.7:3000/api/product/suggest');
+
+
         const jsonData = await response.json();
    
         setdatamonan(jsonData.data);
@@ -369,10 +376,13 @@ const Goiymonan = ({ navigation })=>{
   },[])
   return(
     <View>
-        <ScrollView>
+
+<Text style={{margin:15 , fontWeight:'bold' , fontSize:20 ,color:'#616161'}}>Gợi ý hàng đầu dành cho bạn</Text>
+        <ScrollView >
           {datamonangoiy.map((data , index)=>
             
-            <TouchableOpacity
+          <View  key= {index} style = {{backgroundColor:'#f0f0f0' , marginLeft:15 , marginTop:6 ,  marginRight:5, borderRadius:10}}>
+              <TouchableOpacity
                 style={{margin: 15, flexDirection: 'row', height: 90, alignItems: 'center'}}
                 onPress={() => navigation.navigate('ProductDetail', { product: data })}
               >
@@ -387,12 +397,11 @@ const Goiymonan = ({ navigation })=>{
                       <Image source={require('./../Image/star.png')} style={{width: 20, height: 20, marginTop: 5}} />
                       <Text style={{padding: 5, fontWeight: 'bold', color: '#616161'}}>{data.race}</Text>
                     </View>
-                    <Text style={{color: '#616161'}}>{data.description}</Text>
+                    <Text style={{color:  '#616161' , width:0.6*width }} numberOfLines={2}>{data.description}</Text>
                   </View>
-                <TouchableOpacity style={{marginLeft: 'auto'}}>
-                  <Image source={require('./../Image/right_arrow.png')} style={{width: 15, height: 15}} />
-                </TouchableOpacity>
+       
               </TouchableOpacity> 
+          </View>
 
               
               
@@ -403,14 +412,14 @@ const Goiymonan = ({ navigation })=>{
 }
 const Home = ({navigation}) => {
   return (
-    <View> 
+    <View style = {{backgroundColor:'white'}}> 
       <ScrollView   showsVerticalScrollIndicator={false} StickyHeaderComponent={HeaderHome}>
       <HeaderHome  navigation={navigation}/>  
         <SliderHome />
         <Menu navigation={navigation}/>
         <Discount/>
         <Discountforeveryday/>
-        <Foodngonquanhday/>
+        <Foodngonquanhday navigation = {navigation}/>
         <Goiymonan navigation={navigation}/>
       </ScrollView>
     </View>
