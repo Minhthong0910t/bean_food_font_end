@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {View, Text, StyleSheet, Image, Button, TextInput, Alert, TouchableOpacity} from 'react-native';
+import {View, Text, StyleSheet, Image, Button, TextInput, Alert, TouchableOpacity, Platform} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from "@react-navigation/native";
 
@@ -30,7 +30,7 @@ export default function UserInfor() {
     const fetchUserInfo = async (userId) => {
         try {
             // Gọi API máy chủ để lấy thông tin người dùng
-            const response = await fetch(`http://192.168.1.15:3000/api/users/info/${userId}`, {
+            const response = await fetch(`http://192.168.1.12:3000/api/users/info/${userId}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -62,7 +62,7 @@ export default function UserInfor() {
             };
 
             // Cập nhật thông tin người dùng
-            const response = await fetch(`http://192.168.1.15:3000/api/users/update/${userId}`, {
+            const response = await fetch(`http://192.168.1.12:3000/api/users/update/${userId}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -136,11 +136,11 @@ export default function UserInfor() {
 
                     {isEditing ? (
                         <TouchableOpacity style={styles.button} onPress={handleSaveChanges}>
-                            <Text style={styles.buttonText}>Lưu</Text>
+                            <Text style={styles.buttonText}>LƯU</Text>
                         </TouchableOpacity>
                     ) : (
                         <TouchableOpacity style={styles.button} onPress={() => setIsEditing(true)}>
-                            <Text style={styles.buttonText}>Cập nhật thông tin</Text>
+                            <Text style={styles.buttonText}>CẬP NHẬT THÔNG TIN</Text>
                         </TouchableOpacity>
                         // <TouchableOpacity title="Chỉnh sửa" onPress={() => setIsEditing(true)} style={styles.btn} />
                     )}
@@ -157,14 +157,20 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         marginTop: 50,
+        marginBottom:630,
+        backgroundColor: '#F2F6FD',
+        borderRadius: 30,
+        elevation: 2,
+        margin:20,
+        paddingTop:30,
 
     },
     horizontalContainer: {
         flexDirection: 'row', // Đặt chiều ngang
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor:'#DFE0EB',
-        borderRadius: 20,
+        borderRadius: 50,
+
     },
     avatarContainer: {
         alignItems: 'center',
@@ -177,7 +183,8 @@ const styles = StyleSheet.create({
     },
     text:{
         fontSize:18,
-        paddingBottom:5
+        paddingBottom:5,
+        fontWeight:'normal'
     },
     avatarTextInput: {
         width: 100,
@@ -198,17 +205,18 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         padding: 10,
         borderRadius: 15,
+        fontWeight:'100'
     },
     button: {
         flexDirection: 'row',
-        backgroundColor: '#319AB4',
+        // backgroundColor: '#319AB4',
         padding: 10,
         borderRadius: 5,
         justifyContent: 'center',
-        marginTop: 5,
+        marginTop: 10,
     },
     buttonText: {
-        color: 'white',
+        color: 'black',
         fontSize: 16,
         fontWeight: 'bold',
         textAlign: 'center',
