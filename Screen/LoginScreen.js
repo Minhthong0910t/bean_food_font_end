@@ -35,7 +35,7 @@ export default function LoginScreen() {
         };
         // Gửi yêu cầu POST
 
-        fetch('http://192.168.1.7:3000/api/users/login', {
+        fetch('http://192.168.1.11:3000/api/users/login', {
 
 
             method: 'POST',
@@ -55,6 +55,7 @@ export default function LoginScreen() {
                 
                  // Lưu trạng thái isLoggedIn vào AsyncStorage
                 await AsyncStorage.setItem('username', data.data.username);
+                await AsyncStorage.setItem('isLogin', "isLogin");
                 console.log("data user ",data);
                 // Lưu _id của người dùng vào AsyncStorage nếu _id tồn tại trong dữ liệu trả về
                 if (data.data._id) {

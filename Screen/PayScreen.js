@@ -24,7 +24,13 @@ const PayScreen = ({ route, navigation }) => {
   const [isSuccessModalVisible, setSuccessModalVisible] = useState(false);
 
   const handleOrderPress = () => {
-    setCheckOrderModalVisible(true);
+    if (paymentMethod === 'bank') {
+      // Chuyển đến màn hình PaymentVN
+      navigation.navigate('PaymentScreen', { totalPrice: ordertotalPrice, products: products });
+    } else {
+      // Logic cho phương thức thanh toán tiền mặt
+      setCheckOrderModalVisible(true);
+    }
   };
 
   const handleOrderSuccess = () => {
@@ -121,16 +127,17 @@ const PayScreen = ({ route, navigation }) => {
           multiline={true}
           numberOfLines={4} // Bạn có thể điều chỉnh số dòng tối đa theo mong muốn
         />
+
     </View>
-    <Button title="Đặt hàng" onPress={handleOrderPress} />
-      <CheckOrderModal 
-        modalVisible={isCheckOrderModalVisible} 
-        setModalVisible={setCheckOrderModalVisible} 
-        onOrderSuccess={handleOrderSuccess}
-      />
-      <SuccessModal 
-        isVisible={isSuccessModalVisible} 
-        navigation={navigation}
+      <Button title="Đặt hàng" onPress={handleOrderPress} style={styles.buttontt} />
+        <CheckOrderModal 
+          modalVisible={isCheckOrderModalVisible} 
+          setModalVisible={setCheckOrderModalVisible} 
+          onOrderSuccess={handleOrderSuccess}
+        />
+        <SuccessModal 
+          isVisible={isSuccessModalVisible} 
+          navigation={navigation}
       />
       </ScrollView>
     </SafeAreaView>
@@ -139,8 +146,8 @@ const PayScreen = ({ route, navigation }) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     padding: 0.05 * screenWidth,
+
   },
   header: {
     flexDirection: 'row',
@@ -234,6 +241,9 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
+  buttontt:{
+    marginBottom:100
+  }
 });
 
 export default PayScreen;

@@ -99,7 +99,7 @@ const SliderHome = () => {
     const fetchData = async () => {
       try {
 
-        const response = await fetch('http://192.168.1.7:3000/api/slider/getAll');
+        const response = await fetch('http://192.168.1.11:3000/api/slider/getAll');
 
 
         const jsonData = await response.json();
@@ -238,7 +238,7 @@ const Discount = ()=>{
     const fetchData = async () => {
       try {
 
-        const response = await fetch('http://192.168.1.7:3000/api/discount/getAll');
+        const response = await fetch('http://192.168.1.11:3000/api/discount/getAll');
 
     
 
@@ -257,7 +257,7 @@ return(
 
     <ScrollView horizontal   showsHorizontalScrollIndicator={false}>
      {discount.map((data , index)=>
-     <View key={index} style={{width:0.65*width , height:0.075*height , backgroundColor:'#F0F0F0' , marginLeft:15 , borderRadius:10}}>
+     <View key={index} style={{width:0.65*width , height:0.0115*height , backgroundColor:'#F0F0F0' , marginLeft:15 , borderRadius:10}}>
      <View style = {{flexDirection:'row', margin:10}}>
        <View style={{flexDirection:'column' }}>
          <Text style={{fontWeight:'bold',color:'#616161'}}>Giảm {Math.floor(data.priceDiscount)/1000}k cho đơn từ { Math.floor(data.money_limit / 1000)}k</Text>
@@ -306,7 +306,7 @@ const Foodngonquanhday = ()=>{
       const fetchData = async () => {
         try {
 
-          const response = await fetch('http://192.168.1.7:3000/api/restaurant/getAll');
+          const response = await fetch('http://192.168.1.11:3000/api/restaurant/getAll');
 
 
           const jsonData = await response.json();
@@ -361,7 +361,7 @@ const Goiymonan = ({ navigation })=>{
     const fetchData = async () => {
       try {
 
-        const response = await fetch('http://192.168.1.7:3000/api/product/suggest');
+        const response = await fetch('http://192.168.1.11:3000/api/product/suggest');
 
 
         const jsonData = await response.json();
