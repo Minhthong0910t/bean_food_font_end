@@ -25,14 +25,14 @@ const OrderScreen = ({ navigation, route }) => {
         
         if (storedUsername && storedUserId) {
           
-          setIsLoggedIn(true);
+          // setIsLoggedIn(true);
           setCurrentUser({ username: storedUsername, _id: storedUserId });
           console.log("User name:", storedUsername);
           console.log("User ID:", storedUserId); // Log giá trị của userId
-          console.log("Is Logged In:", true);    // Log trạng thái đăng nhập là true
+          // console.log("Is Logged In:", true);    // Log trạng thái đăng nhập là true
         } else {
           console.log("User ID:", storedUserId);
-          console.log("Is Logged In:", false);   // Log trạng thái đăng nhập là false
+          // console.log("Is Logged In:", false);   // Log trạng thái đăng nhập là false
         }
         
       } catch (error) {
@@ -47,7 +47,11 @@ const OrderScreen = ({ navigation, route }) => {
       try {
         const storedData = await AsyncStorage.getItem('_id'); // Thay 'key' bằng khóa lưu trữ của bạn
         if (storedData !== null) {
+          const isLogin = await AsyncStorage.getItem('isLogin');
+          if(isLogin==='true'){
+            setIsLoggedIn(true)
           setDataUid(storedData);
+          }
 
         }
       } catch (error) {

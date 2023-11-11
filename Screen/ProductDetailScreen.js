@@ -12,6 +12,7 @@ import { ToastAndroid } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useSelector, useDispatch } from 'react-redux';
 import { addproducttocart } from '../Redux/ActionAddtoCart';
+import { URL } from '../const/const';
 
 
 
@@ -23,7 +24,6 @@ const ProductDetailScreen = ({ navigation, route }) => {
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
   const [isLoading, setIsLoading] = useState(true);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
   const dispatchproduct = useDispatch();
   const products = useSelector(state => state.products);
@@ -54,14 +54,13 @@ const ProductDetailScreen = ({ navigation, route }) => {
         
         if (storedUsername && storedUserId) {
           
-          setIsLoggedIn(true);
+
           setCurrentUser({ username: storedUsername, _id: storedUserId });
           console.log("User name:", storedUsername);
           console.log("User ID:", storedUserId); // Log giá trị của userId
-          console.log("Is Logged In:", true);    // Log trạng thái đăng nhập là true
+  // Log trạng thái đăng nhập là true
         } else {
-          console.log("User ID:", storedUserId);
-          console.log("Is Logged In:", false);   // Log trạng thái đăng nhập là false
+          console.log("User ID:", storedUserId);  // Log trạng thái đăng nhập là false
         }
         
       } catch (error) {
@@ -78,7 +77,7 @@ const ProductDetailScreen = ({ navigation, route }) => {
 
   const fetchComments = async () => { 
     try {
-      let response = await fetch('http:/192.168.1.7:3000/api/comment/getAll');
+      let response = await fetch(URL+'api/comment/getAll');
       let jsonResponse = await response.json();     
       if (response.status === 200) {
         // Lọc các bình luận dựa trên idProduct._id
@@ -141,8 +140,9 @@ const ProductDetailScreen = ({ navigation, route }) => {
       console.log('Error saving data: ', error);
     }
   };
-  const addToCart = () => {
-    if(isLoggedIn){
+  const addToCart = async() => {
+    const isLogin = await AsyncStorage.getItem('isLogin');
+    if(isLogin==='true'){
     calculateTotalPrice();
     const newCartProduct = {
       idproductcart:new Date().getTime().toString(),
@@ -199,12 +199,13 @@ const ProductDetailScreen = ({ navigation, route }) => {
     setTotalPrice(total);
   };
 
-  const submitComment = () => {
+  const submitComment = async() => {
     if (!newComment || newComment.trim() === "") {
       ToastAndroid.show('Người dùng phải nhập bình luận, không được để trống!', ToastAndroid.SHORT);
       return;
   } 
-    if (!isLoggedIn) {
+  const isLogin = await AsyncStorage.getItem('isLogin');
+  if(isLogin==='false'){
         setNewComment('');
         Alert.alert(
           "Thông báo",
@@ -226,7 +227,7 @@ const ProductDetailScreen = ({ navigation, route }) => {
 
 
 
-    const apiUrl = 'http://192.168.1.7:3000/api/comment/create';
+    const apiUrl = URL+'api/comment/create';
 
 
   

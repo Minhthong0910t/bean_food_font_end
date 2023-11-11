@@ -18,9 +18,15 @@ const ProfileScreen = () => {
       try {
         const storedUsername = await AsyncStorage.getItem('username');
         if (storedUsername) {
-          setUsername(storedUsername);
-          setIsLoggedIn(true); // Đã đăng nhập
-          console.log("Is Logged In:", true);    // Log trạng thái đăng nhập là true
+          const isLogin = await AsyncStorage.getItem('isLogin');
+          if(isLogin==='true'){
+
+            setUsername(storedUsername);
+            setIsLoggedIn(true); // Đã đăng nhập
+            console.log("Is Logged In:", true);    // Log trạng thái đăng nhập là true
+          }
+
+          
         }
       } catch (error) {
         console.error('Lỗi khi truy xuất tên người dùng đã lưu:', error);
@@ -28,14 +34,18 @@ const ProfileScreen = () => {
           console.log("Is Logged In:", false);  
       }
     };
+
+
     getStoredUsername();
   }, []);
 
   const handleLogin = () => {
-    navigation.navigate('Login');
-  }
-  const handleLogout = () =>{
     navigation.replace('Login');
+  }
+  const handleLogout = async() =>{
+    await AsyncStorage.setItem('isLogin', 'false');
+    await AsyncStorage.removeItem('_id');
+    navigation.navigate('Home');
   }
   return (
     <View style={styles.container}>

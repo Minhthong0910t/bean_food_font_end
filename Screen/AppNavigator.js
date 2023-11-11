@@ -11,7 +11,14 @@ const Tab = createBottomTabNavigator();
 
 const AppNavigator = () => {
   return (
-    <Tab.Navigator>
+
+    <Tab.Navigator
+    initialRouteName='Home'
+    screenOptions={{
+      unmountOnBlur: true,
+    }}
+    >
+
       <Tab.Screen
         name="Home"
         component={Home}

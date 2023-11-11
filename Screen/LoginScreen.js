@@ -5,6 +5,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { ToastAndroid } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from "@react-navigation/native";
+import { URL } from '../const/const';
 
 
 
@@ -35,7 +36,7 @@ export default function LoginScreen() {
         };
         // Gửi yêu cầu POST
 
-        fetch('http://192.168.1.11:3000/api/users/login', {
+        fetch(URL+'api/users/login', {
 
 
             method: 'POST',
@@ -55,7 +56,7 @@ export default function LoginScreen() {
                 
                  // Lưu trạng thái isLoggedIn vào AsyncStorage
                 await AsyncStorage.setItem('username', data.data.username);
-                await AsyncStorage.setItem('isLogin', "isLogin");
+                await AsyncStorage.setItem('isLogin', 'true');
                 console.log("data user ",data);
                 // Lưu _id của người dùng vào AsyncStorage nếu _id tồn tại trong dữ liệu trả về
                 if (data.data._id) {

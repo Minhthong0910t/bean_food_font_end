@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
+import { URL } from '../const/const';
 
 const { width, height } = Dimensions.get('window');
 
@@ -102,7 +103,7 @@ const SliderHome = () => {
     const fetchData = async () => {
       try {
 
-        const response = await fetch('http://192.168.1.11:3000/api/slider/getAll');
+        const response = await fetch(URL+'api/slider/getAll');
 
 
         const jsonData = await response.json();
@@ -241,7 +242,7 @@ const Discount = () => {
     const fetchData = async () => {
       try {
 
-        const response = await fetch('http://192.168.1.11:3000/api/discount/getAll');
+        const response = await fetch(URL+'api/discount/getAll');
 
 
 
@@ -309,7 +310,7 @@ const Foodngonquanhday = ({ navigation }) => {
     const fetchData = async () => {
       try {
 
-          const response = await fetch('http://192.168.1.7:3000/api/restaurant/getAll');
+          const response = await fetch(URL+'api/restaurant/getAll');
 
 
         const jsonData = await response.json();
@@ -363,7 +364,7 @@ const Goiymonan = ({ navigation }) => {
     const fetchData = async () => {
       try {
 
-        const response = await fetch('http://192.168.1.11:3000/api/product/suggest');
+        const response = await fetch(URL+'api/product/suggest');
 
 
         const jsonData = await response.json();
