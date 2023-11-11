@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Image, Button, TextInput, Alert } from 'react-native';
+import {View, Text, StyleSheet, Image, Button, TextInput, Alert, TouchableOpacity, Platform} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from "@react-navigation/native";
 
@@ -16,7 +16,7 @@ export default function UserInfor() {
 
     const getStoredUserId = async () => {
         try {
-            const userId = await AsyncStorage.getItem('_id');
+            const userId = await AsyncStorage.getItem('userId');
             console.log(userId);
             if (userId) {
                 // Gọi hàm để lấy thông tin người dùng dựa trên userId
@@ -30,7 +30,7 @@ export default function UserInfor() {
     const fetchUserInfo = async (userId) => {
         try {
             // Gọi API máy chủ để lấy thông tin người dùng
-            const response = await fetch(`http://192.168.1.11:3000/api/users/info/${userId}`, {
+            const response = await fetch(`http://192.168.1.12:3000/api/users/info/${userId}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -62,7 +62,7 @@ export default function UserInfor() {
             };
 
             // Cập nhật thông tin người dùng
-            const response = await fetch(`http://192.168.1.11:3000/api/users/update/${userId}`, {
+            const response = await fetch(`http://192.168.1.12:3000/api/users/update/${userId}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -87,39 +87,62 @@ export default function UserInfor() {
         <View style={styles.container}>
             {userInfo ? (
                 <>
-                    <Text style={styles.text}>Tên: {userInfo.username}</Text>
-                    {userInfo.avatar && <Image source={{ uri: userInfo.avatar }} style={styles.avatarImage} />}
                     {isEditing ? (
-                        <TextInput
-                            style={styles.text}
-                            value={editedUserInfo.gender}
-                            onChangeText={(text) => setEditedUserInfo({ ...editedUserInfo, gender: text })}
-                        />
+                        <View style={styles.horizontalContainer}>
+                            <View style={styles.avatarContainer}>
+
+                                {editedUserInfo.avatar ? (
+                                    <Image source={{ uri: editedUserInfo.avatar }} style={styles.avatarImage} />
+                                ) : null}
+                            </View>
+                            <View style={styles.infoContainer}>
+                                <TextInput
+                                    style={styles.infoTextInput}
+                                    value={editedUserInfo.gender}
+                                    onChangeText={(text) => setEditedUserInfo({ ...editedUserInfo, gender: text })}
+                                />
+                                <TextInput
+                                    style={styles.infoTextInput}
+                                    value={editedUserInfo.avatar}
+                                    onChangeText={(text) => setEditedUserInfo({ ...editedUserInfo, avatar: text })}
+                                />
+                                <TextInput
+                                    style={styles.infoTextInput}
+                                    value={editedUserInfo.birthday}
+                                    onChangeText={(text) => setEditedUserInfo({ ...editedUserInfo, birthday: text })}
+                                />
+                                <TextInput
+                                    style={styles.infoTextInput}
+                                    value={editedUserInfo.phone}
+                                    onChangeText={(text) => setEditedUserInfo({ ...editedUserInfo, phone: text })}
+                                />
+                            </View>
+                        </View>
                     ) : (
-                        <Text style={styles.text} >Giới tính: {userInfo.gender}</Text>
+                        <View style={styles.horizontalContainer}>
+                            <View style={styles.avatarContainer}>
+                                {editedUserInfo.avatar ? (
+                                    <Image source={{ uri: editedUserInfo.avatar }} style={styles.avatarImage} />
+                                ) : null}
+                            </View>
+                            <View style={styles.infoContainer}>
+                                <Text style={styles.text}>Tên người dùng: {userInfo.username}</Text>
+                                <Text style={styles.text}>Giới tính: {userInfo.gender}</Text>
+                                <Text style={styles.text}>Ngày sinh: {userInfo.birthday}</Text>
+                                <Text style={styles.text}>Số điện thoại: {userInfo.phone}</Text>
+                            </View>
+                        </View>
                     )}
+
                     {isEditing ? (
-                        <TextInput
-                            style={styles.text}
-                            value={editedUserInfo.birthday}
-                            onChangeText={(text) => setEditedUserInfo({ ...editedUserInfo, birthday: text })}
-                        />
+                        <TouchableOpacity style={styles.button} onPress={handleSaveChanges}>
+                            <Text style={styles.buttonText}>LƯU</Text>
+                        </TouchableOpacity>
                     ) : (
-                        <Text style={styles.text}>Ngày sinh: {userInfo.birthday}</Text>
-                    )}
-                    {isEditing ? (
-                        <TextInput
-                            style={styles.text}
-                            value={editedUserInfo.phone}
-                            onChangeText={(text) => setEditedUserInfo({ ...editedUserInfo, phone: text })}
-                        />
-                    ) : (
-                        <Text style={styles.text}>Số điện thoại: {userInfo.phone}</Text>
-                    )}
-                    {isEditing ? (
-                        <Button title="Lưu" onPress={handleSaveChanges} style={styles.btn} />
-                    ) : (
-                        <Button title="Chỉnh sửa" onPress={() => setIsEditing(true)} style={styles.btn} />
+                        <TouchableOpacity style={styles.button} onPress={() => setIsEditing(true)}>
+                            <Text style={styles.buttonText}>CẬP NHẬT THÔNG TIN</Text>
+                        </TouchableOpacity>
+                        // <TouchableOpacity title="Chỉnh sửa" onPress={() => setIsEditing(true)} style={styles.btn} />
                     )}
                 </>
             ) : (
@@ -132,9 +155,25 @@ export default function UserInfor() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        // alignItems: 'center',
-        // justifyContent: 'center',
-        margin:40
+        alignItems: 'center',
+        marginTop: 50,
+        marginBottom:630,
+        backgroundColor: '#F2F6FD',
+        borderRadius: 30,
+        elevation: 2,
+        margin:20,
+        paddingTop:30,
+
+    },
+    horizontalContainer: {
+        flexDirection: 'row', // Đặt chiều ngang
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 50,
+
+    },
+    avatarContainer: {
+        alignItems: 'center',
     },
     avatarImage: {
         width: 100,
@@ -142,12 +181,45 @@ const styles = StyleSheet.create({
         borderRadius: 50,
         margin: 10,
     },
-    btn: {
-        backgroundColor: '#319AB4',
-    },
     text:{
-        fontSize:20,
+        fontSize:18,
+        paddingBottom:5,
+        fontWeight:'normal'
+    },
+    avatarTextInput: {
+        width: 100,
+        height: 100,
+        borderRadius: 50,
+        margin: 10,
+    },
+    infoContainer: {
+        flex: 1, // Chia tỷ lệ 1:1 giữa các phần tử con
+        marginLeft: 20,
 
+    },
+    infoTextInput: {
+        width: '80%',
+        height: 40,
+        borderColor: 'gray',
+        borderWidth: 1,
+        marginBottom: 10,
+        padding: 10,
+        borderRadius: 15,
+        fontWeight:'100'
+    },
+    button: {
+        flexDirection: 'row',
+        // backgroundColor: '#319AB4',
+        padding: 10,
+        borderRadius: 5,
+        justifyContent: 'center',
+        marginTop: 10,
+    },
+    buttonText: {
+        color: 'black',
+        fontSize: 16,
+        fontWeight: 'bold',
+        textAlign: 'center',
+    },
 
-    }
 });
