@@ -6,6 +6,8 @@ import CheckOrderModal from '../Modal/CheckOderModal';
 import SuccessModal from '../Modal/SuccessModal';
 import ProductItem from '../Item/ProductItem';
 import ProductItemOder from '../Item/ProductItemOder';
+import LocationModal from '../Modal/LocationModal';
+
 
 
 
@@ -21,6 +23,7 @@ const PayScreen = ({ route, navigation }) => {
   const [paymentMethod, setPaymentMethod] = useState('cash'); // 'cash' hoặc 'bank'
 
   const [isCheckOrderModalVisible, setCheckOrderModalVisible] = useState(false);
+  const [isCheckLocalModalVisible, setCheckLocalModalVisible] = useState(false);
   const [isSuccessModalVisible, setSuccessModalVisible] = useState(false);
 
   const handleOrderPress = () => {
@@ -31,6 +34,10 @@ const PayScreen = ({ route, navigation }) => {
       // Logic cho phương thức thanh toán tiền mặt
       setCheckOrderModalVisible(true);
     }
+  };
+//địa điểm
+  const toggleLocationModal = () => {
+    setCheckLocalModalVisible(!isCheckLocalModalVisible);
   };
 
   const handleOrderSuccess = () => {
@@ -69,7 +76,16 @@ const PayScreen = ({ route, navigation }) => {
         <Text style={styles.headerText}>Thanh Toán</Text>
       </View>
       <ScrollView style={styles.container}>
+      <View style={styles.ngang}>
         <Text style={styles.deliveryText}>Giao hàng đến:</Text>
+        <TouchableOpacity style={styles.buttondd} onPress={toggleLocationModal}>
+          <Text>Thay đổi địa điểm</Text>
+        </TouchableOpacity>
+        <LocationModal 
+          visible={isCheckLocalModalVisible} 
+          onClose={toggleLocationModal} // Bạn cần đảm bảo rằng LocationModal có prop onClose
+        />
+      </View>
         <Text style={styles.addressText}>D29, Phạm Văn Bạch, Cầu Giấy, Hà Nội</Text>
         {products.map(products =><ProductItemOder products={products} />)}
         
@@ -155,6 +171,18 @@ const styles = StyleSheet.create({
     padding: 0.05 * screenWidth,
     borderBottomWidth: 1,
     borderColor: 'lightgray',
+  },
+  ngang:{
+    flexDirection:'row',
+    justifyContent: 'space-between',
+    alignItems:'center',
+    
+  },
+  buttondd:{
+    borderRadius: 15,
+    backgroundColor: '#009966',
+    padding: 10
+
   },
   arrowIcon: {
     width: 0.06 * screenWidth,
