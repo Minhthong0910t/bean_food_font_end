@@ -20,7 +20,7 @@ const ProductDetailScreen = ({ navigation, route }) => {
   const { product } = route.params;
   const { state, dispatch } = useCart();
   const [quantity, setQuantity] = useState(1);
-  const [totalPrice, setTotalPrice] = useState(product.price);
+  const [totalPrice, setTotalPrice] = useState(product.realPrice);
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
   const [isLoading, setIsLoading] = useState(true);
@@ -122,13 +122,13 @@ const ProductDetailScreen = ({ navigation, route }) => {
 
   const increaseQuantity = () => {
     setQuantity(quantity + 1);
-    setTotalPrice(product.price * (quantity + 1));
+    setTotalPrice(product.realPrice * (quantity + 1));
   };
 
   const decreaseQuantity = () => {
     if (quantity > 1) {
       setQuantity(quantity - 1);
-      setTotalPrice(product.price * (quantity - 1));
+      setTotalPrice(product.realPrice * (quantity - 1));
     }
   };
   const saveDataToAsyncStorage = async (key, data) => {
@@ -149,7 +149,7 @@ const ProductDetailScreen = ({ navigation, route }) => {
       nameproduct:product.name , 
       quantityproduct :quantity ,
       total :totalPrice,
-      price:product.price,
+      price:product.realPrice,
       idusser:data
     }
     dispatchproduct(addproducttocart(newCartProduct))
@@ -162,7 +162,7 @@ const ProductDetailScreen = ({ navigation, route }) => {
     text2: 'Mời đến giỏ hàng',
   });
   setQuantity(1)
-  setTotalPrice(product.price)
+  setTotalPrice(product.realPrice)
  
 
     // Show a toast message
@@ -174,7 +174,7 @@ const ProductDetailScreen = ({ navigation, route }) => {
       text2: 'Mời đến giỏ hàng',
     });
     setQuantity(1)
-    setTotalPrice(product.price)
+    setTotalPrice(product.realPrice)
   }else{
     Toast.show({
       type: 'error',
@@ -194,7 +194,7 @@ const ProductDetailScreen = ({ navigation, route }) => {
   const calculateTotalPrice = () => {
     let total = 0;
     state.cart.forEach((product) => {
-      total += product.price * product.quantity;
+      total += product.realPrice * product.quantity;
     });
     setTotalPrice(total);
   };
@@ -283,12 +283,12 @@ const ProductDetailScreen = ({ navigation, route }) => {
   
           <ScrollView>
             {/* Product image */}
-            <Image source={{uri: product.images[0]}} style={styles.image} />
+            <Image source={{uri: product.images}} style={styles.image} />
   
             {/* Product name and price */}
             <View style={styles.contentRow}>
               <Text style={styles.productName}>{product.name}</Text>
-              <Text style={styles.productPrice}>{product.price} VND</Text>
+              <Text style={styles.productPrice}>{product.realPrice} VND</Text>
             </View>
   
             {/* Product description */}

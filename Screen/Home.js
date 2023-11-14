@@ -11,6 +11,7 @@ import {
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { URL } from '../const/const';
+import SliderHome from '../Item/SliderHome';
 
 const { width, height } = Dimensions.get('window');
 
@@ -92,81 +93,7 @@ const HeaderHome = ({ navigation }) => {
   );
 };
 
-const SliderHome = () => {
 
-
-  const [imageslider, setimageslider] = useState([]);
-
-  const stepimage = useRef(null);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-
-        const response = await fetch(URL+'api/slider/getAll');
-
-
-        const jsonData = await response.json();
-        setimageslider(jsonData.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchData();
-
-  }, []);
-
-  // useEffect(()=>{
-  //     if(imageslider.length>0){
-  //       let index = 0;
-  //         setInterval(()=>{
-  //             stepimage.current.scrollTo({x:index*0.925*width , y:0 });
-  //             index+=1;
-  //             if(index==imageslider.length){
-  //               index=0;
-  //             }
-  //         } , 3000)
-  //     }
-  // },[imageslider])
-
-  const headleScoll = (e) => {
-    if (!e) {
-      return;
-    }
-    const { nativeEvent } = e;
-
-    if (nativeEvent && nativeEvent.contentOffset) {
-      const currenoffset = nativeEvent.contentOffset.x;
-      let imageIndex = 0;
-
-      if (nativeEvent.contentOffset.x > 0) {
-        imageIndex = Math.floor((nativeEvent.contentOffset.x + (0.925 * width) / 2) / (0.925 * width))
-      }
-
-    }
-
-  }
-  return (
-    <View>
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={{ width: 0.925 * width * imageslider.length }}
-        style={{ margin: 15, borderRadius: 15 }}
-        // onScroll={headleScoll}
-        scrollEventThrottle={16}
-      // ref={stepimage}
-      >
-        {imageslider.map((data, index) => <View key={index}><Image source={{ uri: data.image }} style={{
-          width: 0.925 * width,
-          height: 0.25 * height,
-          borderRadius: 15,
-        }} /></View>)}
-      </ScrollView>
-    </View>
-  );
-};
 
 const Menu = ({ navigation }) => {
   return (
@@ -303,7 +230,7 @@ const Discountforeveryday = () => {
   )
 }
 
-const Foodngonquanhday = ({ navigation }) => {
+const Restaurant = ({ navigation }) => {
   const [datarestauran, setdatarestauran] = useState([])
 
   useEffect(() => {
@@ -335,7 +262,9 @@ const Foodngonquanhday = ({ navigation }) => {
       </View>
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
         {datarestauran.map((data, index) =>
+       
           <View style={{ width: 250 }} key={index}>
+          <TouchableOpacity onPress={() => navigation.navigate('Restaurant', { restaurant: data })}>
             <View style={{ marginLeft: 15 }}>
               <Image source={{ uri: data.image }} style={{ width: 0.58 * width, height: 0.2 * height, borderTopLeftRadius: 10, borderTopRightRadius: 10 }} />
             </View>
@@ -350,6 +279,7 @@ const Foodngonquanhday = ({ navigation }) => {
                 <Image source={require('./../Image/right_arrow.png')} style={{ width: 15, height: 15 }} />
               </TouchableOpacity>
             </View>
+            </TouchableOpacity>
           </View>)}
       </ScrollView>
     </View>
@@ -391,7 +321,7 @@ const Goiymonan = ({ navigation }) => {
               onPress={() => navigation.navigate('ProductDetail', { product: data })}
             >
               <View >
-                <Image source={{ uri: data.images[0] }} style={{ borderWidth: 1, width: width * 0.25, height: width * 0.25 }} />
+                <Image source={{ uri: data.images }} style={{ borderWidth: 1, width: width * 0.25, height: width * 0.25 }} />
               </View>
               <View style={{ flexDirection: 'column', paddingLeft: 10, marginLeft: 10 }}>
                 <Text style={{ fontWeight: 'bold', fontSize: 15, color: '#616161' }}>
@@ -423,7 +353,7 @@ const Home = ({ navigation }) => {
         <Menu navigation={navigation} />
         <Discount />
         <Discountforeveryday />
-        <Foodngonquanhday navigation={navigation} />
+        <Restaurant navigation={navigation} />
         <Goiymonan navigation={navigation} />
       </ScrollView>
     </View>

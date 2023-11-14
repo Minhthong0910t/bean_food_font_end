@@ -7,12 +7,13 @@ import {
   SafeAreaView,
   Dimensions,
 } from 'react-native';
-import QRCode from 'react-native-qrcode-svg';
 import CryptoJS from 'crypto-js';
 import * as Network from 'expo-network';
-import { format } from 'date-fns';
+import { WebView } from 'react-native-webview';
+
 
 const screenWidth = Dimensions.get('window').width;
+const screenHeight = Dimensions.get('window').height;
 
 const PaymentScreen = ({ route, navigation }) => {
   const { totalPrice, products } = route.params;
@@ -169,7 +170,7 @@ const generateEncodedDateTime = () => {
   
 
   const goBack = () => {
-    navigation.goBack();
+    navigation.navigate('Home');
   };
 
   return (
@@ -177,28 +178,17 @@ const generateEncodedDateTime = () => {
       <TouchableOpacity onPress={goBack} style={styles.goBackButton}>
         <Text>Go Back</Text>
       </TouchableOpacity>
-      <View>
-      <Text style={styles.title}>Hoá đơn thanh toán đơn hàng</Text>
-      </View>
-      <View>
-     
-      <Text style={styles.title}>Tổng tiền: {totalPrice}</Text>
-      </View>
+      
       
       <View style={styles.paymentInfoContainer}>
-      <Text style={styles.title}>Thanh toán qua ngân hàng</Text>
-      {/* Kiểm tra để đảm bảo paymentUrl không phải là chuỗi rỗng */}
-      {paymentUrl ? (
-        <QRCode
-          value={paymentUrl}
-          size={screenWidth * 0.8}
-          color="black"
-          backgroundColor="white"
-        />
-      ) : (
-        <Text>Đang tạo URL thanh toán...</Text>
-      )}
-     
+        {paymentUrl ? (
+          <WebView
+            source={{ uri: paymentUrl }}
+            style={styles.webView}
+          />
+        ) : (
+          <Text>Đang tạo URL thanh toán...</Text>
+        )}
       </View>
     </SafeAreaView>
   );
@@ -217,7 +207,8 @@ const styles = StyleSheet.create({
   },
   paymentInfoContainer: {
     alignItems: 'center',
-    margin: 20,
+    margin: 50,
+    padding: 10
   },
   title: {
     fontSize: 22,
@@ -229,10 +220,9 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 20,
   },
-  qrCode: {
-    width: screenWidth * 0.8,
-    height: screenWidth * 0.8,
-    marginBottom: 20,
+  webView: {
+    width: screenWidth,
+    height: screenHeight * 0.8, // You can adjust the height as needed
   },
 });
 
