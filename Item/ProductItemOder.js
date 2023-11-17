@@ -11,9 +11,9 @@ const ProductItemOder = ({ products, quantity, onUpdateQuantity }) => {
     <View style={styles.itemContainer}>
       {/* <Image source={product.image} style={styles.productImage} /> */}
       <View style={styles.doc}>
-      <Text style={styles.productName}>{products.nameproduct}</Text>
+      <Text style={styles.productName}>{products.name}</Text>
       <View style={styles.quantityContainer}>
-        <Text style={styles.quantityText}>{products.quantityproduct}</Text>
+        <Text style={styles.quantityText}>{products.quantity}</Text>
       </View>
       </View>
       

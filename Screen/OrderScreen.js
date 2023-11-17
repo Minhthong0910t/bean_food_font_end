@@ -3,8 +3,10 @@ import { View, Text, StyleSheet, Image, ScrollView, SafeAreaView, Platform, Touc
 import { useCart } from '../Component/CartContext'; // Import the useCart hook
 import { useSelector  , useDispatch} from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useIsFocused } from '@react-navigation/native';
 import { deleteproduct, updatecartproduct } from '../Redux/ActionAddtoCart';
 import Toast from 'react-native-toast-message';
+import { URL } from '../const/const';
 
 const OrderScreen = ({ navigation, route }) => {
   const { state, dispatch } = useCart(); // Get the cart state and dispatch
@@ -15,8 +17,12 @@ const OrderScreen = ({ navigation, route }) => {
   const [, forceUpdate] = useReducer((x) => x + 1, 0);
   const [products , setProducts] = useState([]);
 
+
+  const isFocused = useIsFocused();
+
   const dispathDeleteProductFromCart = useDispatch();
-  
+
+
   useEffect(() => {
     const checkLoginStatus = async () => {
       try {
@@ -51,15 +57,18 @@ const OrderScreen = ({ navigation, route }) => {
           if(isLogin==='true'){
             setIsLoggedIn(true)
           setDataUid(storedData);
+          console.log("vào đây vào log" , dataUid)
           }
-
+  
         }
       } catch (error) {
         console.log(error);
       }
     };
-    fetchData();
+    fetchData()
   }, []);
+
+
 
       
 const updateItemByIdInAsyncStorage = async (key, idToUpdate, updatedData) => {
@@ -86,24 +95,49 @@ const updateItemByIdInAsyncStorage = async (key, idToUpdate, updatedData) => {
     console.log('Error updating object:', error);
   }
 };
-  useEffect(() => {
+const fetchDataOder= async ()=>{
+
+  const storedData = await AsyncStorage.getItem('_id');
+  try {
+    const response = await fetch(`${URL}api/order`)
+    const jsonData = await response.json();
+    const datafilter = jsonData.filter((obj , index)=>
+       obj.userId === storedData
+    )
+    console.log("vào đây log data order data fillter" , datafilter)
+    setProducts(datafilter)
+
+  
+  } catch (error) {
+        console.log(error);
+  }
+}
+ 
+useEffect(() => {
+  if (isFocused) {
+    // Gọi hàm tải dữ liệu tại đây
+    fetchDataOder()
+  }
+}, [isFocused]);
+  // useEffect(() => {
    
-  const getDataFromAsyncStorage = async (key, id) => {
-    try {
-      const jsonData = await AsyncStorage.getItem(key);
-      if (jsonData) {
-        const dataArray = JSON.parse(jsonData);
-        const filteredData = dataArray.filter((obj) => obj.idusser === id);
-        setProducts(filteredData)
+  // const getDataFromAsyncStorage = async (key, id) => {
+  //   // try {
+  //     // const jsonData = await AsyncStorage.getItem(key);
+  //     // if (jsonData) {
+  //     //   const dataArray = JSON.parse(jsonData);
+  //     //   const filteredData = dataArray.filter((obj) => obj.idusser === id);
+  //     //   setProducts(filteredData)
 
        
-      }
-    } catch (error) {
-      console.log('Error retrieving data: ', error);
-    }
-  };
-  getDataFromAsyncStorage('products' , dataUid)
-  }, [products]);
+  //     // }
+
+  //   // } catch (error) {
+  //   //   console.log('Error retrieving data: ', error);
+  //   // }
+  // };
+  // getDataFromAsyncStorage('products' , dataUid)
+  // }, []);
 
 
   useEffect(()=>{ 
@@ -118,7 +152,7 @@ const updateItemByIdInAsyncStorage = async (key, idToUpdate, updatedData) => {
     let total = 0;
 if(products && products.length>=0){
   products.forEach((product) => {
-    total += (product.price * product.quantityproduct);
+    total += (product.price * product.quantity);
   });
 
 
@@ -234,14 +268,14 @@ if(products && products.length>=0){
         {products&& products.length>0?(products.map((product, index) => (
           <View key={index} style={styles.productContainer}>
             <View style={{ flex: 1 }}>
-              <Text style={styles.productName}>{product.nameproduct}</Text>
-              <Text style={styles.productPrice}>{product.price *product.quantityproduct} VND</Text>
+              <Text style={styles.productName}>{product.name}</Text>
+              <Text style={styles.productPrice}>{product.price *product.quantity} VND</Text>
             </View>
             <View style={styles.quantityContainer}>
               <TouchableOpacity onPress={() => decrementQuantity(product)}>
                 <Text style={styles.quantityText}>-</Text>
               </TouchableOpacity>
-              <Text style={styles.quantityText}>{product.quantityproduct}</Text>
+              <Text style={styles.quantityText}>{product.quantity}</Text>
               <TouchableOpacity onPress={() => incrementQuantity(product , index)}>
                 <Text style={styles.quantityText}>+</Text>
               </TouchableOpacity>

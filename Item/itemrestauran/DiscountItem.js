@@ -5,24 +5,7 @@ const {width , height} = Dimensions.get('window')
 
 const DiscountItem = () => {
     const [discount , setdiscount ] = useState([]);
-    useEffect(()=>{
-      const fetchData = async () => {
-        try {
-  
-          const response = await fetch('http://192.168.1.7:3000/api/discount/getAll');
-  
-      
-  
-          const jsonData = await response.json();
-    
-          setdiscount(jsonData.data);
-        } catch (error) {
-          console.error(error);
-        }
-      };
-  
-      fetchData();
-    },[])
+   
   return (
     <View style = {styles.headerdiscount}>
       <Text style = {styles.nametext}>Mã khuyến mãi được áp dụng cho cửa hàng</Text>
