@@ -86,6 +86,7 @@ export default function App() {
                         <Stack.Screen component={RestaurantScreen} name='Restaurant' />
                         <Stack.Screen component={PaymentScreen} name='PaymentScreen' />
 
+
                     </Stack.Navigator>
                 </CartProvider>
             </NavigationContainer>

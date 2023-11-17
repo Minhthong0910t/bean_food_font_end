@@ -7,6 +7,7 @@ import SuccessModal from '../Modal/SuccessModal';
 import ProductItem from '../Item/ProductItem';
 import ProductItemOder from '../Item/ProductItemOder';
 import LocationModal from '../Modal/LocationModal';
+import CurrentLocationMap from '../components/CurrentLocationMap';
 
 
 
@@ -15,7 +16,10 @@ const screenWidth = Dimensions.get('window').width;
 
 const PayScreen = ({ route, navigation }) => {
   const { products } = route.params;
-  const [totalproduct,settotalproduct] = useState(0)
+  const [totalproduct,settotalproduct] = useState(0);
+  const [orderData, setOrderData] = useState({});
+
+  const [address, setAddress] = useState('D29, Phạm Văn Bạch, Cầu Giấy, Hà Nội');
   // Sử dụng trạng thái cho quantity và totalPrice
   const [text, setText] = useState('');
   const deliveryFee = 15000;
@@ -26,14 +30,60 @@ const PayScreen = ({ route, navigation }) => {
   const [isCheckLocalModalVisible, setCheckLocalModalVisible] = useState(false);
   const [isSuccessModalVisible, setSuccessModalVisible] = useState(false);
 
+  const [data, setData] = useState('');
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const storedData = await AsyncStorage.getItem('_id'); // Thay 'key' bằng khóa lưu trữ của bạn
+        if (storedData !== null) {
+          setData(storedData);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchData();
+    console.log("id user ",data);
+  
+  }, []);
+//lấy vị trí hiện tại người dùng
+  useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        setAddress('Quyền truy cập vị trí bị từ chối.');
+        return;
+      }
+
+      let location = await Location.getCurrentPositionAsync({});
+      let reverseGeocode = await Location.reverseGeocodeAsync(location.coords);
+      if (reverseGeocode.length > 0) {
+        let addr = reverseGeocode[0];
+        setAddress(`${addr.street}, ${addr.city}, ${addr.region}, ${addr.country}`);
+      }
+    })();
+  }, []);
+
   const handleOrderPress = () => {
-    if (paymentMethod === 'bank') {
-      // Chuyển đến màn hình PaymentVN
-      navigation.navigate('PaymentScreen', { totalPrice: ordertotalPrice, products: products });
-    } else {
-      // Logic cho phương thức thanh toán tiền mặt
-      setCheckOrderModalVisible(true);
-    }
+     // Tạo dữ liệu đơn hàng
+  const newOrderData = {
+    userId: data, // Thay thế bằng userId thực
+    address: address,
+    totalPrice: totalproduct,
+    // restaurantName:products.
+    paymentMethod: paymentMethod,
+    notes: text,
+    products: products, // Giả sử 'products' là mảng sản phẩm
+  };
+
+  setOrderData(newOrderData);
+
+  if (paymentMethod === 'bank') {
+    navigation.navigate('PaymentScreen', { totalPrice: ordertotalPrice, products: products });
+  } else {
+    setCheckOrderModalVisible(true);
+  }
   };
 //địa điểm
   const toggleLocationModal = () => {
@@ -65,17 +115,22 @@ const PayScreen = ({ route, navigation }) => {
   // Sử dụng hook useEffect để cập nhật totalPrice mỗi khi quantity thay đổi
   useEffect(() => {
     toltalproducts()
+    console.log("id user ",data);
+    console.log("products: ",products);
   }, [products]);
 
   return (
-    <SafeAreaView style={{ flex: 1, marginTop: 25 }}>
+    <SafeAreaView style={{flex:10, marginTop: 25 }}>
       <View style={styles.header}>
         <TouchableOpacity onPress={goBack}>
           <Image source={require('./../Image/left_arrow.png')} style={styles.arrowIcon} />
         </TouchableOpacity>
         <Text style={styles.headerText}>Thanh Toán</Text>
       </View>
-      <ScrollView style={styles.container}>
+
+
+      <View style={styles.container}>
+      <ScrollView >
       <View style={styles.ngang}>
         <Text style={styles.deliveryText}>Giao hàng đến:</Text>
         <TouchableOpacity style={styles.buttondd} onPress={toggleLocationModal}>
@@ -86,7 +141,11 @@ const PayScreen = ({ route, navigation }) => {
           onClose={toggleLocationModal} // Bạn cần đảm bảo rằng LocationModal có prop onClose
         />
       </View>
-        <Text style={styles.addressText}>D29, Phạm Văn Bạch, Cầu Giấy, Hà Nội</Text>
+        <Text style={styles.addressText}>{address}</Text>
+        <View >
+          <CurrentLocationMap/>
+        </View>
+   
         {products.map(products =><ProductItemOder products={products} />)}
         
         
@@ -156,16 +215,19 @@ const PayScreen = ({ route, navigation }) => {
           navigation={navigation}
       />
       </ScrollView>
+      </View>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
+    flex:9.5,
     padding: 0.05 * screenWidth,
 
   },
   header: {
+    flex:0.5,
     flexDirection: 'row',
     alignItems: 'center',
     padding: 0.05 * screenWidth,
@@ -173,9 +235,11 @@ const styles = StyleSheet.create({
     borderColor: 'lightgray',
   },
   ngang:{
+    
     flexDirection:'row',
     justifyContent: 'space-between',
     alignItems:'center',
+    
     
   },
   buttondd:{

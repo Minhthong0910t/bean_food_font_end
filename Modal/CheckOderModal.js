@@ -1,8 +1,24 @@
 import React from 'react';
 import { Modal, View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { URL } from '../const/const';
 
 const CheckOrderModal = ({ modalVisible, setModalVisible, onOrderSuccess }) => {
-    
+  const ordersSuccess = (object) => {
+    fetch(`${URL}/history/create`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(object),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log('Object saved to MongoDB:', data);
+      })
+      .catch((error) => {
+        console.error('Error saving object to MongoDB:', error);
+      });
+  };
   const orderSuccess = () => {
     setModalVisible(false);
     onOrderSuccess();
