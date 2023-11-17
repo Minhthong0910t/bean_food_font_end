@@ -140,19 +140,42 @@ const ProductDetailScreen = ({ navigation, route }) => {
       console.log('Error saving data: ', error);
     }
   };
+  const saveObjectToMongoDB = (object) => {
+    fetch(`${URL}api/add/order`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(object),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log('Object saved to MongoDB:', data);
+      })
+      .catch((error) => {
+        console.error('Error saving object to MongoDB:', error);
+      });
+  };
+   useEffect(()=>{
+      console.log("product trong file detail" , product.restaurantId);
+   } , [])
   const addToCart = async() => {
     const isLogin = await AsyncStorage.getItem('isLogin');
     if(isLogin==='true'){
     calculateTotalPrice();
     const newCartProduct = {
-      idproductcart:new Date().getTime().toString(),
-      nameproduct:product.name , 
-      quantityproduct :quantity ,
-      total :totalPrice,
+      userId:data , 
+      restaurantName :product.restaurantId,
+      name:product.name , 
+      image:product.image,
       price:product.realPrice,
-      idusser:data
+      quantity :quantity ,
+      productId:product._id
     }
-    dispatchproduct(addproducttocart(newCartProduct))
+ 
+    
+    // Gọi hàm saveObjectToMongoDB với đối tượng bạn muốn gửi lên MongoDB
+    saveObjectToMongoDB(newCartProduct);
 
 
   console.log(data)
@@ -205,7 +228,11 @@ const ProductDetailScreen = ({ navigation, route }) => {
       return;
   } 
   const isLogin = await AsyncStorage.getItem('isLogin');
+
   if(isLogin==='false'){
+
+
+  
         setNewComment('');
         Alert.alert(
           "Thông báo",
@@ -270,38 +297,55 @@ const ProductDetailScreen = ({ navigation, route }) => {
           <View style={styles.header}>
             {/* Back button */}
             <TouchableOpacity onPress={() => navigation.goBack()}>
-              <Image source={require('./../Image/left_arrow.png')} style={{ width: 25, height: 25 }} />
+              <Image
+                source={require("./../Image/left_arrow.png")}
+                style={{ width: 25, height: 25 }}
+              />
             </TouchableOpacity>
             {/* Title */}
-            <Text style={{ fontWeight: 'bold', flex: 1, fontSize: 24 }}> Chi tiết sản phẩm </Text>
-  
+            <Text style={{ fontWeight: "bold", flex: 1, fontSize: 24 }}>
+              {" "}
+              Chi tiết sản phẩm{" "}
+            </Text>
+
             {/* Cart button */}
             <TouchableOpacity style={styles.menuButton} onPress={goCart}>
-              <Image source={require('./../Image/menu-icon.png')} style={styles.icon} />
+              <Image
+                source={require("./../Image/menu-icon.png")}
+                style={styles.icon}
+              />
             </TouchableOpacity>
           </View>
-  
+
           <ScrollView>
             {/* Product image */}
-            <Image source={{uri: product.images}} style={styles.image} />
-  
+            <Image source={{ uri: product.image }} style={styles.image} />
+
             {/* Product name and price */}
             <View style={styles.contentRow}>
               <Text style={styles.productName}>{product.name}</Text>
               <Text style={styles.productPrice}>{product.realPrice} VND</Text>
             </View>
-  
+
             {/* Product description */}
             <View style={styles.descriptionContainer}>
               <Text style={styles.description}>{product.description}</Text>
             </View>
-  
+
             {/* Product rating */}
-            <View style={styles.danhGiaRow}>
-              <Text style={styles.DanhgiaTitle}>Đánh giá {product.race}</Text>
-              <Image source={require('./../Image/star.png')} style={styles.iconstar} />
+            <View style = {{flexDirection:'row'  , justifyContent:'space-between' , alignItems:'center'}}>
+              <View style={styles.danhGiaRow}>
+                <Text style={styles.DanhgiaTitle}>Đánh giá {product.race}</Text>
+                <Image
+                  source={require("./../Image/star.png")}
+                  style={styles.iconstar}
+                />
+              </View>
+            <TouchableOpacity onPress={()=> navigation.navigate('Restaurant' ,{ restaurant: product.restaurantId } )}>
+            <Text style={styles.DanhgiaTitle}>Đi đến nhà hàng</Text>
+            </TouchableOpacity>
             </View>
-  
+
             {/* Comments section */}
             <View style={styles.commentSection}>
               <TextInput
@@ -312,22 +356,26 @@ const ProductDetailScreen = ({ navigation, route }) => {
                 value={newComment}
               />
               <TouchableOpacity onPress={submitComment}>
-                <Icon name="send" size={24} color="#319AB4" style={styles.sendIcon} />
+                <Icon
+                  name="send"
+                  size={24}
+                  color="#319AB4"
+                  style={styles.sendIcon}
+                />
               </TouchableOpacity>
             </View>
             <ScrollView style={styles.scrollView}>
-                    {comments.map((comment, index) => (
-                      <CommentItem 
-                        key={index}
-                        username={comment.idUser.username} 
-                        title={comment.title} 
-                        avatar={comment.idUser.avatar}
-                      />
-                    ))}
-                  </ScrollView>
-            
+              {comments.map((comment, index) => (
+                <CommentItem
+                  key={index}
+                  username={comment.idUser.username}
+                  title={comment.title}
+                  avatar={comment.idUser.avatar}
+                />
+              ))}
+            </ScrollView>
           </ScrollView>
-  
+
           {/* Bottom bar with quantity and payment button */}
           <View style={styles.bottomRow}>
             <View style={styles.quantityContainer}>
@@ -336,12 +384,18 @@ const ProductDetailScreen = ({ navigation, route }) => {
               <Text style={styles.quantityText}>{quantity}</Text>
               <Button title="+" onPress={increaseQuantity} />
             </View>
-            <TouchableOpacity style={[styles.button, styles.bottomButton]} onPress={addToCart}>
-              <Image source={require('./../Image/money-icon.png')} style={styles.icon} />
+            <TouchableOpacity
+              style={[styles.button, styles.bottomButton]}
+              onPress={addToCart}
+            >
+              <Image
+                source={require("./../Image/money-icon.png")}
+                style={styles.icon}
+              />
               <Text style={styles.buttonText}>Thêm món</Text>
             </TouchableOpacity>
           </View>
-  
+
           {/* Initialize Toast container */}
           <Toast ref={(ref) => Toast.setRef(ref)} />
         </View>
@@ -406,7 +460,7 @@ const styles = StyleSheet.create({
   DanhgiaTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    marginLeft:5
+    marginLeft:5 , marginRight:10
   },
   commentInputContainer: {
     flexDirection: 'row',

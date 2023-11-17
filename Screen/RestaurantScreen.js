@@ -1,15 +1,33 @@
 import { StyleSheet, Text, View, Dimensions, ScrollView } from "react-native";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import HeaderRestaurant from "../Item/itemrestauran/HeaderRestaurant";
 import CoffeeShopScreen from "../Item/itemrestauran/HeaderRestaurant";
 import DiscountItem from "../Item/itemrestauran/DiscountItem";
 import MenuRestaurant from "../Item/itemrestauran/MenuRestaurant";
-import NoibatRestaurant from "../Item/itemrestauran/NoibatRestaurant";
-import KhuyenmaiRestaurant from "../Item/itemrestauran/KhuyenmaiRestaurant";
 
+import KhuyenmaiRestaurant from "../Item/itemrestauran/KhuyenmaiRestaurant";
+import { URL } from "../const/const";
 const { width, height } = Dimensions.get("window");
 const RestaurantScreen = ({ navigation , route  }) => {
+
+  const [datarestaurnat , setdatarestaurant] = useState([])
   const {restaurant} = route.params;
+
+
+
+  useEffect(()=>{
+
+    
+    const fetchData = async()=>{
+      const response = await fetch(`${URL}api/restaurant/${restaurant}`)
+
+      const jsondata = await response.json();
+  
+        setdatarestaurant(jsondata.data[0])
+    }
+    fetchData()
+    console.log("restaurnat id" , restaurant);
+  } , [])
 
 
 useEffect(()=>{
@@ -19,11 +37,12 @@ useEffect(()=>{
     <View style={styles.container}>
       {/* <HeaderRestaurant/> */}
       <ScrollView>
-        <CoffeeShopScreen  navigation = {navigation} datarestaurant = {restaurant}/>
-        <DiscountItem  navigation = {navigation} />
-        <NoibatRestaurant  navigation = {navigation} />
+
+  
+        <CoffeeShopScreen  navigation = {navigation} data = {datarestaurnat}/>
+        {/* <DiscountItem  navigation = {navigation} /> */}
         <KhuyenmaiRestaurant  navigation = {navigation} />
-        <MenuRestaurant  navigation = {navigation}/>
+        <MenuRestaurant  navigation = {navigation} data = {restaurant} />
       </ScrollView>
     </View>
   );
