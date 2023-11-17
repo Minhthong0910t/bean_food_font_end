@@ -83,7 +83,9 @@ export default function App() {
                         <Stack.Screen component={Payment} name='Payment' />
                         <Stack.Screen component={UserInfor} name='UserInfor' />
                         <Stack.Screen component={SplashScreen} name='SplashScreen' />
-                        <Stack.Screen component={RestaurantScreen} name='Restaurant' />
+                        <Stack.Screen component={RestaurantScreen} name='Restaurant'     screenOptions={{
+      unmountOnBlur: true,
+    }} />
                         <Stack.Screen component={PaymentScreen} name='PaymentScreen' />
 
 

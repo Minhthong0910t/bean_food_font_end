@@ -25,7 +25,7 @@ const KhuyenmaiRestaurant = ({navigation}) => {
       setdata(data)
    
   },[])
-  datamenu.forEach(item => {
+  datamenu.forEach((item , index)=> {
     item.price = item.pricegoc * item.discount / 100;
   });
   return (

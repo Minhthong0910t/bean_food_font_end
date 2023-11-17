@@ -97,7 +97,7 @@ const PayScreen = ({ route, navigation }) => {
   const toltalproducts = () => {
      var total=0
       for (var i =0;i<products.length;i++) {
-        price=parseFloat(products[i].total)
+        price=parseFloat(products[i].quantity*products[i].price)
         total+=price
         console.log('giá: ',products[i].total);
       }
