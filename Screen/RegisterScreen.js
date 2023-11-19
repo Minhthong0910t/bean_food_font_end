@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Image, ToastAndroid } from 'react-native';
 import { useNavigation } from "@react-navigation/native";
 import { TextInput, Button } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { URL } from '../const/const';
 
 export default function RegisterScreen() {
     const [username, setUsername] = useState('');
@@ -57,7 +58,7 @@ export default function RegisterScreen() {
         };
 
         // Gửi yêu cầu POST
-        await fetch('http://192.168.1.11:3000/api/users/register', {
+        await fetch(URL+'api/users/register', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

@@ -12,10 +12,30 @@ import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { URL } from '../const/const';
 import SliderHome from '../Item/SliderHome';
+import * as Location from 'expo-location';
 
 const { width, height } = Dimensions.get('window');
 
 const HeaderHome = ({ navigation }) => {
+  const [address, setAddress] = useState('Đang lấy vị trí...');
+
+useEffect(() => {
+  (async () => {
+    let { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== 'granted') {
+      setAddress('Quyền truy cập vị trí bị từ chối.');
+      return;
+    }
+
+    let location = await Location.getCurrentPositionAsync({});
+    let reverseGeocode = await Location.reverseGeocodeAsync(location.coords);
+    if (reverseGeocode.length > 0) {
+      let addr = reverseGeocode[0];
+      let fullAddress = `${addr.name || ''} ${addr.street || ''}, ${addr.city || ''}, ${addr.region || ''}, ${addr.country || ''}`;
+      setAddress(fullAddress.replace(/, ,/g, ',').replace(/,,/g, ',').trim()); 
+    }
+  })();
+}, []);
   return (
     <View style={{ marginTop: 30 }}>
       <View style={{ alignItems: 'center', flexDirection: 'row' }}>
@@ -25,7 +45,7 @@ const HeaderHome = ({ navigation }) => {
         />
 
         <Text style={{ fontSize: 15, fontWeight: 'bold', color: '#616161' }}>
-          D29, Phạm Văn Bạch
+          {address}
         </Text>
 
         <TouchableOpacity
@@ -35,8 +55,8 @@ const HeaderHome = ({ navigation }) => {
             margin: 15,
           }}>
           <Image
-            source={require('./../Image/menu.png')}
-            style={{ width: 30, height: 30 }}
+            source={require('./../Image/logo_bean.png')}
+            style={{ width: 50, height: 50 }}
           />
         </TouchableOpacity>
       </View>

@@ -4,7 +4,7 @@ import { View, Text, Image, TouchableOpacity, StyleSheet, Dimensions } from 'rea
 const ProductItem = ({ product}) => {
   return (
     <View style={styles.container}>
-      {/* <Image source={product.image} style={styles.productImage} /> */}
+      <Image source={{ uri: product.image }} style={styles.productImage} />
       <Text style={styles.productName}>{product.name}</Text>
       <View style={styles.quantityContainer}>
         <TouchableOpacity onPress={() => onUpdateQuantity(quantity - 1)}>

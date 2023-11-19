@@ -8,18 +8,20 @@ import ProductItem from '../Item/ProductItem';
 import ProductItemOder from '../Item/ProductItemOder';
 import LocationModal from '../Modal/LocationModal';
 import CurrentLocationMap from '../components/CurrentLocationMap';
-
+import * as Location from 'expo-location';
+import { URL } from '../const/const';
+import ToolBar from '../components/ToolBar';
 
 
 
 const screenWidth = Dimensions.get('window').width;
 
 const PayScreen = ({ route, navigation }) => {
-  const { products } = route.params;
+  const { products,dataUid } = route.params;
   const [totalproduct,settotalproduct] = useState(0);
   const [orderData, setOrderData] = useState({});
 
-  const [address, setAddress] = useState('D29, Phạm Văn Bạch, Cầu Giấy, Hà Nội');
+  // const [address, setAddress] = useState('D29, Phạm Văn Bạch, Cầu Giấy, Hà Nội');
   // Sử dụng trạng thái cho quantity và totalPrice
   const [text, setText] = useState('');
   const deliveryFee = 15000;
@@ -30,70 +32,103 @@ const PayScreen = ({ route, navigation }) => {
   const [isCheckLocalModalVisible, setCheckLocalModalVisible] = useState(false);
   const [isSuccessModalVisible, setSuccessModalVisible] = useState(false);
 
-  const [data, setData] = useState('');
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const storedData = await AsyncStorage.getItem('_id'); // Thay 'key' bằng khóa lưu trữ của bạn
-        if (storedData !== null) {
-          setData(storedData);
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchData();
-    console.log("id user ",data);
-  
-  }, []);
 //lấy vị trí hiện tại người dùng
-  useEffect(() => {
-    (async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        setAddress('Quyền truy cập vị trí bị từ chối.');
-        return;
-      }
+const [address, setAddress] = useState('Đang lấy vị trí...');
 
-      let location = await Location.getCurrentPositionAsync({});
-      let reverseGeocode = await Location.reverseGeocodeAsync(location.coords);
-      if (reverseGeocode.length > 0) {
-        let addr = reverseGeocode[0];
-        setAddress(`${addr.street}, ${addr.city}, ${addr.region}, ${addr.country}`);
-      }
-    })();
-  }, []);
+useEffect(() => {
+  (async () => {
+    let { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== 'granted') {
+      setAddress('Quyền truy cập vị trí bị từ chối.');
+      return;
+    }
 
-  const handleOrderPress = () => {
-     // Tạo dữ liệu đơn hàng
-  const newOrderData = {
-    userId: data, // Thay thế bằng userId thực
-    address: address,
-    totalPrice: totalproduct,
-    // restaurantName:products.
-    paymentMethod: paymentMethod,
-    notes: text,
-    products: products, // Giả sử 'products' là mảng sản phẩm
+    let location = await Location.getCurrentPositionAsync({});
+    let reverseGeocode = await Location.reverseGeocodeAsync(location.coords);
+    if (reverseGeocode.length > 0) {
+      let addr = reverseGeocode[0];
+      let fullAddress = `${addr.name || ''} ${addr.street || ''}, ${addr.city || ''}, ${addr.region || ''}, ${addr.country || ''}`;
+      setAddress(fullAddress.replace(/, ,/g, ',').replace(/,,/g, ',').trim()); 
+    }
+  })();
+}, []);
+
+
+  const createOrderData = () => {
+    let totalPrice = 0;
+    products.forEach(product => {
+      totalPrice += product.price * product.quantity;
+    });
+  
+    const orderData = {
+      userId: dataUid, // Giả sử 'data' là userId của người dùng hiện tại
+      address: address, // Địa chỉ giao hàng
+      toltalprice: totalPrice + deliveryFee - discount, // Tính tổng tiền đơn hàng
+      phuongthucthanhtoan: paymentMethod, // Phương thức thanh toán
+      status: 0, // Trạng thái đơn hàng
+      notes: text, // Ghi chú cho đơn hàng
+      // Thêm thông tin sản phẩm nếu cần
+      time: new Date(),
+      products: products.map(product => ({
+      productId: product._id, // Giả sử mỗi sản phẩm có trường 'id'
+      name: product.name, // Tên sản phẩm
+      quantity: product.quantity, // Số lượng
+      price: product.price // Giá sản phẩm
+      })),
+      
+    };
+  
+    return orderData;
   };
 
-  setOrderData(newOrderData);
 
-  if (paymentMethod === 'bank') {
-    navigation.navigate('PaymentScreen', { totalPrice: ordertotalPrice, products: products });
-  } else {
-    setCheckOrderModalVisible(true);
+  // Đơn hàng
+
+const sendOrderToServer = async (orderData) => {
+  try {
+    const response = await fetch(URL + 'api/history/create', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(orderData),
+    });
+
+    const responseData = await response.json();
+    if (!response.ok) {
+      throw new Error(responseData.msg || 'Có lỗi xảy ra khi gửi đơn hàng.');
+    }
+
+    console.log('Đơn hàng đã được tạo:', responseData);
+    setTimeout(() => {
+      setSuccessModalVisible(true);
+    }, 1500);
+  } catch (error) {
+    console.error('Error:', error);
   }
+};
+
+  
+  // Và sau đó sử dụng trong hàm handleOrderPress
+  const handleOrderPress = () => {
+    const newOrderData = createOrderData();
+    setOrderData(newOrderData);
+  
+    if (paymentMethod === 'bank') {
+      navigation.navigate('PaymentScreen', { orderData: newOrderData });
+    } else {
+      setCheckOrderModalVisible(true);
+    }
   };
+  
+
+
 //địa điểm
   const toggleLocationModal = () => {
     setCheckLocalModalVisible(!isCheckLocalModalVisible);
   };
 
-  const handleOrderSuccess = () => {
-    setCheckOrderModalVisible(false);
-    setSuccessModalVisible(true);
-  };
+
   const toltalproducts = () => {
      var total=0
       for (var i =0;i<products.length;i++) {
@@ -115,18 +150,20 @@ const PayScreen = ({ route, navigation }) => {
   // Sử dụng hook useEffect để cập nhật totalPrice mỗi khi quantity thay đổi
   useEffect(() => {
     toltalproducts()
-    console.log("id user ",data);
     console.log("products: ",products);
+    console.log("products user: ",dataUid);
   }, [products]);
 
+  useEffect(() => {
+    console.log("new orders", orderData);
+  }, [orderData]);
+
   return (
-    <SafeAreaView style={{flex:10, marginTop: 25 }}>
-      <View style={styles.header}>
-        <TouchableOpacity onPress={goBack}>
-          <Image source={require('./../Image/left_arrow.png')} style={styles.arrowIcon} />
-        </TouchableOpacity>
-        <Text style={styles.headerText}>Thanh Toán</Text>
-      </View>
+    <SafeAreaView style={{flex:1 }}>
+      <ToolBar
+        title="Thanh Toán Đơn Hàng" 
+        onBackPress={() => navigation.goBack()} 
+      />
 
 
       <View style={styles.container}>
@@ -175,9 +212,10 @@ const PayScreen = ({ route, navigation }) => {
               status={paymentMethod === 'cash' ? 'checked' : 'unchecked'}
               onPress={() => setPaymentMethod('cash')}
             />
+             <Text style={{ marginHorizontal: 5 }}>Thanh toán bằng tiền mặt</Text>
             <Icon name="money" size={24} color="#319AB4" style={{ marginRight: 10 }} /> 
             
-            <Text style={{ marginHorizontal: 5 }}>Thanh toán bằng tiền mặt</Text>
+           
             
           </View>
           <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 10 }}>
@@ -186,9 +224,11 @@ const PayScreen = ({ route, navigation }) => {
               status={paymentMethod === 'bank' ? 'checked' : 'unchecked'}
               onPress={() => setPaymentMethod('bank')}
             />
-            <Icon name="bank" size={24} color="#319AB4" style={{ marginRight: 10 }} />
+             <Text style={{ marginHorizontal: 5 }}>Thanh toán bằng VNPay</Text>
+            <Image source={require('../Image/vnpay-logo2.jpg')} style={{ marginRight: 10, width:45,height:40 }}/>
+            {/* <Icon name="bank" size={24} color="#319AB4" style={{ marginRight: 10 }} /> */}
             
-            <Text style={{ marginHorizontal: 5 }}>Thanh toán bằng ngân hàng</Text>
+           
             
           </View>
 
@@ -208,7 +248,8 @@ const PayScreen = ({ route, navigation }) => {
         <CheckOrderModal 
           modalVisible={isCheckOrderModalVisible} 
           setModalVisible={setCheckOrderModalVisible} 
-          onOrderSuccess={handleOrderSuccess}
+          orderData={orderData} // Truyền orderData
+          onOrderSuccess={sendOrderToServer}
         />
         <SuccessModal 
           isVisible={isSuccessModalVisible} 
