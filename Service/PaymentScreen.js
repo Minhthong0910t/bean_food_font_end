@@ -10,18 +10,51 @@ import {
 import CryptoJS from 'crypto-js';
 import * as Network from 'expo-network';
 import { WebView } from 'react-native-webview';
-
+import { URL } from '../const/const';
+import SuccessModal from '../Modal/SuccessModal';
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
 const PaymentScreen = ({ route, navigation }) => {
-  const { totalPrice, products } = route.params;
+  const {  products } = route.params;
+  const { orderData } = route.params;
+  const totalPrice = orderData.toltalprice;
   const [paymentUrl, setPaymentUrl] = useState('');
   const [encodedDateTime, setEncodedDateTime] = useState('');
+  const [isSuccessModalVisible, setSuccessModalVisible] = useState(false);
   const [ipAddress, setIpAddress] = useState('');
   const vnp_TmnCode = '6FJIV8KG';
   const vnp_HashSecret = 'YHGQPFMBSJMRDGUULBDWUGRIFJOHDWYC';
+ 
+
+
+  const sendOrderToServer = async () => {
+    try {
+        const response = await fetch(URL + 'api/history/create', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(orderData),
+        });
+
+        const responseData = await response.json();
+        if (!response.ok) {
+            throw new Error(responseData.msg || 'Có lỗi xảy ra khi gửi đơn hàng.');
+        }
+
+        console.log('Đơn hàng đã được tạo:', responseData);
+
+        // Đặt timeout để hiển thị modal sau 3 giây
+        setTimeout(() => {
+            setSuccessModalVisible(true);
+        }, 1500);
+    } catch (error) {
+        console.error('Error:', error);
+    }
+};
+
 
    // Hàm lấy thời gian bắt đầu
   function getCurrentDateTime() {
@@ -130,7 +163,10 @@ const generateEncodedDateTime = () => {
     };
 
     const url = createPaymentUrl();
+    console.log("giá" ,totalPrice);
+    console.log("giá 222" ,orderData);
     console.log(url);
+    
     // console.log(products);
     setPaymentUrl(url);
   }, [ipAddress,totalPrice, products]);
@@ -170,15 +206,26 @@ const generateEncodedDateTime = () => {
   
 
   const goBack = () => {
-    navigation.navigate('Home');
+    navigation.goBack();
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      <TouchableOpacity onPress={goBack} style={styles.goBackButton}>
-        <Text>Go Back</Text>
+      <View style={styles.buttonContainer}>
+        
+      <TouchableOpacity onPress={sendOrderToServer} style={styles.confirmButton}>
+        <Text style={styles.confirmButtonText}>Xác nhận thanh toán</Text>
       </TouchableOpacity>
+      <TouchableOpacity onPress={goBack} style={styles.goBackButton}>
+        <Text style={styles.goBackButtonText}>Huỷ</Text>
+      </TouchableOpacity>
+
+      </View>
       
+      <SuccessModal 
+        isVisible={isSuccessModalVisible} 
+        navigation={navigation}
+      />
       
       <View style={styles.paymentInfoContainer}>
         {paymentUrl ? (
@@ -198,22 +245,51 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
+  },
+  buttonContainer: {
+    marginTop: 30,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 10,
+    width:'100%',
+    borderBottomWidth: 1, // Thêm đường line ở cuối
+    borderBottomColor: '#ddd', // Màu của đường line
+    backgroundColor: 'transparent', // Loại bỏ màu nền
+    
   },
   goBackButton: {
-    position: 'absolute',
-    top: 40,
-    left: 20,
+    backgroundColor: 'red',
+    padding: 10,
+    borderRadius: 5,
+    margin:10
   },
+  confirmButton: {
+    padding: 10,
+    backgroundColor: '#007bff',
+    borderRadius: 5,
+  },
+  confirmButtonText: {
+    fontWeight: 'bold', // Đặt độ đậm cho chữ
+    fontSize: 16,       // Đặt kích thước cho chữ
+    color: 'white',
+    textAlign: 'center',
+  },
+  goBackButtonText: {
+    fontWeight: 'bold', // Đặt độ đậm cho chữ
+    fontSize: 16,       // Đặt kích thước cho chữ
+    color: 'white',     // Màu chữ, bạn có thể thay đổi nếu cần
+    textAlign: 'center',
+  },
+  
   paymentInfoContainer: {
     alignItems: 'center',
-    margin: 50,
     padding: 10
   },
   title: {
     fontSize: 22,
     fontWeight: 'bold',
     marginBottom: 20,
+    color: 'white',
   },
   instructions: {
     fontSize: 16,
@@ -224,6 +300,15 @@ const styles = StyleSheet.create({
     width: screenWidth,
     height: screenHeight * 0.8, // You can adjust the height as needed
   },
+  confirmButton: {
+    padding: 10,
+    backgroundColor: '#007bff',
+    borderRadius: 5,
+},
+confirmButtonText: {
+    color: 'white',
+    textAlign: 'center',
+},
 });
 
 export default PaymentScreen;

@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, StyleSheet, Dimensions, ActivityIndicator } from 'react-native';
+import { View, StyleSheet, Dimensions, ActivityIndicator,Text } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
 
 const CurrentLocationMap = () => {
   const [region, setRegion] = useState(null);
   const mapRef = useRef(null);
+  const [mapLoaded, setMapLoaded] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -14,23 +15,30 @@ const CurrentLocationMap = () => {
         console.error('Permission to access location was denied');
         return;
       }
-
-      let location = await Location.getCurrentPositionAsync({});
+  
+      let location = await Location.getCurrentPositionAsync({
+        accuracy: Location.Accuracy.High,
+        timeout: 1000, // Chờ tối đa 15 giây
+      });
       const newRegion = {
         latitude: location.coords.latitude,
         longitude: location.coords.longitude,
-        latitudeDelta: 0.006, // Giảm giá trị này để zoom vào
-        longitudeDelta: 0.006, // Giảm giá trị này để zoom vào
+        latitudeDelta: 0.006,
+        longitudeDelta: 0.006,
       };
       setRegion(newRegion);
-
-      // Nếu mapRef.current tồn tại và bản đồ đã sẵn sàng, thực hiện zoom
-      mapRef.current?.animateToRegion(newRegion, 1000); // 1000 là thời gian thực hiện animation
+  
+      mapRef.current?.animateToRegion(newRegion, 1000);
     })();
   }, []);
+  
 
   if (!region) {
-    return <ActivityIndicator style={{ flex: 1 }} size="large" />;
+    return (
+      <View style={styles.mapPlaceholder}>
+        <Text>Đang tải bản đồ...</Text>
+      </View>
+    );
   }
 
   return (
@@ -40,8 +48,9 @@ const CurrentLocationMap = () => {
         style={styles.map}
         initialRegion={region}
         showsUserLocation={true}
+        onMapReady={() => setMapLoaded(true)} // Cập nhật trạng thái khi bản đồ sẵn sàng
       >
-        <Marker coordinate={region} />
+        {mapLoaded && <Marker coordinate={region} />}
       </MapView>
     </View>
   );
@@ -54,6 +63,12 @@ const styles = StyleSheet.create({
   },
   map: {
     ...StyleSheet.absoluteFillObject,
+  },
+  mapPlaceholder: {
+    height: Dimensions.get('window').height / 3, // Chỉnh lại giống kích thước của bản đồ
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

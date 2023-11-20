@@ -167,7 +167,7 @@ if(products && products.length>=0){
     
 
     navigation.navigate('PayScreen', {
-      products
+      products,dataUid
     });
   };
   const handleCheckoutPress = () => {
@@ -347,10 +347,11 @@ if(products && products.length>=0){
           <ScrollView>
         {products&& products.length>0?(products.map((product, index) => (
           <View key={index} style={styles.productContainer}>
-            <View style={{ flex: 1 }}>
-              <Text style={styles.productName}>{product.name}</Text>
-              <Text style={styles.productPrice}>{product.price *product.quantity} VND</Text>
-            </View>
+              <Image source={{ uri: product.image }} style={styles.productImage} />
+              <View style={{ flexDirection: 'column', flex: 1 }}>
+                <Text style={styles.productName}>{product.name}</Text>
+                <Text style={styles.productPrice}>{product.price * product.quantity} VND</Text>
+              </View>
             <View style={styles.quantityContainer}>
               <TouchableOpacity onPress={() => decrementQuantity(product)}>
                 <Text style={styles.quantityText}>-</Text>
@@ -418,6 +419,38 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     margin: 16,
+  },
+  productImage: {
+    width: 60,
+    height: 60,
+    marginRight: 10,
+    borderRadius: 10, // Add borderRadius for rounded corners
+  },
+
+  productContainer: {
+    margin: 15,
+    flexDirection: 'row',
+    height: 90,
+    alignItems: 'center',
+    justifyContent: 'flex-start', // Adjust to align items horizontally
+    borderWidth: 1,
+    borderColor: '#ccc',
+    padding: 10,
+    borderRadius: 10,
+  },
+
+  productName: {
+    fontWeight: 'bold',
+    fontSize: 15,
+    color: '#616161',
+    alignSelf: 'center', // Align center with the image
+  },
+
+  productPrice: {
+    color: '#319AB4',
+    fontSize: 16,
+    fontWeight: 'bold',
+    alignSelf: 'center', // Align center with the image
   },
   productContainer: {
     margin: 15,

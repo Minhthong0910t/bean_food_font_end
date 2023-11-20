@@ -22,7 +22,6 @@ import { CartProvider } from './Component/CartContext';
 import PayScreen from './Screen/PayScreen';
 import ProfileInfor from './profile/ProfileInfor';
 import UserInfor from "./UserInfor";
-import Oder from './profile/Oder';
 import Voucher from './profile/Voucher';
 import History from './profile/History';
 import Payment from './profile/Payment';
@@ -77,7 +76,6 @@ export default function App() {
                         <Stack.Screen component={HealthyComponent} name='Healthy' />
                         <Stack.Screen component={ProductDetailScreen} name='ProductDetail' options={{ title: 'Chi tiết sản phẩm' }} />
                         <Stack.Screen component={ProfileInfor} name='ProfileInfor' />
-                        <Stack.Screen component={Oder} name='Oder' />
                         <Stack.Screen component={Voucher} name='Voucher' />
                         <Stack.Screen component={History} name='lichsu' />
                         <Stack.Screen component={Payment} name='Payment' />

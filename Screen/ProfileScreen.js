@@ -74,17 +74,13 @@ const ProfileScreen = () => {
           <Icon name="user" size={20} color="black" style={styles.icon} />
           <Text style={styles.menuText}>Thông tin cá nhân</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Oder')}>
+        <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('lichsu')}>
           <Icon name="history" size={20} color="black" style={styles.icon} />
           <Text style={styles.menuText}>Lịch sử mua hàng</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Voucher')} >
           <Icon name="cog" size={20} color="black" style={styles.icon} />
           <Text style={styles.menuText}>Voucher</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('lichsu')}>
-          <Icon name="question" size={20} color="black" style={styles.icon} />
-          <Text style={styles.menuText}>Lịch sử</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Payment')}>
           <Icon name="info" size={20} color="black" style={styles.icon} />

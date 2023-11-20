@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
+import { URL } from './const/const';
 
 export default function UserInfor() {
     const [userInfo, setUserInfo] = useState(null);
@@ -35,7 +36,7 @@ export default function UserInfor() {
     const fetchUserInfo = async (userId) => {
         try {
             const response = await fetch(
-                `http://192.168.1.12:3000/api/users/info/${userId}`,
+                URL+'api/users/info/${userId}',
                 {
                     method: 'GET',
                     headers: {
@@ -69,7 +70,7 @@ export default function UserInfor() {
             };
 
             const response = await fetch(
-                `http://192.168.1.12:3000/api/users/update/${userId}`,
+                URL+'api/users/update/${userId}',
                 {
                     method: 'POST',
                     headers: {

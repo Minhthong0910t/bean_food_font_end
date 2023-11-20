@@ -281,6 +281,7 @@ const ProductDetailScreen = ({ navigation, route }) => {
       setComments(prevComments => [...prevComments, data.comment]);
       setNewComment('');
       fetchComments();
+      console.log("idProduct ",product._id);
     })
     .catch(error => console.error("Có lỗi khi thêm bình luận", error));
 };
@@ -291,7 +292,7 @@ const ProductDetailScreen = ({ navigation, route }) => {
     );
   
     const renderProductDetails = () => (
-      <SafeAreaView style={{ flex: 1, marginTop: 25 }}>
+      <SafeAreaView style={{ flex: 1}}>
         <View style={styles.container}>
           {/* Header */}
           <View style={styles.header}>
@@ -410,15 +411,21 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
+    height: 60,
+    marginTop: 30,
     flexDirection: 'row',
     alignItems: 'center',
-    height: 100,
+    paddingHorizontal: 10,
+    borderBottomWidth: 1, // Thêm đường line ở cuối
+    borderBottomColor: '#ddd', // Màu của đường line
+    backgroundColor: 'transparent', // Loại bỏ màu nền // Thêm đường line ở cuối
   },
   scrollView:{margin:10},
   image: {
     width: '100%',
     height: 200,
     marginBottom: 10,
+    marginTop:25
   },
   contentRow: {
     flexDirection: 'row',
