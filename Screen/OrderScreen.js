@@ -208,7 +208,34 @@ if(products && products.length>=0){
       console.log('Error removing object:', error);
     }
   };
-  const deleteProduct = (index) => {
+  //method delete product from order 
+  const deleteOrder = async (orderId) => {
+    try {
+      const response = await fetch(`${URL}api/deleteorder/${orderId}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+  
+      if (response.ok) {
+        const data = await response.json();
+        console.log(data); 
+        fetchDataOder()
+      } else {
+        const errorData = await response.json();
+        console.error(errorData); // In thông báo lỗi từ API
+      }
+    } catch (error) {
+      console.error(error); // In lỗi nếu có lỗi xảy ra
+      // Xử lý lỗi
+      // ...
+    }
+  };
+  
+
+
+  const deleteProduct = (product) => {
     Alert.alert(
       'Delete Product',
       'Do you want to remove this item from the cart?',
@@ -220,9 +247,9 @@ if(products && products.length>=0){
         {
           text: 'Delete',
           onPress: () => {
-            console.log(products[index].idproductcart)
-            dispathDeleteProductFromCart(deleteproduct(products[index].idproductcart))// Manually trigger a re-render
-            removeItemByIdFromAsyncStorage('products' ,products[index].idproductcart)
+            console.log(product._id)
+            deleteOrder(product._id)
+
             calculateTotalPrice()
           },
         },
@@ -230,29 +257,82 @@ if(products && products.length>=0){
     );
   };
 
-  const incrementQuantity = (product , index) => {
-    const quantityproducts = product.quantityproduct ; 
-    const dataupdate = quantityproducts+1;
-    console.log("dataupdate " , dataupdate);
-    const totalupdate = product.price*dataupdate;
+  /////update order
+  const updateOrder = async (orderId, quantity) => {
+    try {
+      const response = await fetch(`${URL}api/updateorder/${orderId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ quantity })
+      });
+  
+      if (!response.ok) {
+        throw new Error('Cập nhật đơn hàng không thành công');
+      }
+  
+      const dataorderupdate = await response.json();
+      return dataorderupdate;
+    } catch (error) {
+      console.error(error);
+      // Xử lý lỗi tại đây
+    }
+  };
+
+  const incrementQuantity =async (product , index) => {
+    try {
+      console.log("id cart product" , product._id);
+
+      const quantityproducts = product.quantity ; 
+      const dataupdate = quantityproducts+1;
+
+      console.log("data update"  ,quantityproducts)
+      const updatedOrder = await updateOrder(product._id, dataupdate);
+      // Sử dụng updatedOrder trong ứng dụng của bạn
+      console.log("data after update" ,updatedOrder);
+      fetchDataOder()
+
+    } catch (error) {
+      console.error(error);
+      // Xử lý lỗi tại đây
+    }
+
  
-    const updatedata = {quantityproduct:dataupdate ,total:totalupdate }
-    updateItemByIdInAsyncStorage('products' ,product.idproductcart ,updatedata)
+ 
+ 
+   
 
    
     calculateTotalPrice();
   };
 
-  const decrementQuantity = (product) => {
-    if (product.quantityproduct > 1) {
-      const quantityproducts = product.quantityproduct ; 
-      console.log(product.idproductcart)
-      const dataupdate = quantityproducts-1;
-      const updatedata = {quantityproduct:dataupdate}
-      updateItemByIdInAsyncStorage('products' ,product.idproductcart ,updatedata)
-      console.log('product affterupdate' , product)
+  const decrementQuantity = async (product) => {
+
+      try {
+        console.log("id cart product" , product._id);
+  
+        const quantityproducts = product.quantity ; 
+      if(quantityproducts>1){
+        const dataupdate = quantityproducts-1;
+        console.log("data update"  ,quantityproducts)
+        const updatedOrder = await updateOrder(product._id, dataupdate);
+        // Sử dụng updatedOrder trong ứng dụng của bạn
+        console.log("data after update" ,updatedOrder);
+        fetchDataOder()
+      }else{
+        alert("số lượng phải lớn hơn 0")
+      }
+  
+      
+  
+      } catch (error) {
+        console.error(error);
+        // Xử lý lỗi tại đây
+      }
       calculateTotalPrice();
-    }
+    
+    
   };
 
   return (
@@ -281,7 +361,7 @@ if(products && products.length>=0){
               </TouchableOpacity>
             </View>
             <View style={styles.deleteButtonContainer}>
-              <TouchableOpacity onPress={() => deleteProduct(index)}>
+              <TouchableOpacity onPress={() => deleteProduct(product)}>
                 <Image source={require('./../Image/delete-icon.png')} style={styles.icon} />
               </TouchableOpacity>
             </View>
