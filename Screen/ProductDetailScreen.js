@@ -7,6 +7,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import Toast from 'react-native-toast-message';
 
 import { useCart } from '../Component/CartContext';
+
 import CommentItem from '../Item/CommentItem';
 import { ToastAndroid } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -140,6 +141,23 @@ const ProductDetailScreen = ({ navigation, route }) => {
       console.log('Error saving data: ', error);
     }
   };
+  const deleteProduct = async (Uid) => {
+    try {
+      const apiUrl = `${URL}api/deletebyUid/${Uid}`; // Thay thế bằng URL API xóa sản phẩm
+      const response = await fetch(apiUrl, { method: 'DELETE' });
+  
+      if (response.ok) {
+        // Xóa sản phẩm thành công
+        console.log('Xóa sản phẩm thành công');
+      } else {
+        // Xử lý lỗi nếu cần
+        const errorData = await response.json();
+        console.log('Lỗi xóa sản phẩm:', errorData.msg);
+      }
+    } catch (error) {
+      console.error('Lỗi khi gọi API xóa sản phẩm:', error);
+    }
+  };
   const saveObjectToMongoDB = (object) => {
     fetch(`${URL}api/add/order`, {
       method: 'POST',
@@ -151,6 +169,56 @@ const ProductDetailScreen = ({ navigation, route }) => {
       .then((response) => response.json())
       .then((data) => {
         console.log('Object saved to MongoDB:', data);
+          if(data.msg =='đang thêm sản phẩm không cùng 1 cửa hàng vào giỏ hàng'){
+
+            console.log("sản phẩm thêm vào đang trùng id với sản phẩm có trong giỏ hàng");
+            Alert.alert(
+              'Cảnh báo!!',
+              'Bạn chỉ được thêm sản phẩm trong cùng một nhà hàng vào giỏ hàng bạn có muốn tiếp tục?',
+              [
+                {
+                  text: 'Hủy',
+                  onPress: () => {return},
+                  style: 'cancel',
+                },
+                {
+                  text: 'Đồng ý',
+                  onPress: async () => {
+                    const storedUserId = await AsyncStorage.getItem('_id');
+                    deleteProduct(storedUserId)
+                    const isLogin = await AsyncStorage.getItem('isLogin');
+                    if(isLogin==='true'){
+                    calculateTotalPrice();
+                    const newCartProduct = {
+                      userId:data , 
+                      restaurantName :product.restaurantId,
+                      name:product.name , 
+                      image:product.image,
+                      price:product.realPrice,
+                      restaurant:product.restaurantId,
+                      quantity :quantity ,
+                      productId:product._id
+                    }
+                    // Gọi hàm saveObjectToMongoDB với đối tượng bạn muốn gửi lên MongoDB
+                   console.log("new product trong confirrm ",newCartProduct);
+                   addToCart()
+                    }
+                  },
+                },
+              ],
+              { cancelable: false }
+            );
+          }else{
+            Toast.show({
+              type: 'success',
+              text1: 'Món ngon đã được thêm vào giỏ hàng của bạn!',
+              text2: 'Mời đến giỏ hàng',
+            });
+            setQuantity(1)
+            setTotalPrice(product.realPrice)
+          }
+
+       
       })
       .catch((error) => {
         console.error('Error saving object to MongoDB:', error);
@@ -169,6 +237,7 @@ const ProductDetailScreen = ({ navigation, route }) => {
       name:product.name , 
       image:product.image,
       price:product.realPrice,
+      restaurant:product.restaurantId,
       quantity :quantity ,
       productId:product._id
     }
@@ -178,26 +247,13 @@ const ProductDetailScreen = ({ navigation, route }) => {
     saveObjectToMongoDB(newCartProduct);
 
 
-  console.log(data)
-  Toast.show({
-    type: 'success',
-    text1: 'Món ngon đã được thêm vào giỏ hàng của bạn!',
-    text2: 'Mời đến giỏ hàng',
-  });
-  setQuantity(1)
-  setTotalPrice(product.realPrice)
+    console.log(data)
+
  
 
-    // Show a toast message
 
-    console.log(data)
-    Toast.show({
-      type: 'success',
-      text1: 'Món ngon đã được thêm vào giỏ hàng của bạn!',
-      text2: 'Mời đến giỏ hàng',
-    });
-    setQuantity(1)
-    setTotalPrice(product.realPrice)
+
+
   }else{
     Toast.show({
       type: 'error',
