@@ -11,6 +11,8 @@ import CurrentLocationMap from '../components/CurrentLocationMap';
 import * as Location from 'expo-location';
 import { URL } from '../const/const';
 import ToolBar from '../components/ToolBar';
+import Toast from 'react-native-toast-message';
+
 
 
 
@@ -113,6 +115,14 @@ const sendOrderToServer = async (orderData) => {
   const handleOrderPress = () => {
     const newOrderData = createOrderData();
     setOrderData(newOrderData);
+    if (address === 'Đang lấy vị trí...') {
+      Toast.show({
+        type: 'info',
+        text1: 'Vui lòng chờ',
+        text2: 'Đang lấy vị trí của bạn...'
+      });
+      return;
+    }
   
     if (paymentMethod === 'bank') {
       navigation.navigate('PaymentScreen', { orderData: newOrderData });
@@ -257,6 +267,7 @@ const sendOrderToServer = async (orderData) => {
       />
       </ScrollView>
       </View>
+      <Toast ref={(ref) => Toast.setRef(ref)} />
     </SafeAreaView>
   );
 };

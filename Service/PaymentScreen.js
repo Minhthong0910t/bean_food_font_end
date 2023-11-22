@@ -170,39 +170,7 @@ const generateEncodedDateTime = () => {
     // console.log(products);
     setPaymentUrl(url);
   }, [ipAddress,totalPrice, products]);
-  
 
-  useEffect(() => {
-    const checkPaymentStatus = async () => {
-      try {
-        // Thay thế 'YOUR_SERVER_ENDPOINT' với endpoint thực tế của bạn
-        const response = await fetch('http://192.168.1.11:3000/api/vnpay_return', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            orderInfo: 'Thông tin đơn hàng',
-            transactionRef: 'vnp_TxnRef từ VNPAY',
-            // Thêm các thông tin khác cần thiết
-          }),
-        });
-        const result = await response.json();
-  
-        // Xử lý dựa trên kết quả trả về
-        if (result.paymentStatus === 'Success') {
-          // Thanh toán thành công, cập nhật UI hoặc chuyển hướng
-          navigation.navigate('Home')
-        } else {
-          // Thanh toán thất bại hoặc tình trạng khác, xử lý tương ứng
-        }
-      } catch (error) {
-        console.error('Lỗi khi kiểm tra tình trạng thanh toán:', error);
-      }
-    };
-  
-    checkPaymentStatus();
-  }, []);
   
 
   const goBack = () => {

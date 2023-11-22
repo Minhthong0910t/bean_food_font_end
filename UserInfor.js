@@ -24,19 +24,20 @@ export default function UserInfor() {
 
     const getStoredUserId = async () => {
         try {
-            const userId = await AsyncStorage.getItem('userId');
-            if (userId) {
-                fetchUserInfo(userId);
+            const user_Id = await AsyncStorage.getItem('_id');
+            console.log("abcccc "+user_Id);
+            if (user_Id) {
+                fetchUserInfo(user_Id);
             }
         } catch (error) {
             console.error('Lỗi khi lấy ID người dùng từ AsyncStorage:', error);
         }
     };
 
-    const fetchUserInfo = async (userId) => {
+    const fetchUserInfo = async (user_Id) => {
         try {
             const response = await fetch(
-                URL+'api/users/info/${userId}',
+                URL+`api/users/info/${user_Id}`,
                 {
                     method: 'GET',
                     headers: {
@@ -60,7 +61,7 @@ export default function UserInfor() {
     const handleSaveChanges = async () => {
         try {
             const token = await AsyncStorage.getItem('token');
-            const userId = await AsyncStorage.getItem('userId');
+            const userId = await AsyncStorage.getItem('_id');
 
             const updateData = {
                 phone: editedUserInfo.phone,

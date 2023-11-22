@@ -4,10 +4,18 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import HistoryItem from '../Item/HistoryItem';
 import { URL } from '../const/const';
 import ToolBar from '../components/ToolBar';
+import { TabView, TabBar } from 'react-native-tab-view';
 
 const History = ({ navigation }) => {
     const [historyData, setHistoryData] = useState([]);
     const [dataUid, setDataUid] = useState('');
+    const [index, setIndex] = useState(0);
+    const [routes] = useState([
+        { key: 'processing', title: 'Đang xử lý' },
+        { key: 'delivering', title: 'Đang giao' },
+        { key: 'delivered', title: 'Đã giao' },
+        { key: 'cancelled', title: 'Đã huỷ' }
+    ]);
 
     // Lấy userId từ AsyncStorage
     useEffect(() => {
@@ -43,18 +51,48 @@ const History = ({ navigation }) => {
         console.log("ls", historyData);
     }, [dataUid]);
 
+    const renderScene = ({ route }) => {
+        let filteredData = [];
+        switch (route.key) {
+            case 'processing':
+                filteredData = historyData.filter(item => item.status === 0);
+                break;
+            case 'delivering':
+                filteredData = historyData.filter(item => item.status === 1);
+                break;
+            case 'delivered':
+                filteredData = historyData.filter(item => item.status === 2);
+                break;
+            case 'cancelled':
+                filteredData = historyData.filter(item => item.status === 3); 
+                break;
+            default:
+                return null;
+        }
+    
+        return (
+            <FlatList
+                data={filteredData}
+                renderItem={({ item }) => <HistoryItem item={item} />}
+                keyExtractor={item => item._id.toString()}
+            />
+        );
+    };
+    
+
     return (
         <SafeAreaView style={styles.container}>
-        <ToolBar 
-                title="Lịch Sử Mua Hàng" 
-                onBackPress={() => navigation.goBack()} 
-            />
-            <FlatList
-                data={historyData}
-                renderItem={({ item }) => <HistoryItem item={item} />}
-                keyExtractor={item => item._id.toString()} // Giả định mỗi item có một trường _id là duy nhất
-            />
+            <ToolBar title="Lịch Sử Mua Hàng" onBackPress={() => navigation.goBack()} />
+            <TabView
+                navigationState={{ index, routes }}
+                renderScene={renderScene}
+                onIndexChange={setIndex}
+                initialLayout={{ width: window.width }}
+                renderTabBar={props => <TabBar {...props} />}
+                />
+                 
         </SafeAreaView>
+        
     );
 };
 

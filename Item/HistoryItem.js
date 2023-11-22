@@ -18,6 +18,8 @@ const HistoryItem = ({ item }) => {
                 return 'Đang giao';
             case 2:
                 return 'Đã giao';
+            case 3:
+            return 'Đã huỷ';
             default:
                 return 'Trạng thái không xác định';
         }
@@ -29,9 +31,25 @@ const HistoryItem = ({ item }) => {
             <Text style={styles.detail}>Thời gian: {formatTime(item.time)}</Text>
             <Text style={styles.detail}>Phương thức thanh toán: {item.phuongthucthanhtoan}</Text>
             <Text style={styles.detail}>Trạng thái: {getStatusText(item.status)}</Text>
-            <TouchableOpacity style={styles.button} onPress={() => {/* Thêm hành động khi nhấn nút */}}>
+            {item.status === 0 && (
+                <TouchableOpacity style={styles.buttonCancel} onPress={() => {/* Thêm hành động khi nhấn nút */}}>
+                <Text style={styles.buttonText2}>Huỷ</Text>
+            </TouchableOpacity>
+            )}
+            
+            {item.status === 1 && (
+                <TouchableOpacity style={styles.buttonload} onPress={() => {/* Thêm hành động khi nhấn nút */}}>
+                <Text style={styles.buttonText}>Vui lòng chờ món ngon đang đến...</Text>
+            </TouchableOpacity>
+            )}
+            {item.status === 2 && (
+                <TouchableOpacity style={styles.button} onPress={() => {/* Thêm hành động khi nhấn nút */}}>
                 <Text style={styles.buttonText}>Đặt lại</Text>
             </TouchableOpacity>
+            )}
+            
+            
+            
         </View>
     );
 };
@@ -59,8 +77,25 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         alignItems: 'center',
     },
+    buttonload: {
+        marginTop: 10,
+        backgroundColor: '#319AB4',
+        padding: 10,
+        borderRadius: 5,
+        alignItems: 'center',
+    },
+    buttonCancel: {
+        marginTop: 10,
+        backgroundColor: '#D3D3D3',
+        padding: 10,
+        borderRadius: 5,
+        alignItems: 'center',
+    },
     buttonText: {
         color: 'white',
+    },
+    buttonText2: {
+        color: 'black',
     }
 });
 
