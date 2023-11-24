@@ -72,7 +72,8 @@ useEffect(() => {
       // Thêm thông tin sản phẩm nếu cần
       time: new Date(),
       products: products.map(product => ({
-      productId: product._id, // Giả sử mỗi sản phẩm có trường 'id'
+        restaurantId:product.restaurant,
+      productId: product.productId, // Giả sử mỗi sản phẩm có trường 'id'
       name: product.name, // Tên sản phẩm
       quantity: product.quantity, // Số lượng
       price: product.price // Giá sản phẩm
