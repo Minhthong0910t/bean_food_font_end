@@ -235,12 +235,13 @@ const ProductDetailScreen = ({ navigation, route }) => {
     const newCartProduct = {
       userId:data , 
       restaurantName :product.restaurantId,
+      productId:product._id,
       name:product.name , 
       image:product.image,
       price:product.realPrice,
       restaurant:product.restaurantId,
       quantity :quantity ,
-      productId:product._id
+    
     }
  
     
