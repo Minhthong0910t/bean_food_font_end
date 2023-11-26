@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
   View, Text, Image, Button, TouchableOpacity, TextInput, StyleSheet, 
   SafeAreaView, ScrollView ,Alert 
@@ -29,6 +29,7 @@ const ProductDetailScreen = ({ navigation, route }) => {
   const dispatchproduct = useDispatch();
   const products = useSelector(state => state.products);
   const [data, setData] = useState('');
+  const ref = useRef()
 
   useEffect(() => {
     const fetchData = async () => {
@@ -234,12 +235,13 @@ const ProductDetailScreen = ({ navigation, route }) => {
     const newCartProduct = {
       userId:data , 
       restaurantName :product.restaurantId,
+      productId:product._id,
       name:product.name , 
       image:product.image,
       price:product.realPrice,
       restaurant:product.restaurantId,
       quantity :quantity ,
-      productId:product._id
+    
     }
  
     
