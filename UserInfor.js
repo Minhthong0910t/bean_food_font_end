@@ -10,12 +10,16 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
+import * as ImagePicker from 'expo-image-picker';
+
 import { URL } from './const/const';
 
 export default function UserInfor() {
     const [userInfo, setUserInfo] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
     const [editedUserInfo, setEditedUserInfo] = useState({});
+    const [token, setToken] = useState(null);
+    const [userId, setUserId] = useState(null);
     const navigation = useNavigation();
 
     useEffect(() => {
@@ -24,10 +28,13 @@ export default function UserInfor() {
 
     const getStoredUserId = async () => {
         try {
-            const user_Id = await AsyncStorage.getItem('_id');
-            console.log("abcccc "+user_Id);
-            if (user_Id) {
-                fetchUserInfo(user_Id);
+            const storedToken = await AsyncStorage.getItem('token');
+            const storedUserId = await AsyncStorage.getItem('_id');
+            setToken(storedToken);
+            setUserId(storedUserId);
+
+            if (storedUserId) {
+                fetchUserInfo(storedUserId);
             }
         } catch (error) {
             console.error('Lỗi khi lấy ID người dùng từ AsyncStorage:', error);
@@ -36,15 +43,12 @@ export default function UserInfor() {
 
     const fetchUserInfo = async (user_Id) => {
         try {
-            const response = await fetch(
-                URL+`api/users/info/${user_Id}`,
-                {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                }
-            );
+            const response = await fetch(URL + `api/users/info/${user_Id}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
 
             if (response.status === 200) {
                 const userData = await response.json();
@@ -58,11 +62,40 @@ export default function UserInfor() {
         }
     };
 
+    const pickImage = async () => {
+        // Kiểm tra xem đang trong chế độ chỉnh sửa hay không
+        if (isEditing) {
+            const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+            if (status !== 'granted') {
+                alert('Quyền truy cập thư viện ảnh bị từ chối!');
+                return;
+            }
+
+            const result = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                allowsEditing: true,
+                aspect: [4, 3],
+                quality: 1,
+            });
+
+            if (!result.cancelled) {
+                // Lưu đường dẫn ảnh vào editedUserInfo
+                if (result.assets && result.assets.length > 0) {
+                    setEditedUserInfo({
+                        ...editedUserInfo,
+                        avatar: result.assets[0].uri,
+                    });
+                } else {
+                    console.error('Không tìm thấy đường dẫn ảnh trong kết quả.');
+                }
+            }
+        } else {
+            alert('Bạn cần bật chế độ chỉnh sửa để thay đổi ảnh đại diện.');
+        }
+    };
+
     const handleSaveChanges = async () => {
         try {
-            const token = await AsyncStorage.getItem('token');
-            const userId = await AsyncStorage.getItem('_id');
-
             const updateData = {
                 phone: editedUserInfo.phone,
                 avatar: editedUserInfo.avatar,
@@ -70,17 +103,14 @@ export default function UserInfor() {
                 birthday: editedUserInfo.birthday,
             };
 
-            const response = await fetch(
-                URL+'api/users/update/${userId}',
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Authorization: `Bearer ${token}`,
-                    },
-                    body: JSON.stringify(updateData),
-                }
-            );
+            const response = await fetch(URL + `api/users/update/${userId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify(updateData),
+            });
 
             if (response.status === 200) {
                 Alert.alert('Thông báo', 'Cập nhật thông tin thành công');
@@ -106,12 +136,18 @@ export default function UserInfor() {
             {userInfo ? (
                 <View style={styles.horizontalContainer}>
                     <View style={styles.avatarContainer}>
-                        {editedUserInfo.avatar ? (
-                            <Image
-                                source={{ uri: editedUserInfo.avatar }}
-                                style={styles.avatarImage}
-                            />
-                        ) : null}
+                        <TouchableOpacity onPress={pickImage}>
+                            {editedUserInfo.avatar ? (
+                                <Image
+                                    source={{ uri: editedUserInfo.avatar }}
+                                    style={styles.avatarImage}
+                                />
+                            ) : (
+                                <Text style={{ fontSize: 20, color: '#ff0000' }}>
+                                    Chọn ảnh đại diện
+                                </Text>
+                            )}
+                        </TouchableOpacity>
                     </View>
                     <View style={styles.infoContainer}>
                         {fieldsToDisplay.map((field) => (
@@ -213,10 +249,8 @@ const styles = StyleSheet.create({
         width: '80%',
         height: 40,
         borderColor: 'gray',
-        //borderWidth: 1,
         marginBottom: 10,
         padding: 10,
-        //borderRadius: 15,
         fontWeight: '100',
     },
     button: {

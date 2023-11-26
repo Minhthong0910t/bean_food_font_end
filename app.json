@@ -15,6 +15,9 @@
       "**/*"
     ],
     "ios": {
+        "infoPlist": {
+          "NSPhotoLibraryUsageDescription": "Ứng dụng cần truy cập thư viện ảnh để chọn ảnh đại diện."
+      },
       "supportsTablet": true
     },
     "android": {
@@ -22,10 +25,11 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "permissions": ["ACCESS_FINE_LOCATION", "ACCESS_COARSE_LOCATION"]
+      "permissions": ["CAMERA","ACCESS_FINE_LOCATION", "ACCESS_COARSE_LOCATION","READ_EXTERNAL_STORAGE","WRITE_EXTERNAL_STORAGE"]
     },
     "web": {
       "favicon": "./assets/favicon.png"
     }
-  }
+  },
+  "plugins": ["expo-image-picker"]
 }
