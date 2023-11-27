@@ -238,7 +238,7 @@ const ProductDetailScreen = ({ navigation, route }) => {
       name:product.name , 
       image:product.image,
       price:product.realPrice,
-      restaurant:product.restaurantId,
+      restaurantId:product.restaurantId,
       quantity :quantity ,
     
     }

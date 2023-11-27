@@ -72,9 +72,10 @@ useEffect(() => {
       // Thêm thông tin sản phẩm nếu cần
       time: new Date(),
       products: products.map(product => ({
-        restaurantId:product.restaurant,
+        restaurantId:product.restaurantId,
       productId: product.productId, // Giả sử mỗi sản phẩm có trường 'id'
       name: product.name, // Tên sản phẩm
+      image:product.image,
       quantity: product.quantity, // Số lượng
       price: product.price // Giá sản phẩm
       })),
@@ -116,14 +117,14 @@ const sendOrderToServer = async (orderData) => {
   const handleOrderPress = () => {
     const newOrderData = createOrderData();
     setOrderData(newOrderData);
-    if (address === 'Đang lấy vị trí...') {
-      Toast.show({
-        type: 'info',
-        text1: 'Vui lòng chờ',
-        text2: 'Đang lấy vị trí của bạn...'
-      });
-      return;
-    }
+    // if (address === 'Đang lấy vị trí...') {
+    //   Toast.show({
+    //     type: 'info',
+    //     text1: 'Vui lòng chờ',
+    //     text2: 'Đang lấy vị trí của bạn...'
+    //   });
+    //   return;
+    // }
   
     if (paymentMethod === 'bank') {
       navigation.navigate('PaymentScreen', { orderData: newOrderData });
