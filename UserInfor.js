@@ -63,7 +63,6 @@ export default function UserInfor() {
     };
 
     const pickImage = async () => {
-        // Kiểm tra xem đang trong chế độ chỉnh sửa hay không
         if (isEditing) {
             const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
             if (status !== 'granted') {
@@ -79,14 +78,36 @@ export default function UserInfor() {
             });
 
             if (!result.cancelled) {
-                // Lưu đường dẫn ảnh vào editedUserInfo
-                if (result.assets && result.assets.length > 0) {
-                    setEditedUserInfo({
-                        ...editedUserInfo,
-                        avatar: result.assets[0].uri,
+                const formData = new FormData();
+                formData.append('avatar', {
+                    uri: result.uri,
+                    type: 'image/jpeg',
+                    name: 'avatar.jpg',
+                });
+
+                try {
+                    const response = await fetch(URL + `api/users/update-avatar/${userId}`, {
+                        method: 'POST',
+                        headers: {
+                            Accept: 'application/json',
+                            'Content-Type': 'multipart/form-data',
+                            Authorization: `Bearer ${token}`,
+                        },
+                        body: formData,
                     });
-                } else {
-                    console.error('Không tìm thấy đường dẫn ảnh trong kết quả.');
+
+                    if (response.status === 200) {
+                        const data = await response.json();
+                        setEditedUserInfo({
+                            ...editedUserInfo,
+                            avatar: data.avatarPath,
+                        });
+                        Alert.alert('Thông báo', 'Cập nhật ảnh đại diện thành công');
+                    } else {
+                        Alert.alert('Lỗi', 'Cập nhật ảnh đại diện thất bại');
+                    }
+                } catch (error) {
+                    console.error('Lỗi khi tải ảnh lên:', error);
                 }
             }
         } else {
@@ -219,7 +240,7 @@ const styles = StyleSheet.create({
         paddingBottom: 10,
         marginBottom: 10,
         backgroundColor: '#f1f8fc',
-        width: 480,
+        width: 420,
         height: 80,
     },
     horizontalContainer: {
@@ -243,7 +264,8 @@ const styles = StyleSheet.create({
     },
     infoContainer: {
         marginTop: 30,
-        margin: 10,
+        margin: 20,
+        paddingLeft:10,
     },
     infoTextInput: {
         width: '80%',
