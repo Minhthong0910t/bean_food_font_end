@@ -134,6 +134,10 @@ export default function UserInfor() {
             });
 
             if (response.status === 200) {
+                if (editedUserInfo.avatar) {
+                    // Lưu đường dẫn ảnh vào storage
+                    await AsyncStorage.setItem('userAvatar', editedUserInfo.avatar);
+                }
                 Alert.alert('Thông báo', 'Cập nhật thông tin thành công');
                 setIsEditing(false);
                 fetchUserInfo(userId);
