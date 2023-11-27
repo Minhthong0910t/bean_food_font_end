@@ -1,46 +1,43 @@
 import moment from 'moment';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Image, ScrollView, SafeAreaView, Platform, FlatList } from 'react-native';
+import { URL } from '../const/const';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const NotificationScreen = () => {
-  const data =[
-    {
-      title:'Customer Nguyễn Ngọc Minh has successfully paid for order #95111 with a value of 20.00 USD ...',
-      id:1,
-      content:'',
-      createdAt:'2023-11-08T16:59:59.999Z'
-    },
-    {
-      title: 'Customer Nguyễn Ngọc Minh has successfully paid for order #95111 with a value of 20.00 USD ...',
-      id: 2,
-      content: '',
-      createdAt: '2023-11-08T16:59:59.999Z'
-    },
-    {
-      title: 'Customer Nguyễn Ngọc Minh has successfully paid for order #95111 with a value of 20.00 USD ...',
-      id: 3,
-      content: '',
-      createdAt: '2023-11-08T16:59:59.999Z'
-    },
-    {
-      title: 'Customer Nguyễn Ngọc Minh has successfully paid for order #95111 with a value of 20.00 USD ...',
-      id: 4,
-      content: '',
-      createdAt: '2023-11-08T16:59:59.999Z'
-    },
-    {
-      title: '',
-      id: 5,
-      content: ''
-      , createdAt: '2023-11-08T16:59:59.999Z'
-    },
-    {
-      title: '',
-      id: 6,
-      content: '',
-      createdAt: '2023-11-08T16:59:59.999Z'
+  const [historyData, setHistoryData] = useState([]);
+  const [dataUid, setDataUid] = useState('');
+  useEffect(() => {
+    const fetchDataHistory = async () => {
+      try {
+        const response = await fetch(URL + 'api/history');
+        const data = await response.json();
+        const filteredData = data.filter(item => item.userId === dataUid);
+        setHistoryData(filteredData);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    if (dataUid) {
+      fetchDataHistory();
     }
-  ]
+    console.log("ls", historyData);
+  }, [dataUid]);
+  useEffect(() => {
+    const fetchUserId = async () => {
+      try {
+        const userId = await AsyncStorage.getItem('_id');
+        if (userId !== null) {
+          setDataUid(userId);
+        }
+      } catch (error) {
+        console.error('Error fetching userId:', error);
+      }
+    };
+    fetchUserId();
+  }, []);
+  console.log('historyData', historyData);
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -52,19 +49,20 @@ const NotificationScreen = () => {
       </View>
 
       <FlatList
-        data={data}
+        data={historyData}
         showsVerticalScrollIndicator={false}
         renderItem={({ item, index }) => {
 
           return (
             <View style={{
-              height: 138,
+             
               backgroundColor: '#F2F6FD',
               borderBottomColor: '#DFE0EB',
               marginTop: 14,
               borderRadius: 18,
-              marginHorizontal: 16
-            }}>
+              marginHorizontal: 16,
+              paddingVertical: 15
+            }} key={index}>
 
               <View style={{
                 flexDirection: 'row',
@@ -88,18 +86,16 @@ const NotificationScreen = () => {
                     // fontWeight: '700',
                     color: '#242426'
                   }}>Payment Order</Text>
-                  <Text style={{ color: '#848688' }}>{moment(item.createdAt).format('HH:mm - DD/MM')}</Text>
+                  <Text style={{ color: '#848688' }}>{moment(item.time).format('HH:mm - DD/MM')}</Text>
 
                 </View>
               </View>
               <View style={{ height: 1, backgroundColor: '#F2F2F2', marginTop: 12 }}></View>
-              <Text style={{ textAlign: 'left', marginLeft: 12, marginTop: 10, fontSize: 12, color: '#747475' }} numberOfLines={2}>
-                You have just received
-                <Text> {item.title ?? ''} </Text>
-                for order payment
-                <Text> {item.id} </Text>
-                of
-                <Text> {item.content} </Text>
+              <Text style={{ textAlign: 'left', marginLeft: 12, marginTop: 10, fontSize: 12, color: '#747475' }} numberOfLines={3}>
+                Bạn đã đặt hàng thành công đơn hàng 
+                <Text style={{ color: 'green' }}> {item._id  ?? ''} </Text>
+                với số tiền cần thanh toán 
+                <Text style={{color: 'red'}}> {item.toltalprice}VND</Text>
               </Text>
 
             </View>
