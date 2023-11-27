@@ -17,6 +17,8 @@ const History = ({ navigation }) => {
         { key: 'cancelled', title: 'Đã huỷ' }
     ]);
 
+
+
     // Lấy userId từ AsyncStorage
     useEffect(() => {
         const fetchUserId = async () => {
@@ -32,24 +34,29 @@ const History = ({ navigation }) => {
         fetchUserId();
     }, []);
 
+    //fun call api data history
+    const fetchDataHistory = async () => {
+        try {
+            const response = await fetch(URL+'api/history');
+            const data = await response.json();
+            const filteredData = data.filter(item => item.userId === dataUid);
+            setHistoryData(filteredData);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    };
     // Fetch lịch sử mua hàng và lọc dữ liệu trên client
     useEffect(() => {
-        const fetchDataHistory = async () => {
-            try {
-                const response = await fetch(URL+'api/history');
-                const data = await response.json();
-                const filteredData = data.filter(item => item.userId === dataUid);
-                setHistoryData(filteredData);
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            }
-        };
-
         if (dataUid) {
             fetchDataHistory();
         }
         console.log("ls", historyData);
     }, [dataUid]);
+    const refreshData = () => {
+        // Làm mới dữ liệu hoặc gọi lại API tại đây
+        fetchDataHistory();
+        console.log("vào đây va log");
+    };
 
     const renderScene = ({ route }) => {
         let filteredData = [];
@@ -73,7 +80,7 @@ const History = ({ navigation }) => {
         return (
             <FlatList
                 data={filteredData}
-                renderItem={({ item }) => <HistoryItem item={item} />}
+                renderItem={({ item }) => <HistoryItem item={item} onStatusUpdate={refreshData} navigation={navigation} />}
                 keyExtractor={item => item._id.toString()}
             />
         );
