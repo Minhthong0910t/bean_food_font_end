@@ -279,6 +279,7 @@ const styles = StyleSheet.create({
         padding: 10,
         fontWeight: '100',
     },
+    //
     button: {
         flexDirection: 'row',
         padding: 10,
