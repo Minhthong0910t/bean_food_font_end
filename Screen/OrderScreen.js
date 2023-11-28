@@ -71,30 +71,7 @@ const OrderScreen = ({ navigation, route }) => {
 
 
       
-const updateItemByIdInAsyncStorage = async (key, idToUpdate, updatedData) => {
-  try {
-    // Lấy mảng từ AsyncStorage
-    const jsonData = await AsyncStorage.getItem(key);
-    if (jsonData) {
-      let dataArray = JSON.parse(jsonData);
 
-      // Tìm đối tượng dựa trên trường ID
-      const index = dataArray.findIndex((item) => item.idproductcart === idToUpdate);
-
-      if (index !== -1) {
-        // Cập nhật thuộc tính của đối tượng
-        dataArray[index] = { ...dataArray[index], ...updatedData };
-
-        // Lưu lại mảng đã được chỉnh sửa vào AsyncStorage
-        await AsyncStorage.setItem(key, JSON.stringify(dataArray));
-
-        console.log('Object updated successfully');
-      }
-    }
-  } catch (error) {
-    console.log('Error updating object:', error);
-  }
-};
 const fetchDataOder= async ()=>{
 
   const storedData = await AsyncStorage.getItem('_id');
@@ -184,30 +161,7 @@ if(products && products.length>=0){
       checkout();
     }
   };
-  const removeItemByIdFromAsyncStorage = async (key, idToRemove) => {
-    try {
-      // Lấy mảng từ AsyncStorage
-      const jsonData = await AsyncStorage.getItem(key);
-      if (jsonData) {
-        let dataArray = JSON.parse(jsonData);
-  
-        // Tìm đối tượng dựa trên trường ID
-        const index = dataArray.findIndex((item) => item.idproductcart === idToRemove);
-  
-        if (index !== -1) {
-          // Xóa đối tượng khỏi mảng
-          dataArray.splice(index, 1);
-  
-          // Lưu lại mảng đã được chỉnh sửa vào AsyncStorage
-          await AsyncStorage.setItem(key, JSON.stringify(dataArray));
-  
-          console.log('Object removed successfully');
-        }
-      }
-    } catch (error) {
-      console.log('Error removing object:', error);
-    }
-  };
+
   //method delete product from order 
   const deleteOrder = async (orderId) => {
     try {

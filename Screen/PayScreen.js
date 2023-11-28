@@ -73,9 +73,10 @@ const PayScreen = ({ route, navigation }) => {
       // Thêm thông tin sản phẩm nếu cần
       time: new Date(),
       products: products.map(product => ({
-        restaurantId:product.restaurant,
+        restaurantId:product.restaurantId,
       productId: product.productId, // Giả sử mỗi sản phẩm có trường 'id'
       name: product.name, // Tên sản phẩm
+      image:product.image,
       quantity: product.quantity, // Số lượng
       price: product.price // Giá sản phẩm
       })),
@@ -117,6 +118,7 @@ const PayScreen = ({ route, navigation }) => {
   const handleOrderPress = () => {
     const newOrderData = createOrderData();
     setOrderData(newOrderData);
+
     if (address === 'Đang lấy vị trí...') {
       Toast.show({
         type: 'info',
@@ -125,6 +127,7 @@ const PayScreen = ({ route, navigation }) => {
       });
       // return;
     }
+
 
     if (paymentMethod === 'bank') {
       navigation.navigate('PaymentScreen', { orderData: newOrderData });
