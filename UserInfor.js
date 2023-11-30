@@ -275,6 +275,7 @@ const styles = StyleSheet.create({
         width: '100%',
         // các thuộc tính khác giữ nguyên
     },
+    //
     button: {
         flexDirection: 'row',
         padding: 10,
