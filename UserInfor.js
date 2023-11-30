@@ -11,6 +11,7 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
+import ToolBar from './components/ToolBar';
 
 import { URL } from './const/const';
 
@@ -158,6 +159,7 @@ export default function UserInfor() {
 
     return (
         <View style={styles.container}>
+              <ToolBar title="Thông tin cá nhân" onBackPress={() => navigation.goBack()} />
             {userInfo ? (
                 <View style={styles.horizontalContainer}>
                     <View style={styles.avatarContainer}>
@@ -202,9 +204,7 @@ export default function UserInfor() {
                         ))}
 
                         <View style={styles.textInfo}>
-                            <Text style={{ color: 'gray', fontSize: 15, marginTop: 10 }}>
-                                Xác minh thông tin
-                            </Text>
+                        
                             <TouchableOpacity
                                 style={styles.btn}
                                 onPress={() => setIsEditing(!isEditing)}
@@ -232,52 +232,48 @@ export default function UserInfor() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        alignItems: 'center',
-        marginBottom: 630,
-        elevation: 2,
-        margin: 20,
-        paddingTop: 30,
+
     },
+    
     textInfo: {
         borderBottomWidth: 0.3,
         borderBottomColor: 'gray',
         paddingBottom: 10,
         marginBottom: 10,
         backgroundColor: '#f1f8fc',
-        width: 420,
+        width:'auto',
         height: 80,
     },
     horizontalContainer: {
         flexDirection: 'column',
         alignItems: 'center',
+     
         borderRadius: 50,
     },
     avatarContainer: {
         width: '100%',
     },
     avatarImage: {
-        width: 150,
-        height: 150,
-        borderRadius: 50,
+        width: 120,
+        height: 120,
+        borderRadius: 60,
         margin: 10,
     },
+    
     text: {
-        fontSize: 20,
-        paddingBottom: 5,
-        fontWeight: 'normal',
+        fontSize: 18,
+        // các thuộc tính khác giữ nguyên
     },
     infoContainer: {
         marginTop: 30,
         margin: 20,
-        paddingLeft:10,
+   padding:10,
+        width:'100%'
+     
     },
     infoTextInput: {
-        width: '80%',
-        height: 40,
-        borderColor: 'gray',
-        marginBottom: 10,
-        padding: 10,
-        fontWeight: '100',
+        width: '100%',
+        // các thuộc tính khác giữ nguyên
     },
     button: {
         flexDirection: 'row',

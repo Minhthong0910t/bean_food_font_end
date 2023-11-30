@@ -16,13 +16,16 @@ const HistoryItem = ({ item  ,onStatusUpdate  , navigation}) => {
     };
     const getStatusText = (status) => {
         switch (status) {
+
             case 0:
-                return 'Đang xử lý';
-            case 1:
-                return 'Đang giao';
+                return 'Chờ xác nhận';
+                case 1:
+                    return 'Đã xác nhận';
             case 2:
-                return 'Đã giao';
+                return 'Đang giao';
             case 3:
+                return 'Đã giao';
+            case 4:
             return 'Đã huỷ';
             default:
                 return 'Trạng thái không xác định';
@@ -62,7 +65,7 @@ const HistoryItem = ({ item  ,onStatusUpdate  , navigation}) => {
                   
                         if (response.ok) {
                           // Cập nhật trạng thái đơn hàng thành công
-                       
+                            
                           console.log('Cập nhật trạng thái đơn hàng thành công');
                           onStatusUpdate(); // Gọi hàm callback sau khi cập nhật thành công
                         } else {
@@ -99,24 +102,23 @@ const HistoryItem = ({ item  ,onStatusUpdate  , navigation}) => {
             <Text style={styles.detail}>Thời gian: {formatTime(item.time)}</Text>
             <Text style={styles.detail}>Phương thức thanh toán: {item.phuongthucthanhtoan}</Text>
             <Text style={styles.detail}>Trạng thái: {getStatusText(item.status)}</Text>
-            {item.status === 0 && (
+            {item.status === 0&& (
                 <TouchableOpacity style={styles.buttonCancel} onPress={handlecancel}>
                 <Text style={styles.buttonText2}>Huỷ</Text>
             </TouchableOpacity>
             )}
             
-            {item.status === 1 && (
+            {item.status === 1 ||item.status === 2 &&  (
                 <TouchableOpacity style={styles.buttonload} onPress={() => {/* Thêm hành động khi nhấn nút */}}>
-                <Text style={styles.buttonText}>Vui lòng chờ món ngon đang đến...</Text>
+                <Text style={styles.buttonText}> Đã xác nhận, vui lòng chờ món ngon đang đến...</Text>
             </TouchableOpacity>
             )}
-            {item.status === 2 && (
+            {item.status === 3 && (
                 <TouchableOpacity style={styles.button} onPress={handledatlai}>
                 <Text style={styles.buttonText}>Đặt lại</Text>
             </TouchableOpacity>
             )}
-            
-            
+             
             
         </View>
     );

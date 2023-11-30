@@ -41,7 +41,7 @@ useEffect(()=>{
   
         <CoffeeShopScreen  navigation = {navigation} data = {datarestaurnat}/>
         {/* <DiscountItem  navigation = {navigation} /> */}
-        <KhuyenmaiRestaurant  navigation = {navigation} />
+        {/* <KhuyenmaiRestaurant  navigation = {navigation} /> */}
         <MenuRestaurant  navigation = {navigation} data = {restaurant} />
       </ScrollView>
     </View>

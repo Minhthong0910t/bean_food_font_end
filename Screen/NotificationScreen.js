@@ -37,7 +37,7 @@ const NotificationScreen = () => {
     };
     fetchUserId();
   }, []);
-  console.log('historyData', historyData);
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -102,7 +102,7 @@ const NotificationScreen = () => {
           )
         }}
 
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item , index) => index}
       />
     </SafeAreaView>
   );

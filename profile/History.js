@@ -11,7 +11,7 @@ const History = ({ navigation }) => {
     const [dataUid, setDataUid] = useState('');
     const [index, setIndex] = useState(0);
     const [routes] = useState([
-        { key: 'processing', title: 'Đang xử lý' },
+        { key: 'processing', title: 'Chờ xác nhận' },
         { key: 'delivering', title: 'Đang giao' },
         { key: 'delivered', title: 'Đã giao' },
         { key: 'cancelled', title: 'Đã huỷ' }
@@ -61,17 +61,18 @@ const History = ({ navigation }) => {
     const renderScene = ({ route }) => {
         let filteredData = [];
         switch (route.key) {
+            
             case 'processing':
                 filteredData = historyData.filter(item => item.status === 0);
                 break;
             case 'delivering':
-                filteredData = historyData.filter(item => item.status === 1);
+                filteredData = historyData.filter(item => item.status === 1 || item.status === 2);
                 break;
             case 'delivered':
-                filteredData = historyData.filter(item => item.status === 2);
+                filteredData = historyData.filter(item => item.status === 3);
                 break;
             case 'cancelled':
-                filteredData = historyData.filter(item => item.status === 3); 
+                filteredData = historyData.filter(item => item.status === 4); 
                 break;
             default:
                 return null;

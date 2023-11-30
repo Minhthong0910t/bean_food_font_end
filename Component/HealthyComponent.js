@@ -70,7 +70,7 @@ const HealthyComponent = ({navigation}) => {
       <TouchableOpacity style={{marginRight:'auto'}} onPress={()=>navigation.goBack()}>
         <Image source={require('./../Image/left_arrow.png')} style = {{width:25  , height:25}}/>
       </TouchableOpacity>
-      <Text style = {{ fontWeight:'bold' , textAlign:'center' , flex:1}}>Đồ Ăn Healthy</Text>
+      <Text style = {{ fontWeight:'bold' , textAlign:'center' , flex:1}}>Đồ Khác</Text>
     </View>
     <FlatList
         data={filteredData}
