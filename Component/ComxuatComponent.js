@@ -1,68 +1,34 @@
-import { StyleSheet, Text,  Image, SafeAreaView  , TouchableOpacity , View , FlatList} from 'react-native'
+import { StyleSheet, Text,  Image, SafeAreaView  , TouchableOpacity , View , FlatList , ScrollView ,Dimensions } from 'react-native'
 import React , {useEffect , useState} from 'react'
+import { URL } from '../const/const';
+
+const { width, height } = Dimensions.get('screen');
 
 const ComxuatComponent = ({navigation}) => {
   const[comxuat , setcomxuat] = useState([])
 
   useEffect(()=>{
-    const data = [{
-      id:'1' , 
-      race:4.9,
-      name:'Cơm Niêu Singapore' , 
-      adress:'D29, Phạm Văn Bạch' , 
-      desscription:'ngon' , 
-      image: <Image source={require('./../Image/imagedoan.png')}/>,
-      categoryId :2
+    const fetchData = async () => {
+      try {
 
-    },
-    {
-      id:'2' , 
-      race:4.9,
-      name:'Cơm Niêu Singapore' , 
-      adress:'D29, Phạm Văn Bạch' , 
-      desscription:'ngon' , 
-      image: <Image source={require('./../Image/imagedoan.png')}/>,
+        const response = await fetch(`${URL}api/productDanhmuc/com`);
+        const jsonData = await response.json();
+        setcomxuat(jsonData.products);
+      } catch (error) {
+        console.error(error);
+      }
+    };
 
-    },
-    {
-      id:'3' , 
-      race:4.9,
-      name:'Cơm Niêu Singapore' , 
-      adress:'D29, Phạm Văn Bạch' , 
-      desscription:'ngon' , 
-      image: <Image source={require('./../Image/imagedoan.png')}/>,
+    fetchData();
 
-    }
-  ]
-  setcomxuat(data)
+  
     
   },[])
-  const filteredData = comxuat.filter(item => item.categoryId === 2);
 
   
 
 
-  const renderItem = ({ item }) => {
-    return (
-      <View style = {{margin:15   , flexDirection:'row' , height:90 ,alignItems:'center'}} >
-            
-      <View >
-      {item.image}
-      </View>
-      <View style = {{flexDirection:'column' , paddingLeft:10  , marginLeft:10}}>
-        <Text style = {{ fontWeight:'bold' , fontSize:15 ,color:'#616161'}}>{item.name}</Text>
-      <View style={{flexDirection:'row'}}>
-         <Image source={require('./../Image/star.png')} style = {{width:20 , height:20 , marginTop:5}}/>
-         <Text style={{padding:5  , fontWeight:'bold',color:'#616161'}}>{item.race}</Text>
-        </View>
-        <Text style = {{color:'#616161'}}>{item.adress}</Text>
-      </View>
-      <TouchableOpacity style = {{marginLeft:'auto'}}>
-      <Image source={require('./../Image/right_arrow.png')} style = {{width:15 , height:15}}/>
-      </TouchableOpacity>
-  </View>
-    );
-  };
+
 
   return (
     <SafeAreaView style ={{marginTop:25}}> 
@@ -72,11 +38,33 @@ const ComxuatComponent = ({navigation}) => {
       </TouchableOpacity>
       <Text style = {{ fontWeight:'bold' , textAlign:'center' , flex:1}}>Cơm Xuất</Text>
     </View>
-    <FlatList
-        data={filteredData}
-        renderItem={renderItem}
-        keyExtractor={item => item.id.toString()}
-      />
+    
+    <ScrollView >
+
+        {comxuat.map((data, index) =>
+  
+          <View key={index} style={{ backgroundColor: '#f0f0f0', marginTop: 6, marginRight: 5, borderRadius: 10 }}>
+            <TouchableOpacity
+              style={{ margin: 15, flexDirection: 'row', height: 90, alignItems: 'center' }}
+              onPress={() => navigation.navigate('ProductDetail', { product: data })}
+            >
+              <View >
+                <Image source={{ uri: data.image }} style={{ borderWidth: 1, width: width * 0.25, height: width * 0.25 , borderRadius:10 }} />
+              </View>
+              <View style={{ flexDirection: 'column', paddingLeft: 10, marginLeft: 10 }}>
+                <Text style={{ fontWeight: 'bold', fontSize: 15, color: '#616161' }}>Name: {data.name}
+                </Text>
+                <View style={{ flexDirection: 'row' }}>
+                  
+                  <Text style={{ paddingTop:5 , paddingBottom:5, fontWeight: 'bold', color: '#616161' }}>Gía: {data.realPrice}</Text>
+                </View>
+                <Text style={{ color: '#616161', width: 0.6 * width }} numberOfLines={2}>Mô tả:{data.description}</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+     
+        )}
+     </ScrollView>
     </SafeAreaView>
   )
 }

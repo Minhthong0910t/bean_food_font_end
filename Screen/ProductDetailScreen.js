@@ -382,7 +382,7 @@ const ProductDetailScreen = ({ navigation, route }) => {
 
             {/* Product name and price */}
             <View style={styles.contentRow}>
-              <Text style={styles.productName}>{product.name}</Text>
+              <Text style={styles.productName}>{ product.name}</Text>
               <Text style={styles.productPrice}>{product.realPrice} VND</Text>
             </View>
 
@@ -394,13 +394,10 @@ const ProductDetailScreen = ({ navigation, route }) => {
             {/* Product rating */}
             <View style = {{flexDirection:'row'  , justifyContent:'space-between' , alignItems:'center'}}>
               <View style={styles.danhGiaRow}>
-                <Text style={styles.DanhgiaTitle}>Đánh giá {product.race}</Text>
-                <Image
-                  source={require("./../Image/star.png")}
-                  style={styles.iconstar}
-                />
+                <Text style={styles.DanhgiaTitle}>Bình Luận {product.race}</Text>
+             
               </View>
-            <TouchableOpacity onPress={()=> navigation.navigate('Restaurant' ,{ restaurant: product.restaurantId } )}>
+            <TouchableOpacity onPress={()=> navigation.navigate('Restaurant' ,{ restaurant: product.restaurantId._id} )}>
             <Text style={styles.DanhgiaTitle}>Đi đến nhà hàng</Text>
             </TouchableOpacity>
             </View>
@@ -457,6 +454,10 @@ const ProductDetailScreen = ({ navigation, route }) => {
 
           {/* Initialize Toast container */}
           <Toast ref={(ref) => Toast.setRef(ref)} />
+        </View>
+
+        <View>
+          
         </View>
       </SafeAreaView>
     );
