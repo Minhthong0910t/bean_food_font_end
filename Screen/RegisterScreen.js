@@ -7,10 +7,12 @@ import { URL } from '../const/const';
 
 export default function RegisterScreen() {
     const [username, setUsername] = useState('');
+    const [phone, setPhone] = useState('');
     const [password, setPassword] = useState('');
     const [rePassword, setRePassword] = useState('');
 
     const [validateUser, setValidateUser] = useState('');
+    const [validatePhone, setValidatePhone] = useState('');
     const [validatePass, setValidatePass] = useState('');
     const [validaRepass, setValidateRepass] = useState('');
 
@@ -23,6 +25,7 @@ export default function RegisterScreen() {
     const handleRegister = async () => {
 
         const trimmedUsername = username.trim();
+        const trimmedPhone = phone.trim();
         const trimmedPassword = password.trim();
         const trimmedRepassword = rePassword.trim();
 
@@ -31,6 +34,14 @@ export default function RegisterScreen() {
             return;
         } else {
             setValidateUser('');
+        }
+        // Validate phone number
+        const phoneRegex = /^[0-9]{10}$/;
+        if (!phoneRegex.test(phone)) {
+            setValidatePhone('Số điện thoại không hợp lệ');
+            return;
+        } else {
+            setValidatePhone('');
         }
 
         //mật khẩu
@@ -53,6 +64,7 @@ export default function RegisterScreen() {
         // Tạo dữ liệu
         const registrationData = {
             "username":trimmedUsername,
+            "phone":trimmedPhone,
             "password":trimmedPassword,
             "rePassword":trimmedRepassword
         };
@@ -70,6 +82,7 @@ export default function RegisterScreen() {
                 if (res.status === 200) {
                     ToastAndroid.show('Đăng ký thành công',ToastAndroid.SHORT)
                     setUsername("");
+                    setPhone("");
                     setPassword("");
                     navigation.navigate('Login');
                 } else if (res.status === 500) {
@@ -86,12 +99,18 @@ export default function RegisterScreen() {
         <View style={styles.container}>
             <Image style={styles.logo} source={require('./../Image/logo1.png')} />
             <TextInput
-                label="Số điện thoại/gmail"
+                label="Tên đăng nhập"
                 value={username}
                 onChangeText={(text) => setUsername(text)}
                 style={styles.input}
             />
-            
+            <TextInput
+                label="Số điện thoại"
+                value={phone}
+                onChangeText={(text) => setPhone(text)}
+                style={styles.input}
+            />
+
             <View style={styles.passwordContainer}>
                 <TextInput
                     label="Mật khẩu"
@@ -108,7 +127,7 @@ export default function RegisterScreen() {
                     style={styles.passwordIcon}
                 />
             </View>
-            
+
             <View style={styles.passwordContainer}>
                 <TextInput
                     label="Nhập lại mật khẩu"
@@ -155,12 +174,12 @@ const styles = StyleSheet.create({
     passwordContainer: {
         width: '80%',
         marginBottom: 20,
-        position: 'relative', 
+        position: 'relative',
         flexDirection: 'row', // Đặt trong một dòng
         alignItems: 'center', // Căn giữa theo chiều dọc
     },
     passwordInputField: {
-        
+
         flex: 1, // Để TextInput mở rộng để điền dữ liệu
         backgroundColor: 'lightblue',
     },

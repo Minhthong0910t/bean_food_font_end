@@ -81,7 +81,7 @@ export default function LoginScreen() {
         <View style={styles.container}>
             <Image style={styles.logo} source={require('./../Image/logo1.png')} />
             <TextInput
-                label="Số điện thoại/gmail"
+                label="Tên đăng nhập"
                 value={username}
                 onChangeText={(text) => setUsername(text)}
                 style={styles.input}
