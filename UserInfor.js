@@ -11,6 +11,7 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
+import { RadioButton } from 'react-native-paper'; // Import RadioButton from react-native-paper
 import ToolBar from './components/ToolBar';
 
 import { URL } from './const/const';
@@ -21,6 +22,7 @@ export default function UserInfor() {
     const [editedUserInfo, setEditedUserInfo] = useState({});
     const [token, setToken] = useState(null);
     const [userId, setUserId] = useState(null);
+    const [selectedGender, setSelectedGender] = useState(null); // Added state for selected gender
     const navigation = useNavigation();
 
     useEffect(() => {
@@ -55,6 +57,7 @@ export default function UserInfor() {
                 const userData = await response.json();
                 setUserInfo(userData);
                 setEditedUserInfo(userData);
+                setSelectedGender(userData.gender); // Set selected gender initially
             } else {
                 console.error('Lỗi khi lấy thông tin người dùng từ máy chủ.');
             }
@@ -150,16 +153,43 @@ export default function UserInfor() {
         }
     };
 
+    const handleGenderChange = (value) => {
+        setSelectedGender(value);
+        setEditedUserInfo({
+            ...editedUserInfo,
+            gender: value,
+        });
+    };
+
     const fieldsToDisplay = [
         { key: 'username', label: 'Tên người dùng' },
         { key: 'phone', label: 'Số điện thoại' },
-        { key: 'gender', label: 'Giới tính' },
+        {
+            key: 'gender',
+            label: 'Giới tính',
+            render: () => (
+                <View style={styles.genderContainer}>
+                    <Text style={{ color: 'gray', fontSize: 15, marginTop: 10 }}>
+                        Giới tính
+                    </Text>
+                    <RadioButton.Group
+                        onValueChange={(value) => handleGenderChange(value)}
+                        value={selectedGender}
+                    >
+                        <View style={styles.radioContainer}>
+                            <RadioButton.Item label="Nam" value="Nam" />
+                            <RadioButton.Item label="Nữ" value="Nữ" />
+                        </View>
+                    </RadioButton.Group>
+                </View>
+            ),
+        },
         { key: 'birthday', label: 'Ngày sinh' },
     ];
 
     return (
         <View style={styles.container}>
-              <ToolBar title="Thông tin cá nhân" onBackPress={() => navigation.goBack()} />
+            <ToolBar title="Thông tin cá nhân" onBackPress={() => navigation.goBack()} />
             {userInfo ? (
                 <View style={styles.horizontalContainer}>
                     <View style={styles.avatarContainer}>
@@ -183,28 +213,30 @@ export default function UserInfor() {
                                     {field.label}
                                 </Text>
                                 {isEditing ? (
-                                    <TextInput
-                                        style={[
-                                            styles.infoTextInput,
-                                            { borderBottomWidth: 0 },
-                                        ]}
-                                        value={editedUserInfo[field.key]}
-                                        onChangeText={(text) =>
-                                            setEditedUserInfo({
-                                                ...editedUserInfo,
-                                                [field.key]: text,
-                                            })
-                                        }
-                                        underlineColorAndroid="transparent"
-                                    />
+                                    field.render ? (
+                                        field.render()
+                                    ) : (
+                                        <TextInput
+                                            style={[
+                                                styles.infoTextInput,
+                                                { borderBottomWidth: 0 },
+                                            ]}
+                                            value={editedUserInfo[field.key]}
+                                            onChangeText={(text) =>
+                                                setEditedUserInfo({
+                                                    ...editedUserInfo,
+                                                    [field.key]: text,
+                                                })
+                                            }
+                                            underlineColorAndroid="transparent"
+                                        />
+                                    )
                                 ) : (
                                     <Text style={styles.text}>{userInfo[field.key]}</Text>
                                 )}
                             </View>
                         ))}
-
                         <View style={styles.textInfo}>
-                        
                             <TouchableOpacity
                                 style={styles.btn}
                                 onPress={() => setIsEditing(!isEditing)}
@@ -232,22 +264,19 @@ export default function UserInfor() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-
     },
-    
     textInfo: {
         borderBottomWidth: 0.3,
         borderBottomColor: 'gray',
         paddingBottom: 10,
         marginBottom: 10,
         backgroundColor: '#f1f8fc',
-        width:'auto',
+        width: 'auto',
         height: 80,
     },
     horizontalContainer: {
         flexDirection: 'column',
         alignItems: 'center',
-     
         borderRadius: 50,
     },
     avatarContainer: {
@@ -259,7 +288,6 @@ const styles = StyleSheet.create({
         borderRadius: 60,
         margin: 10,
     },
-    
     text: {
         fontSize: 18,
         // các thuộc tính khác giữ nguyên
@@ -267,15 +295,13 @@ const styles = StyleSheet.create({
     infoContainer: {
         marginTop: 30,
         margin: 20,
-   padding:10,
-        width:'100%'
-     
+        padding: 10,
+        width: '100%',
     },
     infoTextInput: {
         width: '100%',
         // các thuộc tính khác giữ nguyên
     },
-    //
     button: {
         flexDirection: 'row',
         padding: 10,
@@ -296,5 +322,14 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         marginTop: 10,
         alignItems: 'center',
+    },
+    genderContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+    },
+    radioContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
     },
 });
