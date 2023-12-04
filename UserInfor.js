@@ -28,6 +28,7 @@ export default function UserInfor() {
     useEffect(() => {
         getStoredUserId();
     }, []);
+    //
 
     const getStoredUserId = async () => {
         try {
