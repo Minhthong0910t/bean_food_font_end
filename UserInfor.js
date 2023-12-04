@@ -10,8 +10,8 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
-import * as ImagePicker from 'expo-image-picker';
-import { RadioButton } from 'react-native-paper'; // Import RadioButton from react-native-paper
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
+import { RadioButton } from 'react-native-paper';
 import ToolBar from './components/ToolBar';
 
 import { URL } from './const/const';
@@ -22,13 +22,13 @@ export default function UserInfor() {
     const [editedUserInfo, setEditedUserInfo] = useState({});
     const [token, setToken] = useState(null);
     const [userId, setUserId] = useState(null);
-    const [selectedGender, setSelectedGender] = useState(null); // Added state for selected gender
+    const [selectedGender, setSelectedGender] = useState(null);
+    const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
     const navigation = useNavigation();
 
     useEffect(() => {
         getStoredUserId();
     }, []);
-    //
 
     const getStoredUserId = async () => {
         try {
@@ -58,13 +58,37 @@ export default function UserInfor() {
                 const userData = await response.json();
                 setUserInfo(userData);
                 setEditedUserInfo(userData);
-                setSelectedGender(userData.gender); // Set selected gender initially
+                setSelectedGender(userData.gender);
             } else {
                 console.error('Lỗi khi lấy thông tin người dùng từ máy chủ.');
             }
         } catch (error) {
             console.error('Lỗi khi lấy thông tin người dùng:', error);
         }
+    };
+
+    const formatBirthday = (birthday) => {
+        const date = new Date(birthday);
+        const day = date.getDate();
+        const month = date.getMonth() + 1;
+        const year = date.getFullYear();
+        return `${day}/${month}/${year}`;
+    };
+
+    const showDatePicker = () => {
+        setDatePickerVisibility(true);
+    };
+
+    const hideDatePicker = () => {
+        setDatePickerVisibility(false);
+    };
+
+    const handleConfirm = (date) => {
+        hideDatePicker();
+        setEditedUserInfo({
+            ...editedUserInfo,
+            birthday: date,
+        });
     };
 
     const pickImage = async () => {
@@ -167,7 +191,7 @@ export default function UserInfor() {
         { key: 'phone', label: 'Số điện thoại' },
         {
             key: 'gender',
-            label: 'Giới tính',
+            label: '',
             render: () => (
                 <View style={styles.genderContainer}>
                     <Text style={{ color: 'gray', fontSize: 15, marginTop: 10 }}>
@@ -185,7 +209,38 @@ export default function UserInfor() {
                 </View>
             ),
         },
-        { key: 'birthday', label: 'Ngày sinh' },
+        {
+            key: 'birthday',
+            label: '',
+            render: () => (
+                <View style={styles.textInfo}>
+                    <Text style={{ color: 'gray', fontSize: 15, marginTop: 10 }}>
+                        Ngày sinh
+                    </Text>
+                    {isEditing ? (
+                        <TouchableOpacity onPress={showDatePicker}>
+                            <Text style={styles.text}>
+                                {editedUserInfo.birthday
+                                    ? formatBirthday(editedUserInfo.birthday)
+                                    : 'Chọn ngày'}
+                            </Text>
+                        </TouchableOpacity>
+                    ) : (
+                        <Text style={styles.text}>
+                            {userInfo && userInfo.birthday
+                                ? formatBirthday(userInfo.birthday)
+                                : ''}
+                        </Text>
+                    )}
+                    <DateTimePickerModal
+                        isVisible={isDatePickerVisible}
+                        mode="date"
+                        onConfirm={handleConfirm}
+                        onCancel={hideDatePicker}
+                    />
+                </View>
+            ),
+        },
     ];
 
     return (
@@ -214,26 +269,15 @@ export default function UserInfor() {
                                     {field.label}
                                 </Text>
                                 {isEditing ? (
-                                    field.render ? (
-                                        field.render()
-                                    ) : (
-                                        <TextInput
-                                            style={[
-                                                styles.infoTextInput,
-                                                { borderBottomWidth: 0 },
-                                            ]}
-                                            value={editedUserInfo[field.key]}
-                                            onChangeText={(text) =>
-                                                setEditedUserInfo({
-                                                    ...editedUserInfo,
-                                                    [field.key]: text,
-                                                })
-                                            }
-                                            underlineColorAndroid="transparent"
-                                        />
-                                    )
+                                    field.render && field.render()
                                 ) : (
-                                    <Text style={styles.text}>{userInfo[field.key]}</Text>
+                                    <Text style={styles.text}>
+                                        {field.render
+                                            ? field.render()
+                                            : userInfo && userInfo[field.key]
+                                                ? userInfo[field.key]
+                                                : ''}
+                                    </Text>
                                 )}
                             </View>
                         ))}
@@ -266,15 +310,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
     },
-    textInfo: {
-        borderBottomWidth: 0.3,
-        borderBottomColor: 'gray',
-        paddingBottom: 10,
-        marginBottom: 10,
-        backgroundColor: '#f1f8fc',
-        width: 'auto',
-        height: 80,
-    },
     horizontalContainer: {
         flexDirection: 'column',
         alignItems: 'center',
@@ -289,33 +324,35 @@ const styles = StyleSheet.create({
         borderRadius: 60,
         margin: 10,
     },
-    text: {
-        fontSize: 18,
-        // các thuộc tính khác giữ nguyên
-    },
     infoContainer: {
         marginTop: 30,
         margin: 20,
         padding: 10,
         width: '100%',
     },
-    infoTextInput: {
-        width: '100%',
-        // các thuộc tính khác giữ nguyên
+    textInfo: {
+        borderBottomWidth: 0.3,
+        borderBottomColor: 'gray',
+        paddingBottom: 10,
+        marginBottom: 10,
+        backgroundColor: '#f1f8fc',
+    },
+    text: {
+        fontSize: 18,
+        marginBottom: 5,
     },
     button: {
-        flexDirection: 'row',
-        padding: 10,
-        borderRadius: 5,
-        justifyContent: 'center',
-        marginTop: 20,
         backgroundColor: '#319AB4',
+        borderRadius: 5,
+        padding: 10,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 20,
     },
     buttonText: {
         color: 'white',
         fontSize: 16,
         fontWeight: 'bold',
-        textAlign: 'center',
     },
     btn: {
         backgroundColor: '#e0e0e0',
