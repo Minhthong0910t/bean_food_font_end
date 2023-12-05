@@ -32,6 +32,12 @@ const ProductsFavorite = ({navigation}) => {
       // Xử lý dữ liệu ở đây
       console.log("data products" ,data[0].listFavorite);
       const datafavorite = data[0].listFavorite;
+
+      if(datafavorite.length ===0){
+        console.log("vào đây");
+        setdataFavorite([])
+        return;
+      }
       setdataFavorite(datafavorite)
     })
     .catch(error => {

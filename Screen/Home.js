@@ -238,7 +238,7 @@ const Restaurant = ({ navigation }) => {
   return (
     <View>
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-        <Text style={{ margin: 15, fontWeight: 'bold', fontSize: 20, color: '#616161' }}>Nhà Hàng Quanh Đây</Text>
+        <Text style={{ margin: 15, fontWeight: 'bold', fontSize: 20, color: '#616161' }}>Top các nhà hàng</Text>
         <TouchableOpacity style={{ marginLeft: 'auto', marginRight: 5 }} onPress={()=>navigation.navigate('AllRestaurant'  ,{datarestaurant:datarestauran}) }>
           <Text>Xem tất cả</Text>
         </TouchableOpacity>
