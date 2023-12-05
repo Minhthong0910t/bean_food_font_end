@@ -15,6 +15,7 @@ import SliderHome from '../Item/SliderHome';
 import * as Location from 'expo-location';
 import Toast from 'react-native-toast-message';
 const { width, height } = Dimensions.get('window');
+import { useFocusEffect } from '@react-navigation/native';
 
 const HeaderHome = ({ navigation }) => {
   const [address, setAddress] = useState('Đang lấy vị trí...');
@@ -218,7 +219,7 @@ const Restaurant = ({ navigation }) => {
     const fetchData = async () => {
       try {
 
-          const response = await fetch(URL+'api/restaurant/getAll');
+         const response = await fetch(URL+'api/topRestaurants');
         const jsonData = await response.json();
         const data = jsonData.data ;
         let filterRestaurnats = data.filter(datarestaurnat => datarestaurnat.role === "user");
@@ -252,7 +253,7 @@ const Restaurant = ({ navigation }) => {
             </View>
             <View style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: '#F0F0F0', marginLeft: 15, width: 0.58 * width, height: 0.08 * height }}>
               <View style={{ flexDirection: 'column' }}>
-                <Text style={{ fontWeight: 'bold', fontSize: 20, color: '#616161', marginTop: 20 }}>{data.name}</Text>
+                <Text style={{ fontWeight: 'bold', fontSize: 20, color: '#616161', marginTop: 20 }}>{data.restaurantName}</Text>
 
                 <Text style={{ fontWeight: 'bold', color: '#616161' }}>{data.timeon} AM-{data.timeoff} PM</Text>
                 <Text style={{ fontWeight: 'bold', color: '#616161' }}>{data.adress}</Text>
@@ -271,29 +272,41 @@ const Restaurant = ({ navigation }) => {
 const Goiymonan = ({ navigation }) => {
 
   const [datamonangoiy, setdatamonan] = useState([])
+  const fetchData = async () => {
+    try {
 
+      const response = await fetch(URL+'api/getTop');
+
+
+      const jsonData = await response.json();
+      const sortedData = jsonData.sort((a, b) => b.likeCount - a.likeCount);
+      console.log("sort data" , sortedData);
+
+      setdatamonan(sortedData);
+    } catch (error) {
+      console.error(error);
+    }
+  };
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-
-        const response = await fetch(URL+'api/product/suggest');
-
-
-        const jsonData = await response.json();
-
-        setdatamonan(jsonData.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
     fetchData();
 
   }, [])
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchData();
+    }, [])
+  );
   return (
     <View style = {{margin: 15}}>
 
-      <Text style={{  fontWeight: 'bold', fontSize: 20, color: '#616161' }}>Gợi ý hàng đầu dành cho bạn</Text>
+ <View style ={{justifyContent:'space-between' , flexDirection:'row'}}>
+ <Text style={{  fontWeight: 'bold', fontSize: 20, color: '#616161' }}>Gợi ý dành cho bạn</Text>
+ <TouchableOpacity onPress={()=>navigation.navigate('AllProducts')}>
+  <Text>
+    Xem tất cả
+  </Text>
+ </TouchableOpacity>
+ </View>
       <ScrollView >
         {datamonangoiy.map((data, index) =>
           <View key={index} style={{ backgroundColor: '#f0f0f0', marginTop: 6, marginRight: 5, borderRadius: 10 }}>
@@ -308,11 +321,11 @@ const Goiymonan = ({ navigation }) => {
                 <Text style={{ fontWeight: 'bold', fontSize: 15, color: '#616161' }}>tên sản phẩm: 
                   {data.name}
                 </Text>
-                <View style={{ flexDirection: 'row' }}>
+                <View style={{ flexDirection: 'row'  }}>
               
                   <Text style={{ paddingBottom:5 , paddingTop:5, fontWeight: 'bold', color: '#616161' }}>Nhà hàng: {data.restaurantId.name}</Text>
                 </View>
-                <Text style={{ color: '#616161', width: 0.6 * width, fontWeight: 'bold' }} numberOfLines={2}>Mô tả: {data.description}</Text>
+                <Text style={{ color: '#616161', width: 0.6 * width, fontWeight: 'bold' , paddingRight:15 }} numberOfLines={2}>Số lượng người yêu thích: {data.likeCount}</Text>
               </View>
             </TouchableOpacity>
           </View>

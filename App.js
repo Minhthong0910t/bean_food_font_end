@@ -32,6 +32,8 @@ import SplashScreen from './Screen/SplashScreen';
 import PaymentScreen from './Service/PaymentScreen';
 import RestaurantScreen from './Screen/RestaurantScreen';
 import AllRestaurnat from './Screen/AllRestaurnat';
+import ProductsFavorite from './Screen/ProductsFavorite';
+import AllProducts from './Screen/AllProducts';
 
 
 const Stack = createNativeStackNavigator();
@@ -80,11 +82,14 @@ export default function App() {
                         <Stack.Screen component={Voucher} name='Voucher' />
                         <Stack.Screen component={History} name='lichsu' />
                         <Stack.Screen component={Payment} name='Payment' />
+                        <Stack.Screen component={ProductsFavorite} name='ProductFavoriteScreen' />
                         <Stack.Screen component={UserInfor} name='UserInfor' />
                         <Stack.Screen component={SplashScreen} name='SplashScreen' />
+                        <Stack.Screen component={AllProducts} name='AllProducts' />
                         <Stack.Screen component={RestaurantScreen} name='Restaurant'     screenOptions={{
       unmountOnBlur: true,
     }} />
+    
                         <Stack.Screen component={PaymentScreen} name='PaymentScreen' />
                         <Stack.Screen component={AllRestaurnat} name='AllRestaurant' />
 

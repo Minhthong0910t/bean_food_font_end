@@ -35,12 +35,12 @@ const MenuRestaurant = ({navigation , data }) => {
       <ScrollView   showsVerticalScrollIndicator={false}>
 
       {
-        datamenu.map((data , index)=><View style={{  marginTop:10,  width:0.92 *width , height:0.1*height , backgroundColor:'#F0F0F0'  , borderRadius:10}}>
+        datamenu.map((data , index)=><View key ={index}style={{  marginTop:10,  width:0.92 *width , height:0.1*height , backgroundColor:'#F0F0F0'  , borderRadius:10}}>
         <View key={index} style = {{flexDirection:'row',alignItems:'center' ,  justifyContent:'space-between' }}>
-         <Image  source={{uri:data.image}} style = {{ height:height*0.1   ,width:width*0.2 , borderTopLeftRadius:10 , borderBottomLeftRadius:10}} />
+         <Image  source={{uri:data.image}} style = {{ height:height*0.1   ,width:width*0.2 ,borderRadius:10}} />
           <View style={{flexDirection:'column' }}>
-            <Text style={{fontWeight:'bold',color:'#616161'}}>{data.name}</Text>
-            <Text style={{  fontWeight:'bold' ,color:'#616161'}}>{data.realPrice}đ</Text>
+            <Text style={{fontWeight:'bold',color:'#616161'}}>Tên sản phẩm: {data.name}</Text>
+            <Text style={{  fontWeight:'bold' ,color:'#616161'}}>Gía sản phẩm: {data.realPrice}đ</Text>
           </View>
           <TouchableOpacity onPress ={()=>  navigation.navigate('ProductDetail', { product: data })} style={{width:0.06*width ,  height:0.03*height ,marginRight:10,  borderRadius:20 , backgroundColor:'#616161' , alignItems:'center' , justifyContent:'center'}}>
             <Text style={{color:'white' , fontWeight:'bold'}}>+</Text>

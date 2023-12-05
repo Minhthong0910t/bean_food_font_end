@@ -38,23 +38,23 @@ const PayScreen = ({ route, navigation }) => {
   const [address, setAddress] = useState('Đang lấy vị trí...');
   console.log("products", products);
 
-  useEffect(() => {
-    (async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        setAddress('Quyền truy cập vị trí bị từ chối.');
-        return;
-      }
+  // useEffect(() => {
+  //   (async () => {
+  //     let { status } = await Location.requestForegroundPermissionsAsync();
+  //     if (status !== 'granted') {
+  //       setAddress('Quyền truy cập vị trí bị từ chối.');
+  //       return;
+  //     }
 
-      let location = await Location.getCurrentPositionAsync({});
-      let reverseGeocode = await Location.reverseGeocodeAsync(location.coords);
-      if (reverseGeocode.length > 0) {
-        let addr = reverseGeocode[0];
-        let fullAddress = `${addr.name || ''} ${addr.street || ''}, ${addr.city || ''}, ${addr.region || ''}, ${addr.country || ''}`;
-        setAddress(fullAddress.replace(/, ,/g, ',').replace(/,,/g, ',').trim());
-      }
-    })();
-  }, []);
+  //     let location = await Location.getCurrentPositionAsync({});
+  //     let reverseGeocode = await Location.reverseGeocodeAsync(location.coords);
+  //     if (reverseGeocode.length > 0) {
+  //       let addr = reverseGeocode[0];
+  //       let fullAddress = `${addr.name || ''} ${addr.street || ''}, ${addr.city || ''}, ${addr.region || ''}, ${addr.country || ''}`;
+  //       setAddress(fullAddress.replace(/, ,/g, ',').replace(/,,/g, ',').trim());
+  //     }
+  //   })();
+  // }, []);
 
 
   const createOrderData = () => {

@@ -86,6 +86,10 @@ const ProfileScreen = () => {
           <Icon name="info" size={20} color="black" style={styles.icon} />
           <Text style={styles.menuText}>Ví liên kết</Text>
         </TouchableOpacity>
+        <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('ProductFavoriteScreen')}>
+          <Icon name="info" size={20} color="black" style={styles.icon} />
+          <Text style={styles.menuText}>Sản phẩm yêu thích</Text>
+        </TouchableOpacity>
         {isLoggedIn && (
           <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
             <Text style={styles.logoutButtonText}>Đăng xuất</Text>
