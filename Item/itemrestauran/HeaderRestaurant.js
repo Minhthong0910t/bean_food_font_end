@@ -67,7 +67,7 @@ const CoffeeShopScreen = ({navigation , data}) => {
 const styles = StyleSheet.create({
   screen: {
 
-    backgroundColor: "#fff",
+    backgroundColor: "white",
   },
   imageBackground: {
     width: width,

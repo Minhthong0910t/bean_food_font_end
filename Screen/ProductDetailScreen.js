@@ -14,6 +14,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useSelector, useDispatch } from 'react-redux';
 import { addproducttocart } from '../Redux/ActionAddtoCart';
 import { URL } from '../const/const';
+import ProductsFavorite from './ProductsFavorite';
 
 
 
@@ -26,6 +27,7 @@ const ProductDetailScreen = ({ navigation, route }) => {
   const [newComment, setNewComment] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [currentUser, setCurrentUser] = useState(null);
+  const [productfavorite , setproductfavorite] = useState(false)
   const dispatchproduct = useDispatch();
   const products = useSelector(state => state.products);
   const [data, setData] = useState('');
@@ -83,7 +85,7 @@ const ProductDetailScreen = ({ navigation, route }) => {
       let jsonResponse = await response.json();     
       if (response.status === 200) {
         // Lọc các bình luận dựa trên idProduct._id
-        let filteredComments = jsonResponse.data.filter(comment => comment.idProduct._id === product._id);
+        let filteredComments = jsonResponse.data.filter(comment => comment.idProduct._id === product.productId);
         // console.log("vippp ",filteredComments);
   
         if (filteredComments.length > 0) {
@@ -185,6 +187,7 @@ const ProductDetailScreen = ({ navigation, route }) => {
                 {
                   text: 'Đồng ý',
                   onPress: async () => {
+                    console.log("data restauranid" , product.restaurantId);
                     const storedUserId = await AsyncStorage.getItem('_id');
                     deleteProduct(storedUserId)
                     const isLogin = await AsyncStorage.getItem('isLogin');
@@ -196,7 +199,7 @@ const ProductDetailScreen = ({ navigation, route }) => {
                       name:product.name , 
                       image:product.image,
                       price:product.realPrice,
-                      restaurant:product.restaurantId,
+                      restaurant:product.restaurantId._id,
                       quantity :quantity ,
                       productId:product._id
                     }
@@ -229,6 +232,7 @@ const ProductDetailScreen = ({ navigation, route }) => {
       console.log("product trong file detail" , product.restaurantId);
    } , [])
   const addToCart = async() => {
+    console.log("data restauranid" , product.restaurantId._id);
     const isLogin = await AsyncStorage.getItem('isLogin');
     if(isLogin==='true'){
     calculateTotalPrice();
@@ -239,7 +243,7 @@ const ProductDetailScreen = ({ navigation, route }) => {
       name:product.name , 
       image:product.image,
       price:product.realPrice,
-      restaurantId:product.restaurantId,
+      restaurantId:product.restaurantId._id,
       quantity :quantity ,
     
     }
@@ -279,8 +283,121 @@ const ProductDetailScreen = ({ navigation, route }) => {
     });
     setTotalPrice(total);
   };
+  useEffect(()=>{
+    console.log("product favorite " , productfavorite)
+  },[productfavorite])
+  const addpProductfromfavorite = async()=>{
+    const isLogin = await AsyncStorage.getItem('isLogin');
+
+  if(isLogin==='false'){
+        setNewComment('');
+        Alert.alert(
+          "Thông báo",
+          "Vui lòng đăng nhập để thêm sản phẩm vào món ăn yêu thích!",
+          [
+            {
+              text: "Hủy bỏ",
+              style: "cancel",
+            },
+            {
+              text: "Đăng nhập",
+              onPress: () => navigation.navigate("Login"),
+            },
+          ],
+          { cancelable: false }
+        );
+        return;
+    }
+
+    setproductfavorite(true)
+     const storedUserId = await AsyncStorage.getItem('_id');
+
+     console.log("data uid trong favotite" , storedUserId);
+
+     console.log("idproduct to add favorite" , product._id);
+
+     const dataproductFavorite = {
+      userId:storedUserId , 
+      _id:product._id , 
+      isLiked:true
+     }
+
+
+     fetch(`${URL}api/favorite`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        // Các tiêu đề khác nếu cần thiết
+      },
+      body: JSON.stringify(dataproductFavorite), // Chuyển đối tượng thành chuỗi JSON
+    })
+      .then(response => response.json())
+      .then(responseData => {
+        console.log(responseData.msg);
+      })
+      .catch(error => {
+        // Xử lý lỗi
+      });
+
+  }
+
+
+  const getdataproductFavorite = async()=>{
+    const storedUserId = await AsyncStorage.getItem('_id');
+    fetch(`${URL}api/favorite/getbyUid/${storedUserId}`)
+  .then(response => response.json())
+  .then(data => {
+    let filteredComments = data[0].listFavorite.filter(dataproducts =>dataproducts._id ===product._id);
+
+   if(filteredComments.length>0){
+    console.log(" sản phẩm yêu thích" ,filteredComments);
+    setproductfavorite(true)
+   }else{
+    setproductfavorite(false)
+   }
+
+  })
+  .catch(error => {
+    // Xử lý lỗi
+  });
+  }
+  useEffect( ()=>{
+getdataproductFavorite()
+  } , [product])
+
+  const updateProductFromFavotite =async ()=>{
+    setproductfavorite(false)
+    const storedUserId = await AsyncStorage.getItem('_id');
+    console.log("data uid trong favotite" , storedUserId);
+
+    console.log("idproduct to add favorite" , product._id);
+
+    const dataproductFavorite = {
+     userId:storedUserId , 
+     _id:product._id , 
+     isLiked:false  
+    }
+    fetch(`${URL}api/favorite`, {
+     method: 'POST',
+     headers: {
+       'Content-Type': 'application/json',
+       // Các tiêu đề khác nếu cần thiết
+     },
+     body: JSON.stringify(dataproductFavorite), // Chuyển đối tượng thành chuỗi JSON
+   })
+     .then(response => response.json())
+     .then(responseData => {
+       console.log(responseData.msg);
+     })
+     .catch(error => {
+       // Xử lý lỗi
+     });
+  }
 
   const submitComment = async() => {
+    console.log("product ì" , product._id);
+    const storedData = await AsyncStorage.getItem('_id'); 
+    console.log("id user" , storedData);
     if (!newComment || newComment.trim() === "") {
       ToastAndroid.show('Người dùng phải nhập bình luận, không được để trống!', ToastAndroid.SHORT);
       return;
@@ -288,9 +405,6 @@ const ProductDetailScreen = ({ navigation, route }) => {
   const isLogin = await AsyncStorage.getItem('isLogin');
 
   if(isLogin==='false'){
-
-
-  
         setNewComment('');
         Alert.alert(
           "Thông báo",
@@ -325,7 +439,7 @@ const ProductDetailScreen = ({ navigation, route }) => {
       },
       body: JSON.stringify({
         idProduct: product._id,
-        idUser: currentUser._id, // id user
+        idUser: storedData, // id user
         title: newComment
       })
     })
@@ -350,7 +464,7 @@ const ProductDetailScreen = ({ navigation, route }) => {
     );
   
     const renderProductDetails = () => (
-      <SafeAreaView style={{ flex: 1}}>
+      <SafeAreaView style={{ flex: 1 }}>
         <View style={styles.container}>
           {/* Header */}
           <View style={styles.header}>
@@ -382,24 +496,85 @@ const ProductDetailScreen = ({ navigation, route }) => {
 
             {/* Product name and price */}
             <View style={styles.contentRow}>
-              <Text style={styles.productName}>{ product.name}</Text>
+
+           <View style = {{flexDirection:'row' ,alignItems:'center'}}>
+           <Text  style={styles.productName}>Tên sản phẩm  </Text>
+              <Text>{product.name}</Text>
+           </View>
               <Text style={styles.productPrice}>{product.realPrice} VND</Text>
             </View>
 
             {/* Product description */}
             <View style={styles.descriptionContainer}>
+            <Text style={{fontSize:20, fontWeight:'bold'}}>Mô tả: </Text>
               <Text style={styles.description}>{product.description}</Text>
             </View>
+            
+          <View style={{flexDirection:'row' , margin:5 , alignItems:'center'}}>
+            <Text style = {{padding:5 , fontSize:20, fontWeight:'bold'}}>Món ăn yêu thích   </Text>
+          {productfavorite ? (
+              <View>
+                <TouchableOpacity
+                  onPress={() =>
+                    Alert.alert("Xác nhận", "Bạn có chắc chắn muốn hủy sản phẩm khỏi danh sách yêu thích không?", [
+                      {
+                        text: "Hủy",
+                        style: "cancel",
+                      },
+                      {
+                        text: "Đồng ý",
+                        onPress: () => {
+                           updateProductFromFavotite()
+                         
+                        },
+                      },
+                    ])
+                  }
+                >
+                  <Image
+                    source={require("./../Image/heart_1.png")}
+                    style={{ width: 25, height: 25 }}
+                  />
+                </TouchableOpacity>
+              </View>
+            ) : (
+              <View>
+                <TouchableOpacity onPress={ () => 
+                addpProductfromfavorite()
+
+                }>
+                  <Image
+                    source={require("./../Image/heart_2.png")}
+                    style={{ width: 25, height: 25}}
+                  />
+                </TouchableOpacity>
+              </View>
+            )}
+          </View>
 
             {/* Product rating */}
-            <View style = {{flexDirection:'row'  , justifyContent:'space-between' , alignItems:'center'}}>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
               <View style={styles.danhGiaRow}>
-                <Text style={styles.DanhgiaTitle}>Bình Luận {product.race}</Text>
-             
+                <Text style={styles.DanhgiaTitle}>
+                  Bình Luận
+                </Text>
               </View>
-            <TouchableOpacity onPress={()=> navigation.navigate('Restaurant' ,{ restaurant: product.restaurantId._id} )}>
-            <Text style={styles.DanhgiaTitle}>Đi đến nhà hàng</Text>
-            </TouchableOpacity>
+
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate("Restaurant", {
+                    restaurant: product.restaurantId._id,
+                  })
+                }
+              >
+                <Text style={styles.DanhgiaTitle}>Đi đến nhà hàng</Text>
+              </TouchableOpacity>
             </View>
 
             {/* Comments section */}
@@ -456,9 +631,7 @@ const ProductDetailScreen = ({ navigation, route }) => {
           <Toast ref={(ref) => Toast.setRef(ref)} />
         </View>
 
-        <View>
-          
-        </View>
+        <View></View>
       </SafeAreaView>
     );
   
@@ -481,19 +654,20 @@ const styles = StyleSheet.create({
   },
   scrollView:{margin:10},
   image: {
-    width: '100%',
-    height: 200,
+    width: '97%',
+    borderRadius:10,
+    height: 200, 
     marginBottom: 10,
-    marginTop:25
+    margin:5
   },
   contentRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    padding: 10,
+    padding: 5,
   },
   danhGiaRow:{ 
   flexDirection: 'row',
-  padding: 10,},
+  padding: 5,},
   iconstar:{
     width:10,
     height:10,
@@ -509,7 +683,8 @@ const styles = StyleSheet.create({
     color: 'green',
   },
   descriptionContainer: {
-    padding: 8,
+    padding: 8, alignItems:'center',
+     flexDirection:'row'
   },
   description: {
     fontSize: 16,
