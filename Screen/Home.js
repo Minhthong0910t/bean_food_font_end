@@ -15,6 +15,7 @@ import SliderHome from '../Item/SliderHome';
 import * as Location from 'expo-location';
 import Toast from 'react-native-toast-message';
 import { RefreshControl } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 
 const { width, height } = Dimensions.get('window');
 
@@ -281,25 +282,32 @@ const truncateString = (str, num) => {
 const Goiymonan = ({ navigation }) => {
 
   const [datamonangoiy, setdatamonan] = useState([])
+  const fetchData = async () => {
+    try {
+
+      const response = await fetch(URL+'api/getTop');
+
+
+      const jsonData = await response.json();
+      const sortedData = jsonData.sort((a, b) => b.likeCount - a.likeCount);
+    
+      setdatamonan(sortedData);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-
-        const response = await fetch(URL+'api/product/suggest');
-
-
-        const jsonData = await response.json();
-
-        setdatamonan(jsonData.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
+  
     fetchData();
 
   }, [])
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchData();
+    }, [])
+  );
     return (
       <View style={{ margin: 15 }}>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
@@ -333,7 +341,7 @@ const Goiymonan = ({ navigation }) => {
                     style={{ color: '#000000', fontWeight: 'bold' }} 
                     
                   >
-                    Mô tả: {truncateString(data.description, 21)}
+                    Số lượng yêu thích: {data.likeCount}
                   </Text>
                 </View>
               </TouchableOpacity>
