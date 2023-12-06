@@ -5,13 +5,12 @@ const { width, height } = Dimensions.get('window');
 
 import { useNavigation } from '@react-navigation/native';
 import { URL } from '../const/const';
+import ToolBar from '../components/ToolBar';
 
 const AllRestaurnat = ({route}) => {
  const navigation = useNavigation();
 
-  const handleGoBack = () => {
-    navigation.goBack();
-  };
+
 
     const [restaurant , setdatarestaurnat] = useState([]) 
 
@@ -34,20 +33,12 @@ const AllRestaurnat = ({route}) => {
         }
         
      , [])
+     
   return (
-    <View style={{ marginTop: width * 0.12  , flex:1 , backgroundColor:'white'}}>
+    <View style={{ flex:1 , backgroundColor:'white'}}>
 
-      <View style={styles.container}>
-      <TouchableOpacity onPress={handleGoBack}>
-      <Image
-                source={require("./../Image/left_arrow.png")}
-                style={{ width: 25, height: 25 }}
-              />
-      </TouchableOpacity>
-      <Text style={styles.titleText}>Tất cả nhà hàng</Text>
-      <View style={styles.separator} />
-    </View>
-        <View style = {{borderWidth:0.5 , borderColor:'#616161'  , backgroundColor:'#616161', marginTop:20}}></View>
+      <ToolBar title="Tất cả nhà hàng" onBackPress={() => navigation.goBack()} />
+      
         <ScrollView  showsVerticalScrollIndicator={false}>
         {restaurant.map((data, index) =>
        
@@ -56,7 +47,7 @@ const AllRestaurnat = ({route}) => {
             <View style={{ }}>
               <Image source={{ uri: data.image }} style={{ width: 0.92 * width , height: 0.2 * height, borderTopLeftRadius: 10, borderTopRightRadius: 10 }} />
             </View>
-            <View style={{ borderBottomLeftRadius:10  , borderBottomRightRadius:10, flexDirection: 'row', alignItems: 'center', backgroundColor: '#F0F0F0', width: 0.92 * width, height: 0.08 * height }}>
+            <View style={{ borderBottomLeftRadius:10  , borderBottomRightRadius:10, flexDirection: 'row', alignItems: 'center', backgroundColor: '#ADD8E6', width: 0.92 * width, height: 0.08 * height }}>
               <View style={{ flexDirection: 'column' }}>
                 <Text style={{ fontWeight: 'bold', fontSize: 20, color: '#616161', marginTop: 20  , paddingLeft:10}}>{data.name}</Text>
 

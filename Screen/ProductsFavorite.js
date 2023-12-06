@@ -50,7 +50,7 @@ const ProductsFavorite = ({navigation}) => {
   );
   const renderItem = ({ item }) => (
     <View>
-     <View style={{ backgroundColor: '#f0f0f0', marginTop: 6, marginRight: 5, borderRadius: 10 }}>
+     <View style={{ backgroundColor: '#FFE4C4', margin:5, borderRadius: 10 }}>
             <TouchableOpacity
               style={{ margin: 15, flexDirection: 'row', height: 90, alignItems: 'center' }}
               onPress={() => navigation.navigate('ProductDetail', { product: item })}
@@ -59,14 +59,14 @@ const ProductsFavorite = ({navigation}) => {
                 <Image source={{ uri: item.image }} style={{ borderWidth: 1, width: width * 0.25, height: width * 0.25 , borderRadius:10 }} />
               </View>
               <View style={{ flexDirection: 'column', paddingLeft: 10, marginLeft: 10 }}>
-                <Text style={{ fontWeight: 'bold', fontSize: 15, color: '#616161' }}>tên sản phẩm: 
+                <Text style={{ fontWeight: 'bold', fontSize: 15, color: '#616161' }} numberOfLines={2}>Tên món ăn: 
                   {item.name}
                 </Text>
                 <View style={{ flexDirection: 'row'  }}>
-              
+            
                   <Text style={{ paddingBottom:5 , paddingTop:5, fontWeight: 'bold', color: '#616161' }}>Nhà hàng: {item.restaurantId.name}</Text>
                 </View>
-                <Text style={{ color: '#616161', width: 0.6 * width, fontWeight: 'bold' , paddingRight:15 }} numberOfLines={2}>Mô tả: {item.description}</Text>
+                <Text style={{ color: '#616161', width: 0.6 * width, fontWeight: 'bold' , paddingRight:15 }} numberOfLines={4}>Mô tả: {item.description}</Text>
               </View>
             </TouchableOpacity>
 

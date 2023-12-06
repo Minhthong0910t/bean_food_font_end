@@ -297,7 +297,7 @@ if(products && products.length>=0){
       </View>
       {isLoggedIn ? (
         <>
-          <Text style={styles.sectionTitle}>Selected Products:</Text>
+          <Text style={styles.sectionTitle}>Selected Products</Text>
           <ScrollView>
         {products&& products.length>0?(products.map((product, index) => (
           <View key={index} style={styles.productContainer}>

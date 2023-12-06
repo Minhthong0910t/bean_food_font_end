@@ -189,32 +189,32 @@ export default function UserInfor() {
     const fieldsToDisplay = [
         { key: 'username', label: 'Tên người dùng' },
         { key: 'phone', label: 'Số điện thoại' },
-        {
-            key: 'gender',
-            label: '',
-            render: () => (
-                <View style={styles.genderContainer}>
-                    <Text style={{ color: 'gray', fontSize: 15, marginTop: 10 }}>
-                        Giới tính
-                    </Text>
-                    <RadioButton.Group
-                        onValueChange={(value) => handleGenderChange(value)}
-                        value={selectedGender}
-                    >
-                        <View style={styles.radioContainer}>
-                            <RadioButton.Item label="Nam" value="Nam" />
-                            <RadioButton.Item label="Nữ" value="Nữ" />
-                        </View>
-                    </RadioButton.Group>
-                </View>
-            ),
-        },
+        // {
+        //     key: 'gender',
+        //     label: '',
+        //     render: () => (
+        //         <View style={styles.genderContainer}>
+        //             <Text style={{ color: 'gray', fontSize: 15, marginTop: 10 }}>
+        //                 Giới tính
+        //             </Text>
+        //             <RadioButton.Group
+        //                 onValueChange={(value) => handleGenderChange(value)}
+        //                 value={selectedGender}
+        //             >
+        //                 <View style={styles.radioContainer}>
+        //                     <RadioButton.Item label="Nam" value="Nam" />
+        //                     <RadioButton.Item label="Nữ" value="Nữ" />
+        //                 </View>
+        //             </RadioButton.Group>
+        //         </View>
+        //     ),
+        // },
         {
             key: 'birthday',
             label: '',
             render: () => (
-                <View style={styles.textInfo}>
-                    <Text style={{ color: 'gray', fontSize: 15, marginTop: 10 }}>
+                <View >
+                    <Text style={{ color: 'gray', fontSize: 15, padding:8}}>
                         Ngày sinh
                     </Text>
                     {isEditing ? (
@@ -248,7 +248,7 @@ export default function UserInfor() {
             <ToolBar title="Thông tin cá nhân" onBackPress={() => navigation.goBack()} />
             {userInfo ? (
                 <View style={styles.horizontalContainer}>
-                    <View style={styles.avatarContainer}>
+                    {/* <View style={styles.avatarContainer}>
                         <TouchableOpacity onPress={pickImage}>
                             {editedUserInfo.avatar ? (
                                 <Image
@@ -261,11 +261,11 @@ export default function UserInfor() {
                                 </Text>
                             )}
                         </TouchableOpacity>
-                    </View>
+                    </View> */}
                     <View style={styles.infoContainer}>
                         {fieldsToDisplay.map((field) => (
                             <View key={field.key} style={styles.textInfo}>
-                                <Text style={{ color: 'gray', fontSize: 15, marginTop: 10 }}>
+                                <Text style={{ color: 'gray', fontSize: 15, marginTop: 10}}>
                                     {field.label}
                                 </Text>
                                 {isEditing ? (
@@ -281,7 +281,7 @@ export default function UserInfor() {
                                 )}
                             </View>
                         ))}
-                        <View style={styles.textInfo}>
+                        <View >
                             <TouchableOpacity
                                 style={styles.btn}
                                 onPress={() => setIsEditing(!isEditing)}
@@ -333,21 +333,23 @@ const styles = StyleSheet.create({
     textInfo: {
         borderBottomWidth: 0.3,
         borderBottomColor: 'gray',
-        paddingBottom: 10,
-        marginBottom: 10,
+        padding:10,
         backgroundColor: '#f1f8fc',
+        marginBottom:15,
+        borderRadius:20,
+        borderWidth:1
     },
     text: {
         fontSize: 18,
-        marginBottom: 5,
+
     },
     button: {
-        backgroundColor: '#319AB4',
-        borderRadius: 5,
+        backgroundColor: '#FF9900', // Màu nền xanh
         padding: 10,
-        justifyContent: 'center',
+        borderRadius: 5, // Bo góc
+        margin: 10,
         alignItems: 'center',
-        marginTop: 20,
+        opacity: 0.8, // Hiệu ứng opacity
     },
     buttonText: {
         color: 'white',
@@ -355,11 +357,12 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     btn: {
-        backgroundColor: '#e0e0e0',
+        backgroundColor: '#319AB4', // Màu nền xanh
         padding: 10,
-        borderRadius: 5,
+        borderRadius: 5, // Bo góc
         marginTop: 10,
         alignItems: 'center',
+        opacity: 0.8, // Hiệu ứng opacity
     },
     genderContainer: {
         flexDirection: 'row',

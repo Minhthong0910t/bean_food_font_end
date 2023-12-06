@@ -2,10 +2,14 @@ import React from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
 
 const CommentItem = ({ username, title, avatar }) => {
-  // Log the avatar value
+  const defaultAvatar = require('../Image/usercm.png');
+
+  // Xác định nguồn ảnh phù hợp
+  const imageSource = avatar ? { uri: avatar } : defaultAvatar;
+
   return (
     <View style={styles.commentContainer}>
-      <Image source={{ uri: avatar }} style={styles.userImage} /> 
+      <Image source={imageSource} style={styles.userImage} />
       <View style={styles.commentContentContainer}>
         <Text style={styles.username}>{username}</Text>
         <Text style={styles.commentContent}>{title}</Text>

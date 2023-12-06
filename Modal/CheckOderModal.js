@@ -27,10 +27,10 @@ const CheckOrderModal = ({ modalVisible, setModalVisible, onOrderSuccess,orderDa
             <Text style={styles.textStyle}>X</Text>
           </TouchableOpacity>
           <Image 
-            source={{ uri: 'URL_HÌNH_ẢNH_CỦA_BẠN' }} 
+            source={require('../Image/giaohang.png')} 
             style={styles.image}
           />
-          <Text>Kiểm tra đơn hàng của bạn nhé...</Text>
+          <Text>Kiểm tra mua hàng của bạn nhé...</Text>
           <View style={styles.buttonContainer}>
             <TouchableOpacity style={styles.customButton} onPress={goBack}>
               <Text style={styles.buttonText}>Kiểm tra</Text>

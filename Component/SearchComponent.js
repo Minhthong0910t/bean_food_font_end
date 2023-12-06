@@ -2,6 +2,7 @@ import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View, Image, TextInpu
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import { URL } from '../const/const'
+import ToolBar from '../components/ToolBar'
 const { width, height } = Dimensions.get('window')
 const SearchComponent = ({ navigation }) => {
   const [inputText, setInputText] = useState('');
@@ -39,13 +40,8 @@ const SearchComponent = ({ navigation }) => {
   };
 
   return (
-    <SafeAreaView style={{ marginTop: 25 }}>
-      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', height: 100 }}>
-        <TouchableOpacity style={{ marginRight: 'auto' }} onPress={() => navigation.goBack()}>
-          <Image source={require('./../Image/left_arrow.png')} style={{ width: 25, height: 25 }} />
-        </TouchableOpacity>
-        <Text style={{ fontWeight: 'bold', textAlign: 'center', flex: 1 }}>Tìm kiếm</Text>
-      </View>
+    <SafeAreaView >
+      <ToolBar title="Tìm kiếm" onBackPress={() => navigation.goBack()} />
 
       <View style={{ flexDirection: 'row' }}>
         <TouchableOpacity onPress={() => { navigation.navigate('Search') }}>
@@ -57,6 +53,7 @@ const SearchComponent = ({ navigation }) => {
               borderWidth: 1,
               borderColor: 'black',
               marginLeft: 15,
+              marginTop: 15,
               paddingLeft: 10,
             }}
             value={inputText}
@@ -72,6 +69,7 @@ const SearchComponent = ({ navigation }) => {
             height: 40,
             backgroundColor: '#319AB4',
             justifyContent: 'center',
+            marginTop: 15,
             alignItems: 'center',
           }}>
           <TouchableOpacity onPress={handleButtonPress} >
@@ -92,16 +90,21 @@ const SearchComponent = ({ navigation }) => {
             return(
               <TouchableOpacity style={{ margin: 15, flexDirection: 'row', height: 90, alignItems: 'center', marginTop: 20 }} onPress={() => { navigation.navigate('ProductDetail', { product })}} >
 
+                
+
                 <View >
-                  <Image source={{ uri: item.item.image }}  style={{width: 100, height: 100}}/>
+                <Image source={{ uri: item.item.image }} style={{ borderWidth: 1, width: width * 0.25, height: width * 0.25 , borderRadius:10 }} />
+              </View>
+              <View style={{ flexDirection: 'column', paddingLeft: 10, marginLeft: 10 }}>
+                <Text style={{ fontWeight: 'bold', fontSize: 15, color: '#616161' }}numberOfLines={2}>{item.item.name}
+                </Text>
+                <View style={{ flexDirection: 'row' }}>
+                  
+                  <Text style={{ paddingTop:5 , paddingBottom:5, fontWeight: 'bold', color: '#616161' }}>{item.item.realPrice} {'VND'}</Text>
                 </View>
-                <View style={{ flexDirection: 'column', paddingLeft: 10, marginLeft: 10 }}>
-                  <Text style={{ fontWeight: 'bold', fontSize: 15, color: '#616161' }}>{item.item.name}</Text>
-                  <View style={{ flexDirection: 'row' }}>
-                    <Text style={{ padding: 5, fontWeight: 'bold', color: '#616161' }}>{item.item.realPrice} {'VND'}</Text>
-                  </View>
-                  <Text style={{ color: '#616161' }}>{item.item.description}</Text>
-                </View>
+                <Text style={{ color: '#616161', width: 0.6 * width }} numberOfLines={4}>{item.item.description}</Text>
+              </View>
+                
               </TouchableOpacity>
             )
           }}

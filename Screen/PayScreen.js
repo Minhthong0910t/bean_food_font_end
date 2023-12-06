@@ -6,12 +6,12 @@ import CheckOrderModal from '../Modal/CheckOderModal';
 import SuccessModal from '../Modal/SuccessModal';
 import ProductItem from '../Item/ProductItem';
 import ProductItemOder from '../Item/ProductItemOder';
-import LocationModal from '../Modal/LocationModal';
 import CurrentLocationMap from '../components/CurrentLocationMap';
 import * as Location from 'expo-location';
 import { URL } from '../const/const';
 import ToolBar from '../components/ToolBar';
 import Toast from 'react-native-toast-message';
+import EditAddressModal from '../Modal/EditAddressModal';
 
 
 
@@ -26,12 +26,12 @@ const PayScreen = ({ route, navigation }) => {
   // const [address, setAddress] = useState('D29, Phạm Văn Bạch, Cầu Giấy, Hà Nội');
   // Sử dụng trạng thái cho quantity và totalPrice
   const [text, setText] = useState('');
-  const deliveryFee = 15000;
+  const deliveryFee = 35000;
   const discount = 0;
   const [paymentMethod, setPaymentMethod] = useState('cash'); // 'cash' hoặc 'bank'
 
   const [isCheckOrderModalVisible, setCheckOrderModalVisible] = useState(false);
-  const [isCheckLocalModalVisible, setCheckLocalModalVisible] = useState(false);
+  const [isEditAddressModalVisible, setEditAddressModalVisible] = useState(false);
   const [isSuccessModalVisible, setSuccessModalVisible] = useState(false);
 
   //lấy vị trí hiện tại người dùng
@@ -125,7 +125,7 @@ const PayScreen = ({ route, navigation }) => {
         text1: 'Vui lòng chờ',
         text2: 'Đang lấy vị trí của bạn...'
       });
-      // return;
+      return;
     }
 
 
@@ -139,8 +139,11 @@ const PayScreen = ({ route, navigation }) => {
 
 
   //địa điểm
-  const toggleLocationModal = () => {
-    setCheckLocalModalVisible(!isCheckLocalModalVisible);
+  const toggleEditAddressModal = () => {
+    setEditAddressModalVisible(!isEditAddressModalVisible);
+  };
+  const handleConfirmAddress = (newAddress) => {
+    setAddress(newAddress); // Cập nhật địa chỉ mới
   };
 
 
@@ -185,13 +188,15 @@ const PayScreen = ({ route, navigation }) => {
         <ScrollView >
           <View style={styles.ngang}>
             <Text style={styles.deliveryText}>Giao hàng đến:</Text>
-            <TouchableOpacity style={styles.buttondd} onPress={toggleLocationModal}>
-              <Text>Thay đổi địa điểm</Text>
-            </TouchableOpacity>
-            <LocationModal
-              visible={isCheckLocalModalVisible}
-              onClose={toggleLocationModal} // Bạn cần đảm bảo rằng LocationModal có prop onClose
-            />
+            <TouchableOpacity style={styles.buttondd} onPress={toggleEditAddressModal}>
+            <Text>Thay đổi địa điểm</Text>
+          </TouchableOpacity>
+          <EditAddressModal
+            isVisible={isEditAddressModalVisible}
+            setIsVisible={setEditAddressModalVisible}
+            onConfirmAddress={handleConfirmAddress}
+          />
+
           </View>
           <Text style={styles.addressText}>{address}</Text>
           <View >
@@ -209,7 +214,7 @@ const PayScreen = ({ route, navigation }) => {
               <Text style={styles.value}>{totalproduct}đ</Text>
             </View>
             <View style={styles.row}>
-              <Text style={styles.label}>Phí giao hàng (2.3km)</Text>
+              <Text style={styles.label}>Phí giao hàng (dự kiến)</Text>
               <Text style={styles.value}>{deliveryFee}đ</Text>
             </View>
             <View style={styles.row}>
@@ -259,7 +264,13 @@ const PayScreen = ({ route, navigation }) => {
             />
 
           </View>
-          <Button title="Đặt hàng" onPress={handleOrderPress} style={styles.buttontt} />
+          <TouchableOpacity
+              onPress={handleOrderPress}
+              style={styles.buttonOrder}
+              activeOpacity={0.7} // Cung cấp mức độ mờ khi nút được nhấn
+            >
+              <Text style={styles.buttonOrderText}>Đặt hàng</Text>
+            </TouchableOpacity>
           <CheckOrderModal
             modalVisible={isCheckOrderModalVisible}
             setModalVisible={setCheckOrderModalVisible}
@@ -390,9 +401,24 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
-  buttontt: {
-    marginBottom: 100
-  }
+  buttonOrder: {
+    backgroundColor: '#319AB4', 
+    padding: 15, 
+    borderRadius: 5, 
+    justifyContent: 'center', 
+    alignItems: 'center', 
+    shadowColor: '#000', 
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+    marginBottom:20
+  },
+  buttonOrderText: {
+    color: 'white',
+    fontWeight: 'bold', 
+    fontSize: 16, 
+  },
 });
 
 export default PayScreen;

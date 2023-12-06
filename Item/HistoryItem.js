@@ -1,5 +1,5 @@
 import React  , {useState , useEffect}from 'react';
-import { View, Text, TouchableOpacity, StyleSheet  , Alert} from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet  , Alert,Image} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { URL } from '../const/const';
 
@@ -97,76 +97,91 @@ const HistoryItem = ({ item  ,onStatusUpdate  , navigation}) => {
     }
 
     return (
-        <View style={styles.item}>
-            <Text style={styles.name}>{productNames}</Text>
-            <Text style={styles.detail}>Thời gian: {formatTime(item.time)}</Text>
-            <Text style={styles.detail}>Phương thức thanh toán: {item.phuongthucthanhtoan}</Text>
-            <Text style={styles.detail}>Trạng thái: {getStatusText(item.status)}</Text>
-            {item.status === 0&& (
-                <TouchableOpacity style={styles.buttonCancel} onPress={handlecancel}>
-                <Text style={styles.buttonText2}>Huỷ</Text>
-            </TouchableOpacity>
-            )}
-            
-            {item.status === 1 ||item.status === 2 &&  (
-                <TouchableOpacity style={styles.buttonload} onPress={() => {/* Thêm hành động khi nhấn nút */}}>
-                <Text style={styles.buttonText}> Đã xác nhận, vui lòng chờ món ngon đang đến...</Text>
-            </TouchableOpacity>
-            )}
-            {item.status === 3 && (
-                <TouchableOpacity style={styles.button} onPress={handledatlai}>
-                <Text style={styles.buttonText}>Đặt lại</Text>
-            </TouchableOpacity>
-            )}
-             
-            
-        </View>
+        <View style={styles.itemContainer}>
+  <Image source={require('./../Image/iconaddm.png')} style={styles.image} />
+  <View style={styles.item}>
+    <Text style={styles.name}>{productNames}</Text>
+    <Text style={styles.detail}>Thời gian: {formatTime(item.time)}</Text>
+    <Text style={styles.detail}>Phương thức thanh toán: {item.phuongthucthanhtoan}</Text>
+    <Text style={styles.detail}>Trạng thái: {getStatusText(item.status)}</Text>
+    <View style={styles.buttonContainer}>
+      {item.status === 0 && (
+        <TouchableOpacity style={styles.buttonCancel} onPress={handlecancel}>
+          <Text style={styles.buttonText2}>Huỷ</Text>
+        </TouchableOpacity>
+      )}
+      {item.status === 1 || item.status === 2 && (
+        <TouchableOpacity style={styles.buttonLoad} onPress={() => {/* Thêm hành động khi nhấn nút */}}>
+          <Text style={styles.buttonText}>Đã xác nhận, vui lòng chờ món ngon đang đến...</Text>
+        </TouchableOpacity>
+      )}
+      {item.status === 3 && (
+        <TouchableOpacity style={styles.button} onPress={handledatlai}>
+          <Text style={styles.buttonText}>Đặt lại</Text>
+        </TouchableOpacity>
+      )}
+    </View>
+  </View>
+</View>
+
     );
 };
 
 const styles = StyleSheet.create({
+    itemContainer: {
+      flexDirection: 'row',
+      padding: 20,
+      borderBottomWidth: 1,
+      borderBottomColor: '#ddd',
+      alignItems: 'center', // Đảm bảo image và text align giữa
+    },
+    image: {
+      width: 80,
+      height: 80,
+      marginRight: 10,
+    },
     item: {
-        padding: 20,
-        borderBottomWidth: 1,
-        borderBottomColor: '#ddd',
-        marginBottom: 10,
+      flex: 1, // Cho phép component này mở rộng để chiếm phần còn lại của hàng
     },
     name: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        marginBottom: 10, // Thêm margin dưới để tạo khoảng cách giữa tên món ăn và chi tiết
+      fontSize: 18,
+      fontWeight: 'bold',
+      marginBottom: 5, // Giảm khoảng cách để button không rơi quá xa
     },
     detail: {
-        fontSize: 14,
-        color: '#555',
+      fontSize: 14,
+      color: '#555',
     },
-    button: {
-        marginTop: 10,
-        backgroundColor: '#ffa500',
-        padding: 10,
-        borderRadius: 5,
-        alignItems: 'center',
-    },
-    buttonload: {
-        marginTop: 10,
-        backgroundColor: '#319AB4',
-        padding: 10,
-        borderRadius: 5,
-        alignItems: 'center',
+    buttonContainer: {
+      marginTop: 10, // Tạo khoảng cách từ text đến buttons
     },
     buttonCancel: {
-        marginTop: 10,
-        backgroundColor: '#D3D3D3',
-        padding: 10,
-        borderRadius: 5,
-        alignItems: 'center',
+      backgroundColor: '#D3D3D3',
+      padding: 10,
+      borderRadius: 5,
+      alignItems: 'center',
+    },
+    buttonLoad: {
+      backgroundColor: '#319AB4',
+      padding: 10,
+      borderRadius: 5,
+      alignItems: 'center',
+      marginTop: 5, // Tạo khoảng cách giữa các buttons
+    },
+    button: {
+      backgroundColor: '#ffa500',
+      padding: 10,
+      borderRadius: 5,
+      alignItems: 'center',
+      marginTop: 5, // Tạo khoảng cách giữa các buttons
     },
     buttonText: {
-        color: 'white',
+      color: 'white',
     },
     buttonText2: {
-        color: 'black',
-    }
-});
+      color: 'black',
+    },
+  });
+  
 
 export default HistoryItem;

@@ -85,8 +85,9 @@ const ProductDetailScreen = ({ navigation, route }) => {
       let jsonResponse = await response.json();     
       if (response.status === 200) {
         // Lọc các bình luận dựa trên idProduct._id
-        let filteredComments = jsonResponse.data.filter(comment => comment.idProduct._id === product.productId);
-        // console.log("vippp ",filteredComments);
+        let filteredComments = jsonResponse.data.filter(comment => comment.idProduct._id === product._id);
+        console.log("vippp ",filteredComments);
+        console.log("vippp222 ",product._id);
   
         if (filteredComments.length > 0) {
           setComments(filteredComments);
@@ -114,6 +115,70 @@ const ProductDetailScreen = ({ navigation, route }) => {
       setIsLoading(false);
     }
   };
+
+  const submitComment = async() => {
+    console.log("product ì" , product._id);
+    const storedData = await AsyncStorage.getItem('_id'); 
+    console.log("id user" , storedData);
+    if (!newComment || newComment.trim() === "") {
+      ToastAndroid.show('Người dùng phải nhập bình luận, không được để trống!', ToastAndroid.SHORT);
+      return;
+  } 
+  const isLogin = await AsyncStorage.getItem('isLogin');
+
+  if(isLogin==='false'){
+        setNewComment('');
+        Alert.alert(
+          "Thông báo",
+          "Vui lòng đăng nhập để bình luận!",
+          [
+            {
+              text: "Hủy bỏ",
+              style: "cancel",
+            },
+            {
+              text: "Đăng nhập",
+              onPress: () => navigation.navigate("Login"),
+            },
+          ],
+          { cancelable: false }
+        );
+        return;
+    }
+
+
+
+    const apiUrl = URL+'api/comment/create';
+
+
+  
+
+    fetch(apiUrl, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        idProduct: product._id,
+        idUser: storedData, // id user
+        title: newComment
+      })
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error("Lỗi mạng hoặc máy chủ");
+      }
+      return response.json();
+    })
+    .then(data => {
+      setComments(prevComments => [...prevComments, data.comment]);
+      setNewComment('');
+      fetchComments();
+      console.log("idProduct ",product._id);
+    })
+    .catch(error => console.error("Có lỗi khi thêm bình luận", error));
+};
   
   
 
@@ -255,10 +320,6 @@ const ProductDetailScreen = ({ navigation, route }) => {
 
     console.log(data)
 
- 
-
-
-
 
   }else{
     Toast.show({
@@ -394,69 +455,7 @@ getdataproductFavorite()
      });
   }
 
-  const submitComment = async() => {
-    console.log("product ì" , product._id);
-    const storedData = await AsyncStorage.getItem('_id'); 
-    console.log("id user" , storedData);
-    if (!newComment || newComment.trim() === "") {
-      ToastAndroid.show('Người dùng phải nhập bình luận, không được để trống!', ToastAndroid.SHORT);
-      return;
-  } 
-  const isLogin = await AsyncStorage.getItem('isLogin');
-
-  if(isLogin==='false'){
-        setNewComment('');
-        Alert.alert(
-          "Thông báo",
-          "Vui lòng đăng nhập để bình luận!",
-          [
-            {
-              text: "Hủy bỏ",
-              style: "cancel",
-            },
-            {
-              text: "Đăng nhập",
-              onPress: () => navigation.navigate("Login"),
-            },
-          ],
-          { cancelable: false }
-        );
-        return;
-    }
-
-
-
-    const apiUrl = URL+'api/comment/create';
-
-
   
-
-    fetch(apiUrl, {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        idProduct: product._id,
-        idUser: storedData, // id user
-        title: newComment
-      })
-    })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error("Lỗi mạng hoặc máy chủ");
-      }
-      return response.json();
-    })
-    .then(data => {
-      setComments(prevComments => [...prevComments, data.comment]);
-      setNewComment('');
-      fetchComments();
-      console.log("idProduct ",product._id);
-    })
-    .catch(error => console.error("Có lỗi khi thêm bình luận", error));
-};
     const renderLoading = () => (
       <SafeAreaView style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         <Text>Loading...</Text>
@@ -498,15 +497,14 @@ getdataproductFavorite()
             <View style={styles.contentRow}>
 
            <View style = {{flexDirection:'row' ,alignItems:'center'}}>
-           <Text  style={styles.productName}>Tên sản phẩm  </Text>
-              <Text>{product.name}</Text>
+           
+              <Text style={styles.productName}>{product.name}</Text>
            </View>
               <Text style={styles.productPrice}>{product.realPrice} VND</Text>
             </View>
 
             {/* Product description */}
             <View style={styles.descriptionContainer}>
-            <Text style={{fontSize:20, fontWeight:'bold'}}>Mô tả: </Text>
               <Text style={styles.description}>{product.description}</Text>
             </View>
             
@@ -620,7 +618,7 @@ getdataproductFavorite()
               onPress={addToCart}
             >
               <Image
-                source={require("./../Image/money-icon.png")}
+                source={require("./../Image/iconaddm.png")}
                 style={styles.icon}
               />
               <Text style={styles.buttonText}>Thêm món</Text>
@@ -674,6 +672,7 @@ const styles = StyleSheet.create({
     
   },
   productName: {
+    padding:8,
     fontSize: 20,
     fontWeight: 'bold',
   },
@@ -687,6 +686,7 @@ const styles = StyleSheet.create({
      flexDirection:'row'
   },
   description: {
+    marginLeft:10,
     fontSize: 16,
   },
 

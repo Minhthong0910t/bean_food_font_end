@@ -14,8 +14,9 @@ import { URL } from '../const/const';
 import SliderHome from '../Item/SliderHome';
 import * as Location from 'expo-location';
 import Toast from 'react-native-toast-message';
+import { RefreshControl } from 'react-native';
+
 const { width, height } = Dimensions.get('window');
-import { useFocusEffect } from '@react-navigation/native';
 
 const HeaderHome = ({ navigation }) => {
   const [address, setAddress] = useState('Đang lấy vị trí...');
@@ -175,15 +176,20 @@ const Menu = ({ navigation }) => {
           <TouchableOpacity onPress={() =>   
             Toast.show({
         type: 'error',
-        text1: 'đang cập nhập thêm món ăn!',
+        text1: 'Đang cập nhập thêm món ăn!',
+        visibilityTime: 2000,
+        position:'bottom'
       })}>
             <Image source={require('./../Image/three-dots.png')} style={{ width: 0.07 * width,     height: 0.04 * height }} />
           </TouchableOpacity>
           <Text style={{ color: '#616161' }}>Đồ Khác</Text>
+          
         </View>
 
       </View>
+      
     </View>
+    
   )
 }
 
@@ -218,13 +224,74 @@ const Restaurant = ({ navigation }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-
-         const response = await fetch(URL+'api/topRestaurants');
+        const response = await fetch(URL+'api/restaurant/getAll');
         const jsonData = await response.json();
-        const data = jsonData.data ;
+        const data = jsonData.data;
         let filterRestaurnats = data.filter(datarestaurnat => datarestaurnat.role === "user");
-        setdatarestauran(filterRestaurnats)
-      
+        setdatarestauran(filterRestaurnats);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchData();
+  }, [])
+
+  return (
+    <View>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginHorizontal: 15, marginVertical: 8 }}>
+        <Text style={{ fontWeight: 'bold', fontSize: 20, color: '#616161' }}>Nhà hàng quanh đây</Text>
+        <TouchableOpacity onPress={() => navigation.navigate('AllRestaurant')}>
+          <Text>Xem tất cả</Text>
+        </TouchableOpacity>
+      </View>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+        {datarestauran.map((data, index) =>
+          <View style={{ width: 250 }} key={data._id}>
+            <TouchableOpacity onPress={() => navigation.navigate('Restaurant', { restaurant: data._id })}>
+              <View style={{ marginLeft: 15 }}>
+                <Image source={{ uri: data.image }} style={{ width: 0.58 * width, height: 0.2 * height, borderTopLeftRadius: 10, borderTopRightRadius: 10 }} />
+              </View>
+              <View style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: '#ADD8E6', marginLeft: 15, width: 0.58 * width, height: 0.08 * height }}>
+                <View style={{ flexDirection: 'column', padding: 8 }}>
+                  <Text style={{ fontWeight: 'bold', fontSize: 20, color: '#000000' }}>{data.name}</Text>
+                  <Text style={{ fontWeight: 'bold', color: '#000000' }}>{data.timeon} AM - {data.timeoff} PM</Text>
+                  <Text style={{ fontWeight: 'bold', color: '#000000' }}>{data.adress}</Text>
+                </View>
+                <TouchableOpacity onPress={() => navigation.navigate('Restaurant', { restaurant: data._id})} style={{ marginLeft: 'auto', backgroundColor: '#FFFFFF', width: 0.06 * width, alignItems: 'center', justifyContent: 'center', height: 0.025 * height, borderRadius: 20, marginTop: 20, marginRight: 10 }} >
+                  <Image source={require('./../Image/right_arrow.png')} style={{ width: 15, height: 15 }} />
+                </TouchableOpacity>
+              </View>
+            </TouchableOpacity>
+          </View>
+        )}
+      </ScrollView>
+    </View>
+  )
+}
+
+const truncateString = (str, num) => {
+  if (str.length > num) {
+    return str.slice(0, num) + '...';
+  } else {
+    return str;
+  }
+};
+
+const Goiymonan = ({ navigation }) => {
+
+  const [datamonangoiy, setdatamonan] = useState([])
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+
+        const response = await fetch(URL+'api/product/suggest');
+
+
+        const jsonData = await response.json();
+
+        setdatamonan(jsonData.data);
       } catch (error) {
         console.error(error);
       }
@@ -232,116 +299,69 @@ const Restaurant = ({ navigation }) => {
 
     fetchData();
 
-
   }, [])
-
-  return (
-    <View>
-      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-        <Text style={{ margin: 15, fontWeight: 'bold', fontSize: 20, color: '#616161' }}>Nhà Hàng Quanh Đây</Text>
-        <TouchableOpacity style={{ marginLeft: 'auto', marginRight: 5 }} onPress={()=>navigation.navigate('AllRestaurant'  ,{datarestaurant:datarestauran}) }>
-          <Text>Xem tất cả</Text>
-        </TouchableOpacity>
-      </View>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-        {datarestauran.map((data, index) =>
-       
-          <View style={{ width: 250 }} key={data._id}>
-          <TouchableOpacity onPress={() => navigation.navigate('Restaurant', { restaurant: data._id  })}>
-            <View style={{ marginLeft: 15 }}>
-              <Image source={{ uri: data.image }} style={{ width: 0.58 * width, height: 0.2 * height, borderTopLeftRadius: 10, borderTopRightRadius: 10 }} />
-            </View>
-            <View style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: '#F0F0F0', marginLeft: 15, width: 0.58 * width, height: 0.08 * height }}>
-              <View style={{ flexDirection: 'column' }}>
-                <Text style={{ fontWeight: 'bold', fontSize: 20, color: '#616161', marginTop: 20 }}>{data.restaurantName}</Text>
-
-                <Text style={{ fontWeight: 'bold', color: '#616161' }}>{data.timeon} AM-{data.timeoff} PM</Text>
-                <Text style={{ fontWeight: 'bold', color: '#616161' }}>{data.adress}</Text>
-              </View>
-              <TouchableOpacity onPress={() => navigation.navigate('Restaurant', { restaurant: data._id})} style={{ marginLeft: 'auto', backgroundColor: '#FFFFFF', width: 0.05 * width, alignItems: 'center', justifyContent: 'center', height: 0.025 * height, borderRadius: 20, marginTop: 20, marginRight: 10 }} >
-                <Image source={require('./../Image/right_arrow.png')} style={{ width: 15, height: 15 }} />
+    return (
+      <View style={{ margin: 15 }}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+          <Text style={{ fontWeight: 'bold', fontSize: 20, color: '#616161' }}>Gợi ý dành cho bạn</Text>
+          <TouchableOpacity onPress={() => navigation.navigate('AllProducts')}>
+            <Text>Xem tất cả</Text>
+          </TouchableOpacity>
+        </View>
+        <ScrollView>
+          {datamonangoiy.map((data, index) =>
+            <View key={index} style={{ backgroundColor: '#FFE4C4',marginTop:8, borderRadius: 10 }}>
+              <TouchableOpacity
+                style={{ margin: 15, flexDirection: 'row', alignItems: 'center' }}
+                onPress={() => navigation.navigate('ProductDetail', { product: data })}
+              >
+                <Image source={{ uri: data.image }} style={{ borderWidth: 1, width: width * 0.25, height: width * 0.25, borderRadius:10 }} />
+                <View style={{ flexDirection: 'column', paddingLeft: 10, marginLeft: 10 }}>
+                  <Text 
+                    style={{ fontWeight: 'bold', fontSize: 15, color: '#000000' }} 
+                    
+                  >
+                    Tên món ăn: {truncateString(data.name, 13)}
+                  </Text>
+                  <Text 
+                    style={{ paddingBottom:5, paddingTop:5, fontWeight: 'bold', color: '#000000' }} 
+                    
+                  >
+                    Nhà hàng: {truncateString(data.restaurantId.name, 18)}
+                  </Text>
+                  <Text 
+                    style={{ color: '#000000', fontWeight: 'bold' }} 
+                    
+                  >
+                    Mô tả: {truncateString(data.description, 21)}
+                  </Text>
+                </View>
               </TouchableOpacity>
             </View>
-            </TouchableOpacity>
-          </View>)}
-      </ScrollView>
-    </View>
-  )
-}
-
-const Goiymonan = ({ navigation }) => {
-
-  const [datamonangoiy, setdatamonan] = useState([])
-  const fetchData = async () => {
-    try {
-
-      const response = await fetch(URL+'api/getTop');
-
-
-      const jsonData = await response.json();
-      const sortedData = jsonData.sort((a, b) => b.likeCount - a.likeCount);
-      console.log("sort data" , sortedData);
-
-      setdatamonan(sortedData);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-  useEffect(() => {
-    fetchData();
-
-  }, [])
-  useFocusEffect(
-    React.useCallback(() => {
-      fetchData();
-    }, [])
-  );
-  return (
-    <View style = {{margin: 15}}>
-
- <View style ={{justifyContent:'space-between' , flexDirection:'row'}}>
- <Text style={{  fontWeight: 'bold', fontSize: 20, color: '#616161' }}>Gợi ý dành cho bạn</Text>
- <TouchableOpacity onPress={()=>navigation.navigate('AllProducts')}>
-  <Text>
-    Xem tất cả
-  </Text>
- </TouchableOpacity>
- </View>
-      <ScrollView >
-        {datamonangoiy.map((data, index) =>
-          <View key={index} style={{ backgroundColor: '#f0f0f0', marginTop: 6, marginRight: 5, borderRadius: 10 }}>
-            <TouchableOpacity
-              style={{ margin: 15, flexDirection: 'row', height: 90, alignItems: 'center' }}
-              onPress={() => navigation.navigate('ProductDetail', { product: data })}
-            >
-              <View >
-                <Image source={{ uri: data.image }} style={{ borderWidth: 1, width: width * 0.25, height: width * 0.25 , borderRadius:10 }} />
-              </View>
-              <View style={{ flexDirection: 'column', paddingLeft: 10, marginLeft: 10 }}>
-                <Text style={{ fontWeight: 'bold', fontSize: 15, color: '#616161' }}>tên sản phẩm: 
-                  {data.name}
-                </Text>
-                <View style={{ flexDirection: 'row'  }}>
-              
-                  <Text style={{ paddingBottom:5 , paddingTop:5, fontWeight: 'bold', color: '#616161' }}>Nhà hàng: {data.restaurantId.name}</Text>
-                </View>
-                <Text style={{ color: '#616161', width: 0.6 * width, fontWeight: 'bold' , paddingRight:15 }} numberOfLines={2}>Số lượng người yêu thích: {data.likeCount}</Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-
-
-
-        )}
-      </ScrollView>
-    </View>
-  )
+          )}
+        </ScrollView>
+      </View>
+    )
 }
 
 const Home = ({ navigation }) => {
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    // Đây là nơi bạn thực hiện việc tải lại dữ liệu
+    // Ví dụ: fetchData().then(() => setRefreshing(false));
+    setRefreshing(false); // Sau khi tải xong, đặt lại refreshing
+  }, []);
+
   return (
     <View style={{ backgroundColor: 'white' }}>
-      <ScrollView showsVerticalScrollIndicator={false} StickyHeaderComponent={HeaderHome}>
+      <ScrollView showsVerticalScrollIndicator={false} 
+      StickyHeaderComponent={HeaderHome}
+      refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }>
+
         <HeaderHome navigation={navigation} />
         <SliderHome />
         <Menu navigation={navigation} />
