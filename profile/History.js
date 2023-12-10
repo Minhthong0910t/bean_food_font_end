@@ -12,6 +12,7 @@ const History = ({ navigation }) => {
     const [index, setIndex] = useState(0);
     const [routes] = useState([
         { key: 'processing', title: 'Chờ xác nhận' },
+        { key: 'confirm', title: 'Đã xác nhận' },
         { key: 'delivering', title: 'Đang giao' },
         { key: 'delivered', title: 'Đã giao' },
         { key: 'cancelled', title: 'Đã huỷ' }
@@ -52,11 +53,17 @@ const History = ({ navigation }) => {
         }
         console.log("ls", historyData);
     }, [dataUid]);
-    const refreshData = () => {
-        // Làm mới dữ liệu hoặc gọi lại API tại đây
-        fetchDataHistory();
-        console.log("vào đây va log");
-    };
+    // const refreshData = () => {
+    //     // Làm mới dữ liệu hoặc gọi lại API tại đây
+    //     useEffect(() => {
+    //         const intervalId = setInterval(() => {
+    //             fetchDataHistory(); // bạn cần đảm bảo rằng fetchDataHistory cập nhật state
+    //         }, 10000); // cập nhật mỗi 10 giây
+        
+    //         return () => clearInterval(intervalId); // clear interval khi component unmounted hoặc trước khi rerun useEffect này
+    //     }, [historyData]); 
+        
+    // };
 
     const renderScene = ({ route }) => {
         let filteredData = [];
@@ -65,8 +72,11 @@ const History = ({ navigation }) => {
             case 'processing':
                 filteredData = historyData.filter(item => item.status === 0);
                 break;
+            case 'confirm':
+                filteredData = historyData.filter(item => item.status === 1);
+                break;
             case 'delivering':
-                filteredData = historyData.filter(item => item.status === 1 || item.status === 2);
+                filteredData = historyData.filter(item => item.status === 2);
                 break;
             case 'delivered':
                 filteredData = historyData.filter(item => item.status === 3);
@@ -81,7 +91,7 @@ const History = ({ navigation }) => {
         return (
             <FlatList
                 data={filteredData}
-                renderItem={({ item }) => <HistoryItem item={item} onStatusUpdate={refreshData} navigation={navigation} />}
+                renderItem={({ item }) => <HistoryItem item={item}  navigation={navigation} />}
                 keyExtractor={item => item._id.toString()}
             />
         );
