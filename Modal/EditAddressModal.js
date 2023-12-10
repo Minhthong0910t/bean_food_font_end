@@ -1,12 +1,24 @@
 import React, { useState } from 'react';
 import { Modal, View, TextInput, Button, StyleSheet,Text,TouchableOpacity } from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const EditAddressModal = ({ isVisible, setIsVisible, onConfirmAddress }) => {
     const [newAddress, setNewAddress] = useState('');
   
+    const validateAddress = (address) => {
+      // Mẫu regex đơn giản để kiểm tra định dạng
+      const pattern = /^[^,]+,[^,]+,[^,]*/;
+      return pattern.test(address);
+    };
+    
     const handleConfirm = () => {
-      onConfirmAddress(newAddress);
-      setIsVisible(false);
+      // Sử dụng hàm validateAddress để kiểm tra định dạng trước khi xác nhận
+      if (validateAddress(newAddress)) {
+        onConfirmAddress(newAddress);
+        setIsVisible(false);
+      } else {
+        alert('Địa chỉ không hợp lệ. Vui lòng nhập đúng định dạng.');
+      }
     };
   
     return (
@@ -19,6 +31,11 @@ const EditAddressModal = ({ isVisible, setIsVisible, onConfirmAddress }) => {
         <View style={styles.modalOverlay}>
           <View style={styles.modalView}>
             <Text style={styles.modalTitle}>Cập nhật địa chỉ mới</Text>
+            <View style={styles.warningContainer}>
+                <Icon name="exclamation-triangle" size={24} color="#FFCC00" />
+                <Text style={styles.warningText}>Chú ý nhập đúng định dạng như sau: 
+              95 Đường Cầu Diễn, Phúc Diễn, Bắc Từ Liêm, Hà Nội</Text>
+            </View>
             <TextInput
               style={styles.textInput}
               onChangeText={setNewAddress}
@@ -109,6 +126,19 @@ const styles = StyleSheet.create({
         justifyContent: 'space-around',
         width: '100%', // Chiếm toàn bộ chiều rộng của modalView
       },
+      warningContainer: {
+        flexDirection: 'row', 
+        alignItems: 'center',
+        padding: 10, 
+        backgroundColor: '#FFFBEA', 
+        margin: 10, 
+        borderRadius: 5,
+    },
+    warningText: {
+        marginLeft: 10, 
+        color: '#555', 
+        fontSize: 10, 
+    },
 });
 
 export default EditAddressModal;

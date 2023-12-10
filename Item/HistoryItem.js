@@ -2,6 +2,7 @@ import React  , {useState , useEffect}from 'react';
 import { View, Text, TouchableOpacity, StyleSheet  , Alert,Image} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { URL } from '../const/const';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 
 const HistoryItem = ({ item  ,onStatusUpdate  , navigation}) => {
@@ -95,33 +96,39 @@ const HistoryItem = ({ item  ,onStatusUpdate  , navigation}) => {
         navigation.navigate('PayScreen' , {products: item.products,dataUid
           });
     }
+    const handleDeital=async ()=>{
+      navigation.navigate('Detailhistory' , { orderId: item._id });
+    }
 
     return (
-        <View style={styles.itemContainer}>
-  <Image source={require('./../Image/iconaddm.png')} style={styles.image} />
-  <View style={styles.item}>
-    <Text style={styles.name}>{productNames}</Text>
-    <Text style={styles.detail}>Thời gian: {formatTime(item.time)}</Text>
-    <Text style={styles.detail}>Phương thức thanh toán: {item.phuongthucthanhtoan}</Text>
-    <Text style={styles.detail}>Trạng thái: {getStatusText(item.status)}</Text>
-    <View style={styles.buttonContainer}>
-      {item.status === 0 && (
-        <TouchableOpacity style={styles.buttonCancel} onPress={handlecancel}>
-          <Text style={styles.buttonText2}>Huỷ</Text>
-        </TouchableOpacity>
-      )}
-      {item.status === 1 || item.status === 2 && (
-        <TouchableOpacity style={styles.buttonLoad} onPress={() => {/* Thêm hành động khi nhấn nút */}}>
-          <Text style={styles.buttonText}>Đã xác nhận, vui lòng chờ món ngon đang đến...</Text>
-        </TouchableOpacity>
-      )}
-      {item.status === 3 && (
-        <TouchableOpacity style={styles.button} onPress={handledatlai}>
-          <Text style={styles.buttonText}>Đặt lại</Text>
-        </TouchableOpacity>
-      )}
-    </View>
-  </View>
+        <View >
+        <TouchableOpacity style={styles.itemContainer} onPress={handleDeital}>
+            <Image source={require('./../Image/iconaddm.png')} style={styles.image} />
+            <View style={styles.item}>
+              <Text style={styles.name}>{productNames}</Text>
+              <Text style={styles.detail}>Mã ĐH: {item._id}</Text>
+              <Text style={styles.detail}>Thời gian: {formatTime(item.time)}</Text>
+              <Text style={styles.detail}>Phương thức thanh toán: {item.phuongthucthanhtoan}</Text>
+              <Text style={styles.detail}>Trạng thái: {getStatusText(item.status)}</Text>
+              <View style={styles.buttonContainer}>
+                {item.status === 0 && (
+                  <TouchableOpacity style={styles.buttonCancel} onPress={handlecancel}>
+                    <Text style={styles.buttonText2}>Huỷ</Text>
+                  </TouchableOpacity>
+                )}
+                {item.status === 1 || item.status === 2 && (
+                  <TouchableOpacity style={styles.buttonLoad} onPress={() => {/* Thêm hành động khi nhấn nút */}}>
+                    <Text style={styles.buttonText}>Vui lòng chờ món ngon đang đến...</Text>
+                  </TouchableOpacity>
+                )}
+                {item.status === 3 && (
+                  <TouchableOpacity style={styles.button} onPress={handledatlai}>
+                    <Text style={styles.buttonText}>Đặt lại</Text>
+                  </TouchableOpacity>
+                )}
+              </View>
+            </View>
+  </TouchableOpacity>
 </View>
 
     );
@@ -130,7 +137,7 @@ const HistoryItem = ({ item  ,onStatusUpdate  , navigation}) => {
 const styles = StyleSheet.create({
     itemContainer: {
       flexDirection: 'row',
-      padding: 20,
+      padding: 10,
       borderBottomWidth: 1,
       borderBottomColor: '#ddd',
       alignItems: 'center', // Đảm bảo image và text align giữa

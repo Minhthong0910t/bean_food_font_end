@@ -34,6 +34,7 @@ import RestaurantScreen from './Screen/RestaurantScreen';
 import AllRestaurnat from './Screen/AllRestaurnat';
 import ProductsFavorite from './Screen/ProductsFavorite';
 import AllProducts from './Screen/AllProducts';
+import Detailhistory from './profile/Detailhistory';
 
 
 const Stack = createNativeStackNavigator();
@@ -86,6 +87,7 @@ export default function App() {
                         <Stack.Screen component={UserInfor} name='UserInfor' />
                         <Stack.Screen component={SplashScreen} name='SplashScreen' />
                         <Stack.Screen component={AllProducts} name='AllProducts' />
+                        <Stack.Screen component={Detailhistory} name='Detailhistory' />
                         <Stack.Screen component={RestaurantScreen} name='Restaurant'     screenOptions={{
       unmountOnBlur: true,
     }} />
