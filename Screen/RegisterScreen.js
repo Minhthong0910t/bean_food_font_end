@@ -112,8 +112,12 @@ export default function RegisterScreen() {
                     setPhone("");
                     setPassword("");
                     navigation.navigate('Login');
-                } else if (res.status === 500) {
-                    ToastAndroid.show('Tên tài khoản/email đã được sử dụng!! ',ToastAndroid.SHORT)
+                }else if (res.status === 501) {
+                    ToastAndroid.show('Tên tài khoản đã được sử dụng!! ', ToastAndroid.SHORT);
+                } else if (res.status === 502) {
+                    ToastAndroid.show('Số điện thoại đã được sử dụng!! ', ToastAndroid.SHORT);
+                } else {
+                    ToastAndroid.show('Đăng kí thất bại', ToastAndroid.SHORT);
                 }
             })
             .catch(e => {
