@@ -309,6 +309,7 @@ const ProductDetailScreen = ({ navigation, route }) => {
       image:product.image,
       price:product.realPrice,
       restaurantId:product.restaurantId._id,
+      ischecked:false,
       quantity :quantity ,
     
     }

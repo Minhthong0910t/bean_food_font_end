@@ -4,14 +4,20 @@ import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { URL } from '../const/const';
 
-const SuccessModal = ({ isVisible, navigation }) => {
+const SuccessModal = ({ isVisible, navigation  , products}) => {
   const deleteProduct = async (Uid) => {
     try {
+      const productIdsToDelete = products.map((product) => product._id);
+      console.log("data order id" , productIdsToDelete);
       const apiUrl = `${URL}api/deletebyUid/${Uid}`; // Thay thế bằng URL API xóa sản phẩm
-      const response = await fetch(apiUrl, { method: 'DELETE' });
+      const response = await fetch(apiUrl, { method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ listorderIds: productIdsToDelete }), });
   
       if (response.ok) {
-        // Xóa sản phẩm thành công
+        // Xóa sản phẩm thành công  
         console.log('Xóa sản phẩm thành công');
       } else {
         // Xử lý lỗi nếu cần
@@ -24,8 +30,9 @@ const SuccessModal = ({ isVisible, navigation }) => {
   };
     const goHome = async() => {
       const storedUserId = await AsyncStorage.getItem('_id');
-      console.log("Uid" , storedUserId);
+
       deleteProduct(storedUserId)
+ 
 
         navigation.navigate('Home')
       };

@@ -29,11 +29,26 @@ export default function RegisterScreen() {
         const trimmedPassword = password.trim();
         const trimmedRepassword = rePassword.trim();
 
-        if (trimmedUsername =="" || trimmedUsername.length < 3) {
+
+        if (trimmedUsername == "") {
+            setValidateUser('Vui lòng không được bỏ trống!!');
+            return;
+        } else {
+            setValidateUser('');
+        }
+
+        if (trimmedUsername.length < 3) {
             setValidateUser('Tên đăng nhập không hợp lệ');
             return;
         } else {
             setValidateUser('');
+        }
+
+        if (trimmedPhone == "") {
+            setValidatePhone('Số điện thoại không được để trống');
+            return;
+        } else {
+            setValidatePhone('');
         }
         // Validate phone number
         const phoneRegex = /^[0-9]{10}$/;
@@ -45,14 +60,26 @@ export default function RegisterScreen() {
         }
 
         //mật khẩu
+        if (trimmedPassword =="") {
+            setValidatePass('Mật khẩu không được để trống!');
+            return;
+        } else {
+            setValidatePass('');
+        }
         if (trimmedPassword.length < 2) {
-            setValidatePass('Mật khẩu không hợp lệ');
+            setValidatePass('Mật khẩu không hợp lệ!');
             return;
         } else {
             setValidatePass('');
         }
 
         //xác nhận mật khẩu
+        if (rePassword == "") {
+            setValidateRepass('Bạn chưa xác nhận mật khẩu');
+            return;
+        } else {
+            setValidateRepass('');
+        }
         if (rePassword !== trimmedPassword) {
             setValidateRepass('Mật khẩu nhập lại không khớp');
             return;
@@ -104,12 +131,14 @@ export default function RegisterScreen() {
                 onChangeText={(text) => setUsername(text)}
                 style={styles.input}
             />
+            {validateUser !== '' && <Text style={styles.errorText}>{validateUser}</Text>}
             <TextInput
                 label="Số điện thoại"
                 value={phone}
                 onChangeText={(text) => setPhone(text)}
                 style={styles.input}
             />
+            {validatePhone !== '' && <Text style={styles.errorText}>{validatePhone}</Text>}
 
             <View style={styles.passwordContainer}>
                 <TextInput
@@ -126,8 +155,9 @@ export default function RegisterScreen() {
                     onPress={() => setShowPassword(!showPassword)}
                     style={styles.passwordIcon}
                 />
-            </View>
 
+            </View>
+            {validatePass !== '' && <Text style={styles.errorText}>{validatePass}</Text>}
             <View style={styles.passwordContainer}>
                 <TextInput
                     label="Nhập lại mật khẩu"
@@ -136,6 +166,7 @@ export default function RegisterScreen() {
                     onChangeText={(text) => setRePassword(text)}
                     style={styles.passwordInputField}
                 />
+
                 <Icon
                     name={showRePassword ? 'eye-slash' : 'eye'}
                     size={20}
@@ -144,6 +175,7 @@ export default function RegisterScreen() {
                     style={styles.passwordIcon}
                 />
             </View>
+            {validaRepass !== '' && <Text style={styles.errorText}>{validaRepass}</Text>}
             <Button
                 mode="contained"
                 onPress={handleRegister}
