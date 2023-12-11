@@ -1,10 +1,10 @@
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Image, ScrollView, SafeAreaView, Platform, FlatList } from 'react-native';
+import { View, Text, StyleSheet, Image, ScrollView, SafeAreaView, Platform, FlatList,TouchableOpacity } from 'react-native';
 import { URL } from '../const/const';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const NotificationScreen = () => {
+const NotificationScreen = ({item,navigation}) => {
   const [historyData, setHistoryData] = useState([]);
   const [dataUid, setDataUid] = useState('');
   useEffect(() => {
@@ -37,6 +37,9 @@ const NotificationScreen = () => {
     };
     fetchUserId();
   }, []);
+  const handleDeital=async (item)=>{
+    navigation.navigate('Detailhistory' , { orderId: item._id });
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -54,6 +57,7 @@ const NotificationScreen = () => {
         renderItem={({ item, index }) => {
 
           return (
+            <TouchableOpacity onPress={() => handleDeital(item)}>
             <View style={{
              
               backgroundColor: '#F2F6FD',
@@ -63,7 +67,7 @@ const NotificationScreen = () => {
               marginHorizontal: 16,
               paddingVertical: 15
             }} key={index}>
-
+          
               <View style={{
                 flexDirection: 'row',
                 paddingLeft: 10,
@@ -99,11 +103,15 @@ const NotificationScreen = () => {
               </Text>
 
             </View>
+            </TouchableOpacity>
           )
         }}
+        
 
         keyExtractor={(item , index) => index}
       />
+      
+
     </SafeAreaView>
   );
 };
