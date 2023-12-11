@@ -119,14 +119,14 @@ const PayScreen = ({ route, navigation }) => {
     const newOrderData = createOrderData();
     setOrderData(newOrderData);
 
-    // if (address === 'Đang lấy vị trí...') {
-    //   Toast.show({
-    //     type: 'info',
-    //     text1: 'Vui lòng chờ',
-    //     text2: 'Đang lấy vị trí của bạn...'
-    //   });
-    //   return;
-    // }
+    if (address === 'Đang lấy vị trí...') {
+      Toast.show({
+        type: 'info',
+        text1: 'Vui lòng chờ',
+        text2: 'Đang lấy vị trí của bạn...'
+      });
+      return;
+    }
 
 
     if (paymentMethod === 'bank') {
