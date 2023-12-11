@@ -2,7 +2,7 @@ import React from 'react';
 import { Modal, View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { URL } from '../const/const';
 
-const CheckOrderModal = ({ modalVisible, setModalVisible, onOrderSuccess,orderData  }) => {
+const CheckOrderModal = ({ modalVisible, setModalVisible, onOrderSuccess,orderData   , products}) => {
   console.log("orderData trong CheckOrderModal: ", orderData);
   const orderSuccess = () => {
     setModalVisible(false);
