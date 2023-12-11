@@ -107,7 +107,7 @@ const PayScreen = ({ route, navigation }) => {
       console.log('Đơn hàng đã được tạo:', responseData);
       setTimeout(() => {
         setSuccessModalVisible(true);
-      }, 1500);
+      }, 1000);
     } catch (error) {
       console.error('Error:', error);
     }
@@ -282,10 +282,12 @@ const PayScreen = ({ route, navigation }) => {
             setModalVisible={setCheckOrderModalVisible}
             orderData={orderData} // Truyền orderData
             onOrderSuccess={sendOrderToServer}
+            products={products}
           />
           <SuccessModal
             isVisible={isSuccessModalVisible}
             navigation={navigation}
+            products={products}
           />
         </ScrollView>
       </View>
