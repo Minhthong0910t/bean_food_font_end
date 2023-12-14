@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Modal from 'react-native-modal';
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -28,11 +28,13 @@ const SuccessModal = ({ isVisible, navigation  , products}) => {
       console.error('Lỗi khi gọi API xóa sản phẩm:', error);
     }
   };
+
+  
     const goHome = async() => {
       const storedUserId = await AsyncStorage.getItem('_id');
 
       deleteProduct(storedUserId)
- 
+      console.log("data products" , products);
 
         navigation.navigate('Home')
       };

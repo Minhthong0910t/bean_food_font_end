@@ -12,6 +12,7 @@ import { URL } from '../const/const';
 import ToolBar from '../components/ToolBar';
 import Toast from 'react-native-toast-message';
 import EditAddressModal from '../Modal/EditAddressModal';
+import ListVoucherModal from '../Modal/ListVoucherModal';
 
 
 
@@ -23,16 +24,42 @@ const PayScreen = ({ route, navigation }) => {
   const [totalproduct, settotalproduct] = useState(0);
   const [orderData, setOrderData] = useState({});
 
+
+
   // const [address, setAddress] = useState('D29, Phạm Văn Bạch, Cầu Giấy, Hà Nội');
   // Sử dụng trạng thái cho quantity và totalPrice
   const [text, setText] = useState('');
   const deliveryFee = 35000;
-  const discount = 0;
+  const [discount , setDiscount] = useState(0)
+
+  const[IdVoucher , setDataIdVoucher] = useState('')
   const [paymentMethod, setPaymentMethod] = useState('cash'); // 'cash' hoặc 'bank'
 
   const [isCheckOrderModalVisible, setCheckOrderModalVisible] = useState(false);
   const [isEditAddressModalVisible, setEditAddressModalVisible] = useState(false);
   const [isSuccessModalVisible, setSuccessModalVisible] = useState(false);
+  const [isListVoucherModal, setIsListVoucherModal] = useState(false);
+  const [voucher , setvoucher] = useState([])
+    useEffect(()=>{
+        console.log("ddataa restaurant" , products[0].restaurantId);
+            const fetchData = async () => {
+              try {
+                const response = await fetch(URL+`api/voucher/getVoucherInRestaurant/${products[0].restaurantId}`);
+                const jsonData = await response.json();
+      
+                const filteredVouchers = jsonData.list.filter(
+                  (voucher) => voucher.quantity > 0
+                );
+                setvoucher(filteredVouchers)
+              } catch (error) {
+                console.error(error);
+              }
+            };
+        
+            fetchData();
+    
+       
+        },[])
 
   //lấy vị trí hiện tại người dùng
   const [address, setAddress] = useState('Đang lấy vị trí...');
@@ -71,6 +98,7 @@ const PayScreen = ({ route, navigation }) => {
       status: 0, // Trạng thái đơn hàng
       notes: text, // Ghi chú cho đơn hàng
       // Thêm thông tin sản phẩm nếu cần
+      voucherId:IdVoucher,
       time: new Date(),
       products: products.map(product => ({
         restaurantId:product.restaurantId,
@@ -119,18 +147,18 @@ const PayScreen = ({ route, navigation }) => {
     const newOrderData = createOrderData();
     setOrderData(newOrderData);
 
-    // if (address === 'Đang lấy vị trí...') {
-    //   Toast.show({
-    //     type: 'info',
-    //     text1: 'Vui lòng chờ',
-    //     text2: 'Đang lấy vị trí của bạn...'
-    //   });
-    //   return;
-    // }
+    if (address === 'Đang lấy vị trí...') {
+      Toast.show({
+        type: 'info',
+        text1: 'Vui lòng chờ',
+        text2: 'Đang lấy vị trí của bạn...'
+      });
+      return;
+    }
 
 
     if (paymentMethod === 'bank') {
-      navigation.navigate('PaymentScreen', { orderData: newOrderData });
+      navigation.navigate('PaymentScreen', { orderData: newOrderData , products:products });
     } else {
       setCheckOrderModalVisible(true);
     }
@@ -141,6 +169,11 @@ const PayScreen = ({ route, navigation }) => {
   //địa điểm
   const toggleEditAddressModal = () => {
     setEditAddressModalVisible(!isEditAddressModalVisible);
+  };
+  const toggleListVoucher = () => {
+    setIsListVoucherModal(!isListVoucherModal);
+
+    console.log("vào đây này" , isListVoucherModal);
   };
   const handleConfirmAddress = (newAddress) => {
     setAddress(newAddress); // Cập nhật địa chỉ mới
@@ -176,6 +209,14 @@ const PayScreen = ({ route, navigation }) => {
     console.log("new orders", orderData);
   }, [orderData]);
 
+
+  const handleConfirmVoucher =(data)=>{
+      setDiscount(data)
+  }
+
+  const handleConfirmIDVoucher = (data)=>{
+    setDataIdVoucher(data)
+  }
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ToolBar
@@ -210,6 +251,30 @@ const PayScreen = ({ route, navigation }) => {
           </View>
 
           {products.map(products => <ProductItemOder products={products} />)}
+          <TouchableOpacity
+              onPress={toggleListVoucher}
+              style={{backgroundColor: '#319AB4', 
+              padding: 5, 
+              borderRadius: 5, 
+              justifyContent: 'center', 
+              alignItems: 'center', 
+              shadowColor: '#000', 
+              shadowOffset: { width: 0, height: 2 },
+              shadowOpacity: 0.25,
+              shadowRadius: 3.84,
+              elevation: 5,
+              marginBottom:20}}
+              activeOpacity={0.7} // Cung cấp mức độ mờ khi nút được nhấn
+            >
+              <Text style={styles.buttonOrderText}>Lấy volcher</Text>
+            </TouchableOpacity>
+          <ListVoucherModal visible={isListVoucherModal}
+          navigation={navigation}
+          setisvisible={setIsListVoucherModal}
+          products={voucher} 
+          onConfirmVoucher={handleConfirmVoucher}
+          onConfirmIDVoucher={handleConfirmIDVoucher}
+          totals = {totalproduct}/>
 
 
 
@@ -284,11 +349,13 @@ const PayScreen = ({ route, navigation }) => {
             onOrderSuccess={sendOrderToServer}
             products={products}
           />
+
           <SuccessModal
             isVisible={isSuccessModalVisible}
             navigation={navigation}
             products={products}
           />
+ 
         </ScrollView>
       </View>
       <Toast ref={(ref) => Toast.setRef(ref)} />

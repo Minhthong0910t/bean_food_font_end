@@ -105,9 +105,16 @@ const fetchDataOder= async ()=>{
 useEffect(() => {
   if (isFocused) {
     // Gọi hàm tải dữ liệu tại đây
+    setSelectAllProducts(false)
     fetchDataOder()
+
+
   }
 }, [isFocused]);
+
+useEffect(()=>{
+
+} , [])
   // useEffect(() => {
    
   // const getDataFromAsyncStorage = async (key, id) => {

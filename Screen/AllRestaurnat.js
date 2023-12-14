@@ -20,10 +20,9 @@ const AllRestaurnat = ({route}) => {
               try {
         
                   const response = await fetch(URL+'api/restaurant/getAll');
-        
-        
                 const jsonData = await response.json();
-                setdatarestaurnat(jsonData.data);
+                const filteredData = jsonData.data.filter(item => item.role === "user");
+                setdatarestaurnat(filteredData);
               } catch (error) {
                 console.error(error);
               }

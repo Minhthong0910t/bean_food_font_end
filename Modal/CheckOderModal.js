@@ -6,6 +6,8 @@ const CheckOrderModal = ({ modalVisible, setModalVisible, onOrderSuccess,orderDa
   console.log("orderData trong CheckOrderModal: ", orderData);
   const orderSuccess = () => {
     setModalVisible(false);
+
+    console.log("order data vc" , orderData);
     onOrderSuccess(orderData);
   };
 

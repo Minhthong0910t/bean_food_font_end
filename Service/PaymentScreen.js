@@ -30,6 +30,8 @@ const PaymentScreen = ({ route, navigation }) => {
 
 
   const sendOrderToServer = async () => {
+      console.log('data products2222' , products);
+
     try {
         const response = await fetch(URL + 'api/history/create', {
             method: 'POST',
@@ -189,12 +191,11 @@ const generateEncodedDateTime = () => {
       </TouchableOpacity>
 
       </View>
-      
-      <SuccessModal 
-        isVisible={isSuccessModalVisible} 
-        navigation={navigation}
-      />
-      
+      <SuccessModal
+            isVisible={isSuccessModalVisible}
+            navigation={navigation}
+            products={products}
+          />
       <View style={styles.paymentInfoContainer}>
         {paymentUrl ? (
           <WebView
