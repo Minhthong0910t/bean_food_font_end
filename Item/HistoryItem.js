@@ -7,7 +7,7 @@ import Toast from 'react-native-toast-message';
 import { ToastAndroid } from 'react-native';
 
 
-const HistoryItem = ({ item    , navigation}) => {
+const HistoryItem = ({ item    , navigation,isCancel,setIsCancel}) => {
     const [dataUid, setDataUid] = useState('');
     // Tạo một chuỗi các tên món ăn, cách nhau bởi dấu phẩy
     const productNames = item.products.map(product => product.name).join(', ');
@@ -47,6 +47,8 @@ const HistoryItem = ({ item    , navigation}) => {
           {
             text: 'Đồng ý',
             onPress: async () => {
+
+              setIsCancel(!isCancel)
               const userId = await AsyncStorage.getItem('_id');
               console.log('userId: ', userId);
               console.log('voucherId : ' ,item.voucherId);

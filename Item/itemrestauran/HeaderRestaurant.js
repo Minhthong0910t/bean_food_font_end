@@ -27,14 +27,12 @@ const CoffeeShopScreen = ({navigation , data}) => {
             <TouchableOpacity onPress={()=> navigation.goBack()}>
             <Image source={require('./../../Image/path.png')} />
             </TouchableOpacity>
-            <TouchableOpacity>
-            <Image source={require('./../../Image/Vector.png')} />
-            </TouchableOpacity>
+            
         </View>
        
      <View style ={{top:width*0.3 }}>
      <Text style={styles.name}>{data.name}</Text>
-          <Text style={styles.address}>{data.address}</Text>
+          <Text style={styles.address}>{data.address} - {data.phone}</Text>
           <View style={styles.timeInfo}>
             <View style={styles.timeBlock}>
               <View

@@ -97,10 +97,10 @@ const ProfileScreen = () => {
           <Icon name="heart" size={20} color="#319AB4" style={styles.icon} />
           <Text style={styles.menuText}>Sản phẩm yêu thích</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Voucher')} >
+        {/* <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Voucher')} >
           <Icon name="cog" size={20} color="#319AB4" style={styles.icon} />
           <Text style={styles.menuText}>Voucher</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         
         <TouchableOpacity style={styles.menuItem} onPress={handleWalletPress}>
         <FontAwesome5 name="wallet" size={20} color="#319AB4" style={styles.icon}/>

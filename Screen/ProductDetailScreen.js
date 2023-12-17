@@ -4,6 +4,7 @@ import {
   SafeAreaView, ScrollView ,Alert 
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import Stars from 'react-native-stars'; // Import from FontAwesome
 import Toast from 'react-native-toast-message';
 
 import { useCart } from '../Component/CartContext';
@@ -16,7 +17,7 @@ import { addproducttocart } from '../Redux/ActionAddtoCart';
 import { URL } from '../const/const';
 import ProductsFavorite from './ProductsFavorite';
 
-import Stars from 'react-native-stars'; // Import from FontAwesome
+
 
 
 const ProductDetailScreen = ({ navigation, route }) => {
@@ -31,8 +32,7 @@ const ProductDetailScreen = ({ navigation, route }) => {
   const [productfavorite , setproductfavorite] = useState(false)
   const dispatchproduct = useDispatch();
   const products = useSelector(state => state.products);
-  const [showRating, setShowRating] = useState(false);
-  const [starRating, setStarRating] = useState(5);
+  
 
 console.log(product.average);
 
@@ -82,79 +82,7 @@ console.log(product.average);
     fetchComments()
    
   }, []);
-  //hien thi view danh gia
-  const toggleRatingView = () => {
-    setShowRating(!showRating);
-  };
-
-  const submitStar = async () => {
-    const storedData = await AsyncStorage.getItem('_id');
-    console.log("id user", storedData);
-    const isLogin = await AsyncStorage.getItem('isLogin');
   
-    if (isLogin === 'false') {
-      Alert.alert(
-        "Thông báo",
-        "Vui lòng đăng nhập để đánh giá sản phẩm!",
-        [
-          {
-            text: "Hủy bỏ",
-            style: "cancel",
-          },
-          {
-            text: "Đăng nhập",
-            onPress: () => navigation.navigate("Login"),
-          },
-        ],
-        { cancelable: false }
-      );
-      return;
-    }
-  
-    console.log("idProduct", product._id);
-    console.log("Star Rating", starRating);
-    const apiUrl = `${URL}api/evaluate`;
-  
-    fetch(apiUrl, {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        productId: product._id,
-        star: starRating // Use the starRating state here
-      })
-    })
-    .then(async response => {
-      const data = await response.json();
-      if (response.ok) {
-        // Handle success
-        console.log("Success:", data);
-        Toast.show({
-          type: 'success',
-          text1: 'Cảm ơn bạn đã đánh giá sản phẩm',
-        });
-      } else {
-        // Handle server errors
-        console.log("Server Error:", data);
-        Toast.show({
-          type: 'error',
-          text1: 'Đánh giá thất bại',
-          text2: data.message,
-        });
-        throw new Error(data.message || "Lỗi mạng hoặc máy chủ");
-      }
-    })
-    .catch(error => {
-      console.error("Có lỗi khi đánh giá", error);
-      Toast.show({
-        type: 'error',
-        text1: 'Đánh giá thất bại',
-        text2: error.toString(),
-      });
-    });
-  };
   
   
   
@@ -593,38 +521,7 @@ getdataproductFavorite()
               <Text style={styles.description}>{product.description}</Text>
             </View>
            
-            <TouchableOpacity onPress={toggleRatingView}>
-            <View style={{flexDirection:'row',justifyContent: 'center',alignItems:'center'}}>
-            <Text style={styles.buttonText2}>Đánh giá</Text>
-            <Image
-                source={require("./../Image//downarrow.png")}
-                style={styles.icon}
-              />
-              </View>
-          </TouchableOpacity>
-            
-            
-
-          {showRating && (
-              <View style={{ alignItems: 'center' }}>
-                <Stars
-                  default={product.average}
-                  count={5}
-                  half={false} 
-                  update={(val)=>{ setStarRating(val) }}
-                  starSize={50} // Adjusted size for a reasonable appearance
-                  fullStar={<Icon name={'star'} size={50} style={[styles.myStarStyle, { color: 'yellow' }]}/>}
-                  emptyStar={<Icon name={'star-o'} size={50} style={[styles.myStarStyle, { color: 'green' }]}/>}
-                />
-                <TouchableOpacity
-                  style={[styles.button, styles.bottomButton]}
-                  onPress={submitStar} // Hide the rating view again if needed
-                >
-                  <Text style={styles.buttonText}>Gửi</Text>
-                </TouchableOpacity>
-              </View>
-            )}
-
+           
             
           <View style={{flexDirection:'row' , margin:5 , alignItems:'center'}}>
             <Text style = {{padding:5 , fontSize:20, fontWeight:'bold'}}>Món ăn yêu thích   </Text>
@@ -902,16 +799,7 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     
   },
-  myStarStyle: {
-    backgroundColor: 'transparent',
-    textShadowColor: 'green',
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 2,
-    // Do not set color here if you want to use inline styles for color
-  },
-  myEmptyStarStyle: {
-    color: 'white',
-  },
+  
   
 });
 

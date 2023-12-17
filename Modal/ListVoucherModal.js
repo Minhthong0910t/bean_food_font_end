@@ -54,7 +54,7 @@ const ListVoucherModal = ({visible ,products  , setisvisible, navigation  , tota
           });
           setisvisible(false)
           onConfirmVoucher(0)
-          onConfirmIDVoucher(null)
+          onConfirmIDVoucher("657f05afdd3c0fb642e1eb00")
         }
       }
       

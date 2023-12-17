@@ -11,6 +11,7 @@ const History = ({ navigation }) => {
     const [historyData, setHistoryData] = useState([]);
     const [dataUid, setDataUid] = useState('');
     const [index, setIndex] = useState(0);
+    const [isCancel, setIsCancel] = useState(false);
     const [routes] = useState([
         { key: 'processing', title: 'Chờ xác nhận' },
         { key: 'confirm', title: 'Đã xác nhận' },
@@ -19,6 +20,9 @@ const History = ({ navigation }) => {
         { key: 'cancelled', title: 'Đã huỷ' }
     ]);
 
+    const [refreshing, setRefreshing] = React.useState(false);
+
+    
 
 
     // Lấy userId từ AsyncStorage
@@ -51,22 +55,33 @@ const History = ({ navigation }) => {
             console.error('Error fetching data:', error);
         }
     };
+    console.log('iscc',isCancel);
     // Fetch lịch sử mua hàng và lọc dữ liệu trên client
     useEffect(() => {
         if (dataUid) {
             fetchDataHistory();
         }
         console.log("ls", historyData);
-    }, [dataUid]);
-    // const refreshData = () => {
+    }, [dataUid,isCancel]);
+    const onRefresh = React.useCallback(() => {
+        setRefreshing(true);
+        // setRefreshing(false);
+  
+        setTimeout(() => {
+          setRefreshing(false);
+        }, 2000);
+        fetchDataHistory();
+      }, []);
+    // const refreshData = (index) => {
     //     // Làm mới dữ liệu hoặc gọi lại API tại đây
-    //     useEffect(() => {
-    //         const intervalId = setInterval(() => {
-    //             fetchDataHistory(); // bạn cần đảm bảo rằng fetchDataHistory cập nhật state
-    //         }, 10000); // cập nhật mỗi 10 giây
+    //     // useEffect(() => {
+    //     //     const intervalId = setInterval(() => {
+    //     //         fetchDataHistory(); // bạn cần đảm bảo rằng fetchDataHistory cập nhật state
+    //     //     }, 10000); // cập nhật mỗi 10 giây
         
-    //         return () => clearInterval(intervalId); // clear interval khi component unmounted hoặc trước khi rerun useEffect này
-    //     }, [historyData]); 
+    //     //     return () => clearInterval(intervalId); // clear interval khi component unmounted hoặc trước khi rerun useEffect này
+    //     // }, [historyData]); 
+    //     data.splice(index, 1);
         
     // };
 
@@ -96,7 +111,9 @@ const History = ({ navigation }) => {
         return (
             <FlatList
                 data={filteredData}
-                renderItem={({ item }) => <HistoryItem item={item}  navigation={navigation} />}
+                onRefresh={onRefresh}
+                refreshing={refreshing}
+                renderItem={({ item }) => <HistoryItem item={item} isCancel={isCancel} setIsCancel={setIsCancel} navigation={navigation} />}
                 keyExtractor={item => item._id.toString()}
             />
         );

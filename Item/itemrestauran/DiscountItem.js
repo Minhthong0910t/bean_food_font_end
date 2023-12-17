@@ -53,7 +53,7 @@ export default DiscountItem
 
 const styles = StyleSheet.create({
     headerdiscount:{
-        top:0.05*height,
+        top:0.01*height,
         marginLeft:15,
     
         

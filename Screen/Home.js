@@ -47,7 +47,7 @@ useEffect(() => {
           style={{ width: 30, height: 30, margin: 15 }}
         />
 
-        <Text style={{ fontSize: 15, fontWeight: 'bold', color: '#616161' }}>
+        <Text style={{ fontSize: 13, fontWeight: 'bold', color: '#616161' }}>
           {address}
         </Text>
 

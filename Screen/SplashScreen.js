@@ -7,7 +7,7 @@ const SplashScreen = ({ navigation }) => {
     useEffect(() => {
         const timer = setTimeout(() => {
             setIsLoading(false);
-        }, 1000);
+        }, 2000);
 
         return () => clearTimeout(timer);
     }, []);
@@ -19,7 +19,7 @@ const SplashScreen = ({ navigation }) => {
     }, [isLoading, navigation]);
 
     const handleLogin = async () => {
-        navigation.navigate('Appnavigator');
+        navigation.replace('Appnavigator');
     };
 
     return (

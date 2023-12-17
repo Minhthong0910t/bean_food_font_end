@@ -1,5 +1,5 @@
 import React, { useState,useEffect  } from 'react';
-import { View, Text, StyleSheet, Image } from 'react-native';
+import { View, Text, StyleSheet, Image, BackHandler } from 'react-native';
 import { TextInput, Button } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { ToastAndroid } from 'react-native';
@@ -17,7 +17,22 @@ export default function LoginScreen() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [userInfo, setUserInfo] = useState(null);
     const navigation = useNavigation();
-
+    
+    useEffect(() => {
+        const backAction = () => {
+          console.log('back');
+          navigation.replace('Appnavigator')
+          return true;
+        };
+    
+        const backHandler = BackHandler.addEventListener(
+          'hardwareBackPress',
+          backAction,
+        );
+    
+        return () => backHandler.remove();
+      }, []);
+    
 
     const handleLogin = () => {
         const trimmedUsername = username.trim();

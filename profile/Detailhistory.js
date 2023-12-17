@@ -1,16 +1,20 @@
 import {React,useEffect,useState} from 'react';
 import { View, Text, Image, ScrollView, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native';
 import ToolBar from '../components/ToolBar';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { URL } from '../const/const';
 import ProductItemOrder from '../Item/ProductItemOder';
+import Stars from 'react-native-stars'; // Import from FontAwesome
+import Toast from 'react-native-toast-message';
 
 const Detailhistory = ({ route, navigation }) => {
     const { orderId } = route.params; // Get the orderId passed via navigation
     const [orderDetails, setOrderDetails] = useState(null);
     const deliveryFee = 35000;
     const discount = 0;
+    const [showRating, setShowRating] = useState(false);
+    const [starRating, setStarRating] = useState(5);
 
     // Lấy userId từ AsyncStorage
     const getStatusLabel = (status) => {
@@ -56,9 +60,65 @@ const Detailhistory = ({ route, navigation }) => {
       navigation.navigate('Home')
     };
 
+    //hien thi view danh gia
+  const toggleRatingView = () => {
+    setShowRating(!showRating);
+  };
+
+  const submitStar = async () => {
+    const storedData = await AsyncStorage.getItem('_id');
+    console.log("id user", storedData);
+    console.log("id nh", orderDetails.products[0].restaurantId._id);
+    // const isLogin = await AsyncStorage.getItem('isLogin');
+  
+   
+    console.log("Star Rating", starRating);
+    const apiUrl = `${URL}api/evaluate`;
+  
+    fetch(apiUrl, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        restaurantId: orderDetails.products[0].restaurantId._id,
+        star: starRating // Use the starRating state here
+      })
+    })
+    .then(async response => {
+      const data = await response.json();
+      if (response.ok) {
+        // Handle success
+        console.log("Success:", data);
+        Toast.show({
+          type: 'success',
+          text1: 'Cảm ơn bạn đã đánh giá sản phẩm',
+        });
+      } else {
+        // Handle server errors
+        console.log("Server Error:", data);
+        Toast.show({
+          type: 'error',
+          text1: 'Đánh giá thất bại',
+          text2: data.message,
+        });
+        throw new Error(data.message || "Lỗi mạng hoặc máy chủ");
+      }
+    })
+    .catch(error => {
+      console.error("Có lỗi khi đánh giá", error);
+      Toast.show({
+        type: 'error',
+        text1: 'Đánh giá thất bại',
+        text2: error.toString(),
+      });
+    });
+  };
+
 
   return (
-    <View>
+    <View style={{flex:1}}>
     <ToolBar title="Thông tin đơn hàng" onBackPress={() => navigation.goBack()} />
     {orderDetails && ( 
                 <>
@@ -70,7 +130,11 @@ const Detailhistory = ({ route, navigation }) => {
       </View>
       <View style={styles.addressContainer}>
         <Text style={styles.restaurantAddress}>Nhà hàng: {orderDetails.products[0].restaurantId.name}</Text>
-        <Icon name="arrow-drop-down" size={30} color="#000" />
+        <Image
+                source={require("./../Image//downarrow.png")}
+                style={styles.icon}
+              />
+              
         <Text style={styles.deliveryAddress}>Địa điểm đến: {orderDetails.address}</Text>
       </View>
       <View style={styles.foodItemContainer}>
@@ -107,17 +171,60 @@ const Detailhistory = ({ route, navigation }) => {
               <Text style={styles.totaltt}>{orderDetails.phuongthucthanhtoan}</Text>
             </View>
           </View>
+          
       
 
       <View style={styles.helpContainer}>
+      
+            
+            
+
+      {orderDetails && orderDetails.status === 3 && (
+                <>
+                <TouchableOpacity onPress={toggleRatingView}>
+                  <View style={{flexDirection:'row',justifyContent: 'center',alignItems:'center'}}>
+                  <Text style={styles.buttonText2}>Đánh giá</Text>
+                  <Image
+                      source={require("./../Image//downarrow.png")}
+                      style={styles.icon}
+                    />
+                    </View>
+                </TouchableOpacity>
+                  {showRating && (
+                    <View style={{ alignItems: 'center' }}>
+                      <Stars
+                        default={5}
+                        count={5}
+                        half={false} 
+                        update={(val)=>{ setStarRating(val) }}
+                        starSize={50}
+                        fullStar={<Icon name={'star'} size={50} style={[styles.myStarStyle, { color: 'yellow' }]}/>}
+                        emptyStar={<Icon name={'star-o'} size={50} style={[styles.myStarStyle, { color: 'blue' }]}/>}
+                      />
+                      <TouchableOpacity
+                        style={[styles.button, styles.bottomButton]}
+                        onPress={submitStar}
+                      >
+                        <Text style={styles.buttonText}>Gửi</Text>
+                      </TouchableOpacity>
+                    </View>
+                  )}
+                  
+                </>
+              )}
+
+
         
         <TouchableOpacity style={styles.reorderButton} onPress={goHome}>
           <Text style={styles.reorderButtonText}>Quay về trang chủ</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>
+   
     </>
+   
             )}
+            <Toast ref={(ref) => Toast.setRef(ref)} />
     </View>
   );
 };
@@ -248,10 +355,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#ffffff',
     fontWeight: 'bold',
+    justifyContent: 'center',
   },
   helpContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
     marginTop: 16,
     marginBottom: 16,
   },
@@ -264,16 +370,24 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#ffffff',
     fontWeight: 'bold',
-  },
-  reorderButton: {
-    padding: 16,
-    backgroundColor: '#FFC107',
-    borderRadius: 4,
+    
   },
   reorderButtonText: {
     fontSize: 16,
     color: '#ffffff',
     fontWeight: 'bold',
+    textAlign: 'center', // This aligns the text within the Text component
+  },
+  reorderButton: {
+    justifyContent: 'center', // This centers the content vertically in the button
+    alignItems: 'center', // This centers the content horizontally in the button
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    backgroundColor: '#FFC107',
+    borderRadius: 4,
+    marginHorizontal: 30,
+    marginTop: 16,
+    marginBottom: 16,
   },
 
   containerHD: {
@@ -310,6 +424,51 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     color: '#4CAF50',
+  },
+  myStarStyle: {
+    backgroundColor: 'transparent',
+    textShadowColor: 'blue',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
+    // Do not set color here if you want to use inline styles for color
+  },
+  myEmptyStarStyle: {
+    color: 'white',
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  buttonText2: {
+    color: 'black',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  icon: {
+    width: 30,
+    height: 30,
+    marginRight: 8
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  bottomButton: {
+    flex: 1,
+    marginHorizontal: 5,
+  },
+  button: {
+    flexDirection: 'row',
+    backgroundColor: '#319AB4',
+    padding: 10,
+    borderRadius: 5,
+    justifyContent: 'center',
+    margin: 5,
+
   },
   
 });
