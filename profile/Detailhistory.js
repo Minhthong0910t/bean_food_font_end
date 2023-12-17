@@ -91,7 +91,12 @@ const Detailhistory = ({ route, navigation }) => {
             </View>
             <View style={styles.row}>
               <Text style={styles.label}>Khuyến mãi</Text>
-              <Text style={styles.value}>{orderDetails.voucherId.money}đ</Text>
+              <Text style={styles.value}>{!orderDetails.voucherId?.money?0:orderDetails.voucherId?.money}đ</Text>
+              {/* {!!orderDetails.voucherId?.money ? 
+      <Text> 0d</Text>
+      :
+      <Text> {orderDetails.voucherId?.money}</Text>
+    } */}
             </View>
             <View style={styles.row}>
               <Text style={styles.totalLabel}>Tổng thanh toán</Text>

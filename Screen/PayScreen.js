@@ -129,7 +129,13 @@ const PayScreen = ({ route, navigation }) => {
 
       const responseData = await response.json();
       if (!response.ok) {
-        throw new Error(responseData.msg || 'Có lỗi xảy ra khi gửi đơn hàng.');
+        // throw new Error(responseData.msg || 'Có lỗi xảy ra khi gửi đơn hàng.');
+        Toast.show({
+          type: 'info',
+          text1: 'Lỗi đặt đơn hàng',
+          text2: 'Vui lòng thử lại sau'
+        });
+        return;
       }
 
       console.log('Đơn hàng đã được tạo:', responseData);

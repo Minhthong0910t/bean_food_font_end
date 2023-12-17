@@ -134,6 +134,7 @@ const HistoryItem = ({ item    , navigation}) => {
           });
     }
     const handleDeital=async ()=>{
+      console.log('item ' , item);
       navigation.navigate('Detailhistory' , { orderId: item._id });
     }
 

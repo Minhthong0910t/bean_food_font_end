@@ -44,6 +44,7 @@ const ListVoucherModal = ({visible ,products  , setisvisible, navigation  , tota
           setisvisible(false)
           onConfirmVoucher(data.money)
           onConfirmIDVoucher(data._id)
+          console.log('Voucher',data._id);
           console.log("data money" , data.money);
         }else{
           Toast.show({
