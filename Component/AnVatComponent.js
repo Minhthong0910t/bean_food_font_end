@@ -12,7 +12,7 @@ const AnVatComponent = ({navigation}) => {
     const fetchData = async () => {
       try {
 
-        const response = await fetch(`${URL}api/productDanhmuc/trasua`);
+        const response = await fetch(`${URL}api/productDanhmuc/tra sua`);
         const jsonData = await response.json();
         setdataanvat(jsonData.products);
       } catch (error) {
@@ -34,7 +34,7 @@ const AnVatComponent = ({navigation}) => {
   };
   return (
     <SafeAreaView > 
-    <ToolBar title="Ăn vặt" onBackPress={() => navigation.goBack()} />
+    <ToolBar title="Trà Sữa" onBackPress={() => navigation.goBack()} />
     <View>
     <ScrollView >
         {anvat.map((data, index) =>

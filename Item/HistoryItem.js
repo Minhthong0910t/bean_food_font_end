@@ -3,9 +3,11 @@ import { View, Text, TouchableOpacity, StyleSheet  , Alert,Image} from 'react-na
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { URL } from '../const/const';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import Toast from 'react-native-toast-message';
+import { ToastAndroid } from 'react-native';
 
 
-const HistoryItem = ({ item  ,onStatusUpdate  , navigation}) => {
+const HistoryItem = ({ item    , navigation}) => {
     const [dataUid, setDataUid] = useState('');
     // Tạo một chuỗi các tên món ăn, cách nhau bởi dấu phẩy
     const productNames = item.products.map(product => product.name).join(', ');
@@ -32,62 +34,97 @@ const HistoryItem = ({ item  ,onStatusUpdate  , navigation}) => {
                 return 'Trạng thái không xác định';
         }
     };
+    const handlecancel = async () => {
+      Alert.alert(
+        'Cảnh báo!!',
+        'Bạn có muốn hủy đơn hàng không?',
+        [
+          {
+            text: 'Hủy',
+            onPress: () => {},
+            style: 'cancel',
+          },
+          {
+            text: 'Đồng ý',
+            onPress: async () => {
+              const userId = await AsyncStorage.getItem('_id');
+              console.log('userId: ', userId);
+              console.log('voucherId : ' ,item.voucherId);
+              // Giả sử bạn cũng lưu voucherId trong AsyncStorage hoặc lấy từ một nguồn nào đó
+    
+              try {
+                // Lời gọi API đầu tiên để cập nhật trạng thái đơn hàng
+                const apiUrl = `${URL}api/user/cancel`; // Thay thế bằng URL API cập nhật trạng thái đơn hàng với Order ID
+                const response = await fetch(apiUrl, {
+                  method: 'PUT',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({  orderId:item._id , 
+                    userId:userId
+                    // Thay thế bằng Order ID cần hủy
+                  }),
+                });
+          
+                if (response.ok) {
+                  // Cập nhật trạng thái đơn hàng thành công
+                  ToastAndroid.show('Hủy đơn hàng thành công', ToastAndroid.SHORT);
 
-
-    const handlecancel = async()=>{
-        Alert.alert(
-            'Cảnh báo!!',
-            'Bạn có muốn hủy đon hàng không?',
-            [
-              {
-                text: 'Hủy',
-                onPress: () => {return},
-                style: 'cancel',
-              },
-              {
-                text: 'Đồng ý',
-                onPress: async () => {
-                 
-                    const storedData = await AsyncStorage.getItem('_id');
-                    console.log("item id 111" , storedData);
-
-                    try {
-                        const apiUrl = `${URL}api/user/cancel`; // Thay thế bằng URL API cập nhật trạng thái đơn hàng với Order ID
-                        const response = await fetch(apiUrl, {
-                          method: 'PUT',
-                          headers: {
-                            'Content-Type': 'application/json',
-                          },
-                          body: JSON.stringify({  orderId:item._id , 
-                            userId:storedData
-                            // Thay thế bằng Order ID cần hủy
-                          }),
-                        });
+                    
+                  console.log('Cập nhật trạng thái đơn hàng thành công');
                   
-                        if (response.ok) {
-                          // Cập nhật trạng thái đơn hàng thành công
-                            
-                          console.log('Cập nhật trạng thái đơn hàng thành công');
-                          onStatusUpdate(); // Gọi hàm callback sau khi cập nhật thành công
-                        } else {
-                          // Xử lý lỗi nếu cần
-                          const errorData = await response.json();
-                          console.log('Lỗi cập nhật trạng thái đơn hàng:', errorData.msg);
-                        }
-                      } catch (error) {
-                        console.error('Lỗi khi gọi API cập nhật trạng thái đơn hàng:', error);
-                      }
-        
+                } else {
+                  // Xử lý lỗi nếu cần
+                  const errorData = await response.json();
+                  console.log('Lỗi cập nhật trạng thái đơn hàng:', errorData.msg);
+                }
+              } catch (error) {
+                console.error('Lỗi khi gọi API cập nhật trạng thái đơn hàng:', error);
+              }
+    
+                // Lời gọi API mới để hủy đơn hàng
+                if(item.voucherId!=null){
+                  console.log('đã vào đây');
+                  await updateVoucher(userId)
+                }
+              }
                   
-                },
-              },
-            ],
-            { cancelable: false }
-          );
-     
-
-     
+          
+          },
+        ],
+        { cancelable: false }
+      );
     }
+    
+    // Hàm để cập nhật trạng thái đơn hàng
+    const updateVoucher =async (userId)=> {
+      try {
+        const apiUrl = `${URL}api/voucher/huydonhang`;
+        const response = await fetch(apiUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ userId:userId, 
+            voucherId:item.voucherId }),
+        });
+
+        if (response.ok) {
+          console.log('Hoàn Voucher thành công');
+        } else {
+          console.log('Lỗi khi Hoàn Voucher');
+      }
+        
+      } catch (error) {
+        console.error('Lỗi:', error);
+      }
+     
+
+    }
+    
+        
+
+  
 
     const handledatlai = async ()=>{
         console.log("data products " , item.products);
@@ -102,6 +139,7 @@ const HistoryItem = ({ item  ,onStatusUpdate  , navigation}) => {
 
     return (
         <View >
+        
         <TouchableOpacity style={styles.itemContainer} onPress={handleDeital}>
             <Image source={require('./../Image/iconaddm.png')} style={styles.image} />
             <View style={styles.item}>

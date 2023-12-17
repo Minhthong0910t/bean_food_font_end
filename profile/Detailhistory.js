@@ -43,6 +43,7 @@ const Detailhistory = ({ route, navigation }) => {
               console.error('Error fetching order details:', error);
           }
       };
+      console.log('done',orderDetails);
       if (!orderDetails) { // Chỉ fetch khi orderDetails là null hoặc undefined
           fetchOrderDetails();
       }
@@ -90,7 +91,7 @@ const Detailhistory = ({ route, navigation }) => {
             </View>
             <View style={styles.row}>
               <Text style={styles.label}>Khuyến mãi</Text>
-              <Text style={styles.value}>{discount}đ</Text>
+              <Text style={styles.value}>{orderDetails.voucherId.money}đ</Text>
             </View>
             <View style={styles.row}>
               <Text style={styles.totalLabel}>Tổng thanh toán</Text>

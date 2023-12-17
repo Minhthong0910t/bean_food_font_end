@@ -32,23 +32,22 @@ const MenuRestaurant = ({navigation , data }) => {
       <View style={{ justifyContent: "space-between", flexDirection: "row" }}>
         <Text style={{ fontSize: 20, fontWeight: "bold"  , paddingTop:20}}>Menu nhà hàng</Text>
       </View>
-      <ScrollView   showsVerticalScrollIndicator={false}>
-
-      {
-        datamenu.map((data , index)=><View key ={index}style={{  marginTop:10,  width:0.92 *width , height:0.1*height , backgroundColor:'#F0F0F0'  , borderRadius:10}}>
-        <View key={index} style = {{flexDirection:'row',alignItems:'center' ,  justifyContent:'space-between' }}>
-         <Image  source={{uri:data.image}} style = {{ height:height*0.1   ,width:width*0.2 ,borderRadius:10}} />
-          <View style={{flexDirection:'column' }}>
-            <Text style={{fontWeight:'bold',color:'#616161'}}>Tên sản phẩm: {data.name}</Text>
-            <Text style={{  fontWeight:'bold' ,color:'#616161'}}>Gía sản phẩm: {data.realPrice}đ</Text>
-          </View>
-          <TouchableOpacity onPress ={()=>  navigation.navigate('ProductDetail', { product: data })} style={{width:0.06*width ,  height:0.03*height ,marginRight:10,  borderRadius:20 , backgroundColor:'#616161' , alignItems:'center' , justifyContent:'center'}}>
-            <Text style={{color:'white' , fontWeight:'bold'}}>+</Text>
-          </TouchableOpacity>
-        </View>
-        </View>)
-      }
-</ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
+                {datamenu.map((data, index) => (
+                    <View key={index} style={styles.menuItem}>
+                        <Image source={{ uri: data.image }} style={styles.itemImage} />
+                        <View style={styles.itemDetails}>
+                            <Text style={styles.itemText}>Tên sản phẩm: {data.name}</Text>
+                            <Text style={styles.itemText}>Giá sản phẩm: {data.realPrice}đ</Text>
+                        </View>
+                        <TouchableOpacity
+                            onPress={() => navigation.navigate('ProductDetail', { product: data })}
+                            style={styles.addButton}>
+                            <Text style={styles.addButtonText}>+</Text>
+                        </TouchableOpacity>
+                    </View>
+                ))}
+            </ScrollView>
     </View>
   );
 };
@@ -59,5 +58,42 @@ const styles = StyleSheet.create({
   headermenu: {
     top: 0.01 * height,
     margin: 15,
-  },
+},
+menuItem: {
+    marginTop: 10,
+    width: 0.92 * width,
+    height: 0.1 * height,
+    backgroundColor: '#F0F0F0',
+    borderRadius: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 10, // Added padding for inner spacing
+},
+itemImage: {
+    height: height * 0.1,
+    width: width * 0.2,
+    borderRadius: 10,
+},
+itemDetails: {
+    flex: 1, // Added flex to take available space
+    paddingHorizontal: 10, // Added padding for inner spacing
+},
+itemText: {
+    fontWeight: 'bold',
+    color: '#616161',
+},
+addButton: {
+    width: 0.06 * width,
+    height: 0.03 * height,
+    borderRadius: 20,
+    backgroundColor: '#616161',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: 10, // Adjusted for spacing from the details
+},
+addButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+},
 });

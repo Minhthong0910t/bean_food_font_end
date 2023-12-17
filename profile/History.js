@@ -5,6 +5,7 @@ import HistoryItem from '../Item/HistoryItem';
 import { URL } from '../const/const';
 import ToolBar from '../components/ToolBar';
 import { TabView, TabBar } from 'react-native-tab-view';
+import Toast from 'react-native-toast-message';
 
 const History = ({ navigation }) => {
     const [historyData, setHistoryData] = useState([]);
@@ -34,6 +35,10 @@ const History = ({ navigation }) => {
         };
         fetchUserId();
     }, []);
+    // useEffect(() => {
+    //     Toast.setRef(ref => Toast.setRef(ref));
+    //   }, []);
+      
 
     //fun call api data history
     const fetchDataHistory = async () => {
@@ -100,7 +105,9 @@ const History = ({ navigation }) => {
 
     return (
         <SafeAreaView style={styles.container}>
+        
             <ToolBar title="Lịch Sử Mua Hàng" onBackPress={() => navigation.goBack()} />
+
             <TabView
                 navigationState={{ index, routes }}
                 renderScene={renderScene}

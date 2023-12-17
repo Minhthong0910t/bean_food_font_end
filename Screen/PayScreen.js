@@ -32,7 +32,7 @@ const PayScreen = ({ route, navigation }) => {
   const deliveryFee = 35000;
   const [discount , setDiscount] = useState(0)
 
-  const[IdVoucher , setDataIdVoucher] = useState('')
+  const[IdVoucher , setDataIdVoucher] = useState(null)
   const [paymentMethod, setPaymentMethod] = useState('cash'); // 'cash' hoặc 'bank'
 
   const [isCheckOrderModalVisible, setCheckOrderModalVisible] = useState(false);
@@ -101,7 +101,7 @@ const PayScreen = ({ route, navigation }) => {
       voucherId:IdVoucher,
       time: new Date(),
       products: products.map(product => ({
-        restaurantId:product.restaurantId,
+      restaurantId:product.restaurantId,
       productId: product.productId, // Giả sử mỗi sản phẩm có trường 'id'
       name: product.name, // Tên sản phẩm
       image:product.image,
@@ -135,7 +135,7 @@ const PayScreen = ({ route, navigation }) => {
       console.log('Đơn hàng đã được tạo:', responseData);
       setTimeout(() => {
         setSuccessModalVisible(true);
-      }, 1000);
+      }, 200);
     } catch (error) {
       console.error('Error:', error);
     }
@@ -266,7 +266,7 @@ const PayScreen = ({ route, navigation }) => {
               marginBottom:20}}
               activeOpacity={0.7} // Cung cấp mức độ mờ khi nút được nhấn
             >
-              <Text style={styles.buttonOrderText}>Lấy volcher</Text>
+              <Text style={styles.buttonOrderText}>Lấy voucher</Text>
             </TouchableOpacity>
           <ListVoucherModal visible={isListVoucherModal}
           navigation={navigation}

@@ -158,7 +158,7 @@ const Menu = ({ navigation }) => {
             <Image source={require('./../Image/snack.png')} style={{ width: 0.08 * width, height: 0.04 * height }} />
           </TouchableOpacity>
 
-          <Text style={{ color: '#616161' }}>Ăn vặt</Text>
+          <Text style={{ color: '#616161' }}>Trà Sữa</Text>
         </View>
         <View style={{ flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginLeft: 35 }}>
           <TouchableOpacity onPress={() => { navigation.navigate('DoUong') }}>
@@ -337,12 +337,20 @@ const Goiymonan = ({ navigation }) => {
                   >
                     Nhà hàng: {truncateString(data.restaurantId.name, 18)}
                   </Text>
+                  <View style={{flexDirection:'row'}}>
+                  <Image
+                    source={require("./../Image/heart_1.png")}
+                    style={{ width: 25, height: 25}}
+                  />
                   <Text 
-                    style={{ color: '#000000', fontWeight: 'bold' }} 
+                    style={{ color: '#000000', fontWeight: 'bold',marginLeft:8 }} 
                     
                   >
-                    Số lượng yêu thích: {data.likeCount}
+                    {data.likeCount}  
                   </Text>
+                  
+                  </View>
+                  
                 </View>
               </TouchableOpacity>
             </View>
