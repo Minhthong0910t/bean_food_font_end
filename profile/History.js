@@ -62,28 +62,18 @@ const History = ({ navigation }) => {
             fetchDataHistory();
         }
         console.log("ls", historyData);
-    }, [dataUid,isCancel]);
+    }, [dataUid, isCancel]);
+    
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
-        // setRefreshing(false);
-  
-        setTimeout(() => {
-          setRefreshing(false);
-        }, 2000);
         fetchDataHistory();
-      }, []);
-    // const refreshData = (index) => {
-    //     // Làm mới dữ liệu hoặc gọi lại API tại đây
-    //     // useEffect(() => {
-    //     //     const intervalId = setInterval(() => {
-    //     //         fetchDataHistory(); // bạn cần đảm bảo rằng fetchDataHistory cập nhật state
-    //     //     }, 10000); // cập nhật mỗi 10 giây
-        
-    //     //     return () => clearInterval(intervalId); // clear interval khi component unmounted hoặc trước khi rerun useEffect này
-    //     // }, [historyData]); 
-    //     data.splice(index, 1);
-        
-    // };
+        setTimeout(() => {
+            if (historyData) {
+                setRefreshing(false);
+            }
+        }, 2000);
+    }, [historyData]);
+
 
     const renderScene = ({ route }) => {
         let filteredData = [];

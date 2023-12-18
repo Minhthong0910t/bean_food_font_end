@@ -21,7 +21,8 @@ import ProductsFavorite from './ProductsFavorite';
 
 
 const ProductDetailScreen = ({ navigation, route }) => {
-  const { product } = route.params;
+  const { product , type} = route.params;
+  console.log('type',type);
   const { state, dispatch } = useCart();
   const [quantity, setQuantity] = useState(1);
   const [totalPrice, setTotalPrice] = useState(product.realPrice);
@@ -313,6 +314,13 @@ console.log(product.average);
     const isLogin = await AsyncStorage.getItem('isLogin');
     if(isLogin==='true'){
     calculateTotalPrice();
+    let resID ;
+    if(type==='type'){
+      resID = product.restaurantId
+    }
+    else if(type=== undefined){
+      resID = product.restaurantId._id
+    }
     const newCartProduct = {
       userId:data , 
       restaurantName :product.restaurantId,
@@ -320,11 +328,15 @@ console.log(product.average);
       name:product.name , 
       image:product.image,
       price:product.realPrice,
-      restaurantId:product.restaurantId._id,
+      restaurantId:resID,
       ischecked:false,
       quantity :quantity ,
     
     }
+
+    console.log("res id",product.restaurantId._id );
+    // console.log('datrta',data);
+    // console.log('datrta333',newCartProduct);
  
     
     // Gọi hàm saveObjectToMongoDB với đối tượng bạn muốn gửi lên MongoDB

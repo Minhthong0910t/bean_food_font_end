@@ -41,7 +41,7 @@ const BanhMiComponent = ({navigation}) => {
           <View key={index} style={{ backgroundColor: '#f0f0f0', marginTop: 6, marginRight: 5, borderRadius: 10 }}>
             <TouchableOpacity
               style={{ margin: 15, flexDirection: 'row', height: 90, alignItems: 'center' }}
-              onPress={() => navigation.navigate('ProductDetail', { product: data })}
+              onPress={() => navigation.navigate('ProductDetail', { product: data , type :'type'})}
             >
               <View >
                 <Image source={{ uri: data.image }} style={{ borderWidth: 1, width: width * 0.25, height: width * 0.25 , borderRadius:10 }} />
