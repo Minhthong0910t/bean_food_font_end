@@ -138,8 +138,8 @@ const Detailhistory = ({ route, navigation }) => {
         <Text style={styles.deliveryAddress}>Địa điểm đến: {orderDetails.address}</Text>
       </View>
       <View style={styles.foodItemContainer}>
-      {orderDetails.products.map(product => (
-         <ProductItemOrder products={product} />
+      {orderDetails.products.map((product, index) => (
+         <ProductItemOrder products={product} index={index}/>
         ))}
 
       </View>

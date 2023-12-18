@@ -10,7 +10,17 @@ const SearchComponent = ({ navigation }) => {
   const handleButtonPress = () => {
     axios.post(URL + 'api/product/getbyname', {
       name: inputText
-    }).then(response => {setData(response.data); console.log(data, "DATA");})
+    }).then(response => {
+      if(response.data.msg==='Không tìm thấy sản phẩm nào.'){
+        setData([])
+      }else{
+        setData(response.data); 
+        console.log(response.data, "DATA");
+      
+      }
+
+     
+    })
   };
 
 
@@ -88,7 +98,7 @@ const SearchComponent = ({ navigation }) => {
             console.log(item.name)
             const product = item.item
             return(
-              <TouchableOpacity style={{ margin: 15, flexDirection: 'row', height: 90, alignItems: 'center', marginTop: 20 }} onPress={() => { navigation.navigate('ProductDetail', { product })}} >
+              <TouchableOpacity key={index} style={{ margin: 15, flexDirection: 'row', height: 90, alignItems: 'center', marginTop: 20 }} onPress={() => { navigation.navigate('ProductDetail', { product })}} >
 
                 
 
@@ -108,7 +118,7 @@ const SearchComponent = ({ navigation }) => {
               </TouchableOpacity>
             )
           }}
-          keyExtractor={(item) => item.id}
+          // keyExtractor={(item) => item.id}
           numColumns={numColumns}
         />
       

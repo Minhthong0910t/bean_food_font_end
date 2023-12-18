@@ -30,13 +30,21 @@ const ProductsFavorite = ({navigation}) => {
     .then(response => response.json())
     .then(data => {
       // Xử lý dữ liệu ở đây
-      console.log("data products" ,data[0].listFavorite);
-      const datafavorite = data[0].listFavorite;
-      setdataFavorite(datafavorite)
+      if(data){
+        console.log("data products fav" ,data[0].listFavorite);
+        const datafavorite = data[0].listFavorite;
+        setdataFavorite(datafavorite)
+      }
+      else{
+        setdataFavorite([])
+      }
+
+
+     
     })
     .catch(error => {
       // Xử lý lỗi ở đây
-      console.error(error);
+      setdataFavorite([])
     });
   }
   useEffect(()=>{

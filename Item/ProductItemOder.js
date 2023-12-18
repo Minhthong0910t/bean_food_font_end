@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
 
-const ProductItemOrder = ({ products }) => {
+const ProductItemOrder = ({ products , index }) => {
   useEffect(() => {
     console.log('=======> item', products);
   }, [products]);
-
+  console.log('index',index);
   return (
-    <View style={styles.itemContainer}>
+    <View style={styles.itemContainer} key={index}>
       <Image source={{ uri: products.image }} style={styles.productImage} />
 
       <View style={styles.productDetailsContainer}>
